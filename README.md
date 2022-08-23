@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://github.com/tobua/responsive-react-native/raw/main/video.gif" alt="Responsive Video" width="250">
+  <!--- Recorded in iOS Simulator and converted with Gifsky from Mac App Store. -->
+</p>
+
 # responsive-react-native
 
 Unlike web browsers React Native doesn't support media queries to create responsive designs. With this plugin one can keep regular numeric values in the styles that are automatically adapted based on the current viewport size.

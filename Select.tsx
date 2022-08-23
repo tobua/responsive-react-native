@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Animated, Easing } from 'react-native'
 import { getBreakpoint, setBreakpoint, getBreakpoints } from './index'
 
@@ -42,8 +42,8 @@ const animate = (handle: Animated.Value, toValue: number) =>
 
 export const Select = () => {
   const breakpoints = getBreakpoints()
-  const [size, setLocalSize] = useState(getBreakpoint())
-  const position = useRef(
+  const [size, setLocalSize] = React.useState(getBreakpoint())
+  const position = React.useRef(
     new Animated.Value(
       getPosition(Object.keys(breakpoints).findIndex((current) => current === String(size)))
     )
