@@ -9,7 +9,6 @@ const appName = 'ResponsiveApp'
 console.log('⌛ Initializing a fresh RN project...')
 
 execSync(`npx react-native init ${appName}`, {
-  // Write output to cnosole.
   stdio: 'inherit',
 })
 
