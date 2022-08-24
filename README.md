@@ -51,19 +51,19 @@ Instead of the values just jumping between breakpoints as is usually done this p
 
 ## Rerendering
 
-Since neither native Android or iOS have support for something like media queries this plugin requires the responsive parts of the application to be rerendered when the size changes. Full rerendering usually takes some time and will not result in an application that can be dynamically resized. A rerender can be triggered when the user adapts the size preference using the built-in `<Select />` component or when the application switches between landscape and portrait mode.
+Since neither native Android or iOS have support for something like media queries this plugin requires the responsive parts of the application to be rerendered when the size changes. Full rerendering usually takes some time and will not result in an application that can be dynamically resized. A rerender can be triggered when the user adapts the size preference using the built-in `<SelectBreakpoint />` component or when the application switches between landscape and portrait mode.
 
-Any component that is rendered using responsive styles should be rendered inside the `Rerender` component. A rerender can be manually triggered using the `rerender` method or occurs, upon changes to `<Select />`, when the orientation changes or when the breakpoint is changed using `setBreakpoint`.
+Any component that is rendered using responsive styles should be rendered inside the `Rerender` component. A rerender can be manually triggered using the `rerender` method or occurs, upon changes to `<SelectBreakpoint />`, when the orientation changes or when the breakpoint is changed using `setBreakpoint`.
 
 ```jsx
-import { Rerender, Select, rerender } from 'responsive-react-native'
+import { Rerender, SelectBreakpoint, rerender } from 'responsive-react-native'
 
 function App() {
   return (
     <View>
       <Rerender>{() => <View key={getSize()} style={styles.view}></View>}</Rerender>
       <Text>Static Text</Text>
-      <Select />
+      <SelectBreakpoint />
       <Button title="Rerender App" onPress={() => rerender()}>
     </View>
   )
@@ -72,19 +72,24 @@ function App() {
 
 ## Refactoring
 
-Since the method is compatible with the default way of initializing styles once using `StyleSheet.create` an existing application can be migrated by adding a single line at the entry file of the application.
+Since the method is compatible with the default way of initializing styles once using `StyleSheet.create` an existing application can be migrated by reassigning the method to use the one from this plugin.
 
 ```js
-import { AppRegistry, StyleSheet } from 'react-native'
+// refactor-stylesheet.js
+import { StyleSheet } from 'react-native'
 import { createStyles } from 'responsive-react-native'
-import App from './App'
 
 Object.assign(StyleSheet, { create: createStyles })
+```
+
+```js
+// index.js
+import { AppRegistry } from 'react-native'
+import './refactor-stylesheet' // Import this before any other markup.
+import App from './App'
 
 AppRegistry.registerComponent('responsive-app', () => App)
 ```
-
-This will override the `StyleSheet.create` to use the method supplied by this plugin.
 
 ## Similar Approaches
 

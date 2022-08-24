@@ -1,6 +1,12 @@
 import React from 'react'
 import { View, Text, Platform, ScrollView } from 'react-native'
-import { createStyles, Rerender, Select, getBreakpoint, configure } from 'responsive-react-native'
+import {
+  createStyles,
+  Rerender,
+  SelectBreakpoint,
+  getBreakpoint,
+  configure,
+} from 'responsive-react-native'
 import { Cols, Col } from 'react-native-cols'
 
 configure({
@@ -160,7 +166,7 @@ export default () => (
           </ScrollView>
         )}
       </Rerender>
-      <Select />
+      <SelectBreakpoint />
     </View>
   )
 }

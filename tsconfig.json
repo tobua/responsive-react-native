@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["es2017"],
     "allowJs": true,
-    "jsx": "react-native",
+    "jsx": "react",
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
@@ -16,7 +16,7 @@
     "outDir": "dist",
     "emitDeclarationOnly": true,
     "paths": {
-      "responsive-react-native": ["./index.ts"]
+      "responsive-react-native": ["."]
     }
   },
   "include": ["index.ts"],

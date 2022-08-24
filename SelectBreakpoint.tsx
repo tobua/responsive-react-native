@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, TouchableOpacity, Text, StyleSheet, Animated, Easing } from 'react-native'
+import React, { useState, useRef } from 'react'
+import { View, TouchableOpacity, Text, StyleSheet, Animated, Easing, ViewProps } from 'react-native'
 import { getBreakpoint, setBreakpoint, getBreakpoints } from './index'
 
 const styles = StyleSheet.create({
@@ -40,17 +40,21 @@ const animate = (handle: Animated.Value, toValue: number) =>
     duration: 300,
   }).start()
 
-export const Select = () => {
+export const SelectBreakpoint = ({
+  onChange,
+  waitForAnimation = false,
+  ...props
+}: { onChange?: (value: string) => void; waitForAnimation?: boolean } & ViewProps) => {
   const breakpoints = getBreakpoints()
-  const [size, setLocalSize] = React.useState(getBreakpoint())
-  const position = React.useRef(
+  const [size, setLocalSize] = useState(getBreakpoint())
+  const position = useRef(
     new Animated.Value(
       getPosition(Object.keys(breakpoints).findIndex((current) => current === String(size)))
     )
   ).current
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} {...props}>
       <Animated.View style={[styles.selected, { left: position }]} />
       {Object.keys(breakpoints).map((key, index) => (
         <TouchableOpacity
@@ -58,8 +62,18 @@ export const Select = () => {
           style={styles.item}
           onPress={() => {
             animate(position, getPosition(index))
-            setLocalSize(key)
-            setBreakpoint(key)
+
+            setTimeout(
+              () => {
+                setLocalSize(key)
+                setBreakpoint(key)
+
+                if (onChange) {
+                  onChange(key)
+                }
+              },
+              waitForAnimation ? 300 : 0
+            )
           }}
         >
           <Text style={textStyle(key === size, index)}>{capitalizeFirstLetter(key)}</Text>

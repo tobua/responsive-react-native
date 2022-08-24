@@ -1,8 +1,8 @@
 import { createElement, useState } from 'react'
 import { Dimensions, ViewStyle, TextStyle, View } from 'react-native'
-import type { Scale, Breakpoints } from './types'
+import type { Scale, Breakpoints, Value } from './types'
 
-export { Select } from './Select'
+export { SelectBreakpoint } from './SelectBreakpoint'
 
 const app = {
   get orientation() {
@@ -204,7 +204,7 @@ export const configure = ({
   breakpoints?: Breakpoints
   breakpoint?: string
   scale?: { minimum?: number; maximum?: number; factor?: number }
-  value?: () => number
+  value?: Value
 }) => {
   if (breakpoints) {
     app.breakpoints = breakpoints

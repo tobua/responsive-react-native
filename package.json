@@ -40,10 +40,10 @@
     "flexbox"
   ],
   "devDependencies": {
+    "@react-native-community/eslint-config": "3.1.0",
     "@testing-library/jest-native": "^4.0.11",
     "@testing-library/react-native": "^11.0.0",
-    "@react-native-community/eslint-config": "3.1.0",
-    "@types/jest": "^28.1.7",
+    "@types/jest": "^28.1.8",
     "@types/react": "^18.0.17",
     "@types/react-native": "^0.69.5",
     "@typescript-eslint/eslint-plugin": "^5.34.0",
