@@ -166,3 +166,22 @@ test('Various breakpoints are correctly calculated from width.', () => {
 
   expect(getBreakpoint()).toBe('large')
 })
+
+test('Can scale and support object based responsive values.', () => {
+  setWidth(300)
+
+  const shadowStyles = createStyles({
+    shadow: {
+      shadowRadius: 8,
+      shadowOffset: { width: 5, height: 5 },
+      shadowOpacity: 1,
+      shadowColor: 'black',
+    },
+  })
+
+  expect(shadowStyles.shadow.shadowRadius).toBe(6)
+  expect(shadowStyles.shadow.shadowOpacity).toBe(1)
+  expect(shadowStyles.shadow.shadowColor).toBe('black')
+  expect(shadowStyles.shadow.shadowOffset.width).toBe(4)
+  expect(shadowStyles.shadow.shadowOffset.height).toBe(4)
+})

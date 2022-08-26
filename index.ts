@@ -90,6 +90,8 @@ const sizeProperties: Partial<Record<keyof ViewStyle | keyof TextStyle, true>> =
   letterSpacing: true,
   lineHeight: true,
   width: true,
+  shadowRadius: true,
+  shadowOffset: true,
   textShadowRadius: true,
   height: true,
   borderRadius: true,
@@ -157,6 +159,24 @@ export const Rerender = ({
   return createElement(View, { style, key: count, children: children() })
 }
 
+const createProxy = (target: Record<string, any>) =>
+  new Proxy(target, {
+    get(currentTarget, prop: string): any {
+      const value = currentTarget[prop]
+
+      // Recursively scale nested values like shadowOffset.
+      if (typeof value === 'object') {
+        return createProxy(value)
+      }
+
+      if (!scaleableProperty(prop, value)) {
+        return value
+      }
+
+      return app.value(value, app.breakpoint)
+    },
+  })
+
 export const createStyles = (sheet: Record<string, Record<string, any>>) => {
   if (process.env.NODE_ENV !== 'production' && typeof sheet !== 'object') {
     console.warn('Invalid input provided to createStyles() needs to be an object.')
@@ -178,18 +198,7 @@ export const createStyles = (sheet: Record<string, Record<string, any>>) => {
       return
     }
 
-    sheet[key] = new Proxy(styles, {
-      get(target, prop: string) {
-        const value = target[prop]
-
-        // @ts-ignore
-        if (typeof value !== 'number' || !sizeProperties[prop]) {
-          return value
-        }
-
-        return app.value(value, app.breakpoint)
-      },
-    })
+    sheet[key] = createProxy(styles)
   })
 
   return sheet
