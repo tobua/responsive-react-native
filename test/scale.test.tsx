@@ -9,6 +9,8 @@ const expectValuesForSeveralScales = (
 ) => {
   configure({
     scale: {
+      minimum: 320,
+      maximum: 640,
       factor: 1,
     },
   })
@@ -17,6 +19,8 @@ const expectValuesForSeveralScales = (
 
   configure({
     scale: {
+      minimum: 320,
+      maximum: 640,
       factor: 0.5,
     },
   })
@@ -25,6 +29,8 @@ const expectValuesForSeveralScales = (
 
   configure({
     scale: {
+      minimum: 320,
+      maximum: 640,
       factor: 0,
     },
   })

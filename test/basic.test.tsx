@@ -8,8 +8,12 @@ import {
   rerender,
   getBreakpoint,
   updateBreakpoint,
+  reset,
+  useBreakpoint,
 } from 'responsive-react-native'
 import { setWidth } from './helper/general'
+
+beforeEach(reset)
 
 const styles = createStyles({
   wrapper: { backgroundColor: 'red', margin: 10, flex: 1 },
@@ -184,4 +188,41 @@ test('Can scale and support object based responsive values.', () => {
   expect(shadowStyles.shadow.shadowColor).toBe('black')
   expect(shadowStyles.shadow.shadowOffset.width).toBe(4)
   expect(shadowStyles.shadow.shadowOffset.height).toBe(4)
+})
+
+test('useBreakpoint hook can be used to rerender on breakpoint changes and set breakpoint.', () => {
+  setWidth(420)
+  updateBreakpoint()
+
+  let onBreakpoint = (value: string) => console.log(value)
+
+  const App = () => {
+    const { breakpoint, setBreakpoint: setBreakpointLocal } = useBreakpoint()
+    onBreakpoint = setBreakpointLocal
+    return <Text accessibilityLabel="text">{breakpoint}</Text>
+  }
+
+  render(<App />)
+
+  let text = screen.getByLabelText('text')
+
+  expect(text.children[0]).toBe('medium')
+
+  setWidth(520)
+  updateBreakpoint()
+  act(() => {
+    rerender()
+  })
+
+  text = screen.getByLabelText('text')
+
+  expect(text.children[0]).toBe('large')
+
+  act(() => {
+    onBreakpoint('small')
+  })
+
+  text = screen.getByLabelText('text')
+
+  expect(text.children[0]).toBe('small')
 })

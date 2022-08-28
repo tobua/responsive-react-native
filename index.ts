@@ -1,7 +1,8 @@
-import { createElement, useState } from 'react'
+import { createElement, useEffect, useState } from 'react'
 import { Dimensions, ViewStyle, TextStyle, View } from 'react-native'
 import type { Scale, Breakpoints, Value } from './types'
 
+export { Styled } from './styled'
 export { SelectBreakpoint } from './SelectBreakpoint'
 
 const app = {
@@ -14,6 +15,7 @@ const app = {
   },
   _breakpoints: { small: 360, medium: 420, large: 999 } as Breakpoints,
   _breakpoint: 'small',
+  _breakpointAdapted: false,
   get breakpoints() {
     return this._breakpoints
   },
@@ -28,10 +30,13 @@ const app = {
   },
   scale: {
     minimum: 320,
-    maximum: 640,
+    maximum: 520,
     factor: 0.5,
   } as Scale,
-  rerender: () => {},
+  rerender: () => {
+    updateBreakpoint()
+    app.listener.forEach((listener) => listener())
+  },
   // Calculates a scaled value.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   value: (value: number, breakpoint: string) => {
@@ -64,13 +69,15 @@ const app = {
 
     return match
   },
+  // Rerender listeners to update styled components.
+  listener: [] as (() => void)[],
 }
 
 app.breakpoint = app.updateBreakpoint()
 
 // Rerender on orientation change.
 Dimensions.addEventListener('change', () => {
-  app.updateBreakpoint()
+  updateBreakpoint()
   app.rerender()
 })
 
@@ -131,13 +138,43 @@ const sizeProperties: Partial<Record<keyof ViewStyle | keyof TextStyle, true>> =
 
 export const getBreakpoints = () => app.breakpoints
 export const setBreakpoint = (breakpoint: string) => {
+  app._breakpointAdapted = true
   app.breakpoint = breakpoint
   app.rerender()
 }
 export const getBreakpoint = () => app.breakpoint
 export const getValue = (value: number) => app.value(value, app.breakpoint)
 export const updateBreakpoint = () => {
+  if (!app._breakpointAdapted) {
+    app.breakpoint = app.updateBreakpoint()
+  }
+}
+export const registerListener = (listener: () => void) => app.listener.push(listener)
+export const removeListener = (listener: () => void) => {
+  app.listener = app.listener.filter((item) => item !== listener)
+}
+export const scaleableProperty = (property: string, value: any) =>
+  // @ts-ignore
+  typeof value === 'number' && sizeProperties[property]
+export const useBreakpoint = () => {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const listener = () => setCount(count + 1)
+    registerListener(listener)
+    return () => removeListener(listener)
+  }, [count])
+
+  return { breakpoint: getBreakpoint(), setBreakpoint }
+}
+export const reset = () => {
+  app._breakpointAdapted = false
   app.breakpoint = app.updateBreakpoint()
+  app.scale = {
+    minimum: 320,
+    maximum: 520,
+    factor: 0.5,
+  }
 }
 
 export const rerender = () => app.rerender()
@@ -147,12 +184,13 @@ export const Rerender = ({
   style = { flex: 1, width: '100%' },
 }: {
   children: () => JSX.Element | JSX.Element[]
-  style?: ViewStyle
+  style?: ViewStyle | ViewStyle[]
 }) => {
   const [count, setCount] = useState(0)
 
   app.rerender = () => {
-    app.updateBreakpoint()
+    updateBreakpoint()
+    app.listener.forEach((listener) => listener())
     setCount(count + 1)
   }
 

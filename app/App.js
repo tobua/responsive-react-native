@@ -1,11 +1,13 @@
-import React from 'react'
-import { View, Text, Platform, ScrollView } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, Button } from 'react-native'
 import {
   createStyles,
   Rerender,
   SelectBreakpoint,
   getBreakpoint,
   configure,
+  Styled,
+  useBreakpoint,
 } from 'responsive-react-native'
 import { Cols, Col } from 'react-native-cols'
 
@@ -25,20 +27,15 @@ configure({
   },
 })
 
-const monoFonFamily = Platform.OS === 'ios' ? 'Courier' : 'monospace'
-
 const styles = createStyles({
   screen: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingBottom: 60,
   },
   wrapper: {
     alignSelf: 'stretch',
-    flex: 1,
-    paddingTop: 60,
-    paddingLeft: 20,
-    paddingRight: 20,
   },
   header: {
     flexDirection: 'row',
@@ -63,17 +60,7 @@ const styles = createStyles({
     fontSize: 16,
   },
   spacer: {
-    marginBottom: 20,
-  },
-  codeWrapper: {
-    padding: 5,
-    backgroundColor: '#EFEFEF',
-    borderRadius: 5,
-    borderWidth: 2,
-  },
-  code: {
-    fontSize: 10,
-    fontFamily: monoFonFamily,
+    marginBottom: 10,
   },
   exampleView: {
     padding: 10,
@@ -98,6 +85,10 @@ const styles = createStyles({
     color: 'red',
     fontWeight: 'bold',
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 })
 
 function NestedBreakpoint() {
@@ -114,58 +105,100 @@ const sizeToColsMap = {
   large: 3,
 }
 
-export default function App() {
-  return (
-    <View style={styles.screen}>
-      <Rerender>
-        {() => (
-          <ScrollView style={styles.wrapper}>
-            <View style={styles.header}>
-              <View style={styles.dot} />
-              <Text style={styles.heading}>responsive-react-native</Text>
-            </View>
-            <Text style={[styles.text, styles.spacer]}>
-              This plugin allows you to scale text and any arbitrary sizes according to the size
-              specified.
-            </Text>
-            <NestedBreakpoint />
-            <Text style={[styles.title, styles.spacer]}>Responsive Values</Text>
-            <View style={[styles.codeWrapper, styles.spacer]}>
-              <Text style={styles.code}>{`import { createStyles } from 'responsive-react-native'
-
-const styles = createStyles({
-  view: {
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 10,
-    backgroundColor: 'blue'
-  },
-  text: {
-    fontSize: 16,
-    color: 'white'
-  },
+const Content = Styled('View', {
+  paddingTop: 60,
+  paddingLeft: 20,
+  paddingRight: 20,
 })
 
-export default () => (
-  <View style={styles.view}>
-    <Text style={styles.text}>Hello Responsive World</Text>
-  </View>
-)`}</Text>
-            </View>
-            <View style={styles.exampleView}>
-              <Text style={styles.exampleText}>Hello Responsive World</Text>
-            </View>
-            <Text style={[styles.title, styles.spacer]}>Breakpoint-Based Grid</Text>
-            <Cols cols={sizeToColsMap[getBreakpoint()]}>
-              <Col style={styles.col} />
-              <Col style={styles.col} />
-              <Col style={styles.col} />
-              <Col style={styles.col} />
-              <Col style={styles.col} />
-            </Cols>
-          </ScrollView>
-        )}
-      </Rerender>
+const CustomView = Styled(
+  'View',
+  {
+    width: 40,
+    height: 40,
+    backgroundColor: 'green',
+  },
+  {
+    small: {
+      backgroundColor: 'red',
+    },
+    large: {
+      backgroundColor: 'blue',
+    },
+    highlight: {
+      backgroundColor: 'lightblue',
+    },
+    rounded: {
+      borderRadius: 10,
+    },
+  }
+)
+
+const Hook = () => {
+  const { breakpoint, setBreakpoint } = useBreakpoint()
+
+  return (
+    <View style={styles.row}>
+      <Text>
+        Current breakpoint: <Text style={styles.breakpoint}>{breakpoint}</Text>
+      </Text>
+      <Button title="Set Small" onPress={() => setBreakpoint('small')} />
+    </View>
+  )
+}
+
+export default function App() {
+  const [highlighted, setHighlight] = useState(false)
+  const [rounded, setRounded] = useState(false)
+
+  return (
+    <View style={styles.screen}>
+      <Content>
+        <Rerender style={styles.wrapper}>
+          {() => (
+            <>
+              <View style={styles.header}>
+                <View style={styles.dot} />
+                <Text style={styles.heading}>responsive-react-native</Text>
+              </View>
+              <Text style={[styles.text, styles.spacer]}>
+                This plugin allows you to scale text and any arbitrary sizes according to the size
+                specified.
+              </Text>
+              <NestedBreakpoint />
+              <Text style={[styles.title, styles.spacer]}>Responsive Values</Text>
+              <Text style={styles.spacer}>
+                Regular numeric stylesheet values like padding are automatically scaled.
+              </Text>
+              <View style={styles.exampleView}>
+                <Text style={styles.exampleText}>Hello Responsive World</Text>
+              </View>
+              <Text style={[styles.title, styles.spacer]}>Breakpoint-Based Grid</Text>
+              <Text style={styles.spacer}>
+                During render the current breakpoint can be accessed to render elements accordingly.
+              </Text>
+              <Cols cols={sizeToColsMap[getBreakpoint()]}>
+                <Col style={styles.col} />
+                <Col style={styles.col} />
+                <Col style={styles.col} />
+                <Col style={styles.col} />
+                <Col style={styles.col} />
+              </Cols>
+            </>
+          )}
+        </Rerender>
+        <Text style={[styles.title, styles.spacer]}>Styled-Like Interface</Text>
+        <Text style={styles.spacer}>
+          This interface doesn't require any rerenders and works well to assign props based styles.
+        </Text>
+        <View style={[styles.row, styles.spacer]}>
+          <CustomView highlight={highlighted} rounded={rounded} />
+          <Button title="Highlight" onPress={() => setHighlight(!highlighted)} />
+          <Button title="Round" onPress={() => setRounded(!rounded)} />
+        </View>
+        <Text style={[styles.title, styles.spacer]}>useBreakpoint</Text>
+        <Hook />
+      </Content>
       <SelectBreakpoint />
     </View>
   )

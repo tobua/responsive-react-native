@@ -12,6 +12,7 @@ Unlike web browsers React Native doesn't support media queries to create respons
 - Automatically scales values linearly
 - Supports breakpoints
 - Size calculated based on viewport size or user preference
+- Styled-components like component interface to avoid rerender
 
 ## Installation and Usage
 
@@ -89,6 +90,50 @@ import './refactor-stylesheet' // Import this before any other markup.
 import App from './App'
 
 AppRegistry.registerComponent('responsive-app', () => App)
+```
+
+## Styled Components to Avoid Rerendering
+
+Similar to most CSS-in-JS React approaches known from the web this interface allows you to apply styles to components. When using props or breakpoints as conditional keys the styles will automatically be merged. This approach doesn't require a `<Rerender />` component and only the styles need to be recalculated when the breakpoint or window size changes. Numeric values are automatically scaled responsively.
+
+```jsx
+import { Styled } from 'responsive-react-native'
+
+const CustomView = Styled(
+  'View',
+  {
+    backgroundColor: 'gray',
+    padding: 10,
+  },
+  {
+    large: {
+      backgroundColor: 'blue',
+    },
+    highlight: {
+      backgroundColor: 'red',
+    },
+  }
+)
+
+export default () => <CustomView highlight />
+```
+
+## `useBreakpoint`
+
+This React hook also avoids the need for components to be wrapped in `<Rerender />` and can be handy when dynamically rendering something based on the current breakpoint.
+
+```jsx
+import { useBreakpoint } from 'responsive-react-native'
+
+export default function App() {
+  const { breakpoint, setBreakpoint } = useBreakpoint()
+  return (
+    <View style={{ margin: breakpoint === 'large' ? 0 : 10 }}>
+      <Text>Current breakpoint: {breakpoint}</Text>
+      <Button title="Set Breakpoint to Small" onPress={() => setBreakpoint('small')} />
+    </View>
+  )
+}
 ```
 
 ## Similar Approaches
