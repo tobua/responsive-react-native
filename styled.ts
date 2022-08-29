@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, MutableRefObject } from 'react'
 import * as ReactNative from 'react-native'
 import {
   registerListener,
@@ -7,6 +7,28 @@ import {
   getValue,
   getBreakpoint,
 } from './index'
+
+// @ts-ignore
+let autorun: Function
+
+const importAutorunIfInstalled = async () => {
+  if (typeof jest !== 'undefined') {
+    // @ts-ignore
+    autorun = global.autorun
+    return
+  }
+  try {
+    const mobx = await import('mobx')
+    autorun = mobx.autorun
+  } catch (_) {}
+}
+
+importAutorunIfInstalled()
+
+type BaseStyles = Record<string, any> | (() => Record<string, any>)
+type ConditionalStyles =
+  | Record<string, Record<string, any>>
+  | (() => Record<string, Record<string, any>>)
 
 const responsifyStyles = (styles: Record<string, any>) => {
   Object.keys(styles).forEach((key) => {
@@ -23,10 +45,20 @@ const responsifyStyles = (styles: Record<string, any>) => {
 }
 
 const generateStyles = (
-  baseStyles: Record<string, any>,
-  conditionalStyles: Record<string, Record<string, any>>,
-  props: Record<string, any>
+  baseStyles: BaseStyles,
+  conditionalStyles: ConditionalStyles,
+  props: Record<string, any>,
+  ref: MutableRefObject<any>
 ) => {
+  if (typeof baseStyles === 'function' || typeof conditionalStyles === 'function') {
+    return autoRunStyles(
+      baseStyles as () => Record<string, any>,
+      conditionalStyles as () => Record<string, Record<string, any>>,
+      props,
+      ref
+    )
+  }
+
   const styles = {}
   const breakpoint = getBreakpoint()
 
@@ -45,11 +77,53 @@ const generateStyles = (
   return responsifyStyles(styles)
 }
 
+const autoRunStyles = (
+  baseStyles: () => Record<string, any>,
+  conditionalStyles: () => Record<string, Record<string, any>>,
+  props: Record<string, any>,
+  ref: MutableRefObject<any>
+) => {
+  if (typeof autorun !== 'function') {
+    console.warn(
+      'responsive-react-native: failed to import MobX make sure to install it with "npm i mobx".'
+    )
+  }
+
+  let styles: Record<string, any> | null = null
+
+  autorun(() => {
+    const currentStyles = baseStyles()
+    const currentConditionalStyles =
+      typeof conditionalStyles === 'function' ? conditionalStyles() : conditionalStyles
+    const breakpoint = getBreakpoint()
+
+    if (typeof currentConditionalStyles[breakpoint] === 'object') {
+      Object.assign(currentStyles, currentConditionalStyles[breakpoint])
+    }
+
+    Object.keys(props).forEach((property) => {
+      if (typeof currentConditionalStyles[property] === 'object' && props[property] === true) {
+        Object.assign(currentStyles, currentConditionalStyles[property])
+      }
+    })
+
+    if (styles) {
+      ref.current?.setNativeProps({
+        style: currentStyles,
+      })
+    } else {
+      styles = currentStyles
+    }
+  })
+
+  return styles as unknown as Record<string, any>
+}
+
 // TODO extend existing styled
 export function Styled<T extends Record<string, any>>(
   type: string,
-  baseStyles: Record<string, any>,
-  conditionalStyles: Record<string, Record<string, any>> = {}
+  baseStyles: BaseStyles,
+  conditionalStyles: ConditionalStyles = {}
 ) {
   // @ts-ignore
   const Component = ReactNative[type]
@@ -68,7 +142,7 @@ export function Styled<T extends Record<string, any>>(
     useEffect(() => {
       const listener = () => {
         ref.current?.setNativeProps({
-          style: generateStyles(baseStyles, conditionalStyles, props),
+          style: generateStyles(baseStyles, conditionalStyles, props, ref),
         })
       }
       registerListener(listener)
@@ -78,7 +152,7 @@ export function Styled<T extends Record<string, any>>(
 
     return React.createElement(Component, {
       ...props,
-      style: generateStyles(baseStyles, conditionalStyles, props),
+      style: generateStyles(baseStyles, conditionalStyles, props, ref),
       ref,
     })
   }

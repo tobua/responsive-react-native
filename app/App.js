@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, Dimensions } from 'react-native'
 import {
   createStyles,
   Rerender,
@@ -10,6 +10,7 @@ import {
   useBreakpoint,
 } from 'responsive-react-native'
 import { Cols, Col } from 'react-native-cols'
+import { observable, runInAction } from 'mobx'
 
 configure({
   value: (value, breakpoint) => {
@@ -45,6 +46,9 @@ const styles = createStyles({
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  annotation: {
+    fontSize: 12,
   },
   dot: {
     backgroundColor: 'black',
@@ -93,7 +97,7 @@ const styles = createStyles({
 
 function NestedBreakpoint() {
   return (
-    <Text style={[styles.text, styles.spacer]}>
+    <Text style={[styles.annotation]}>
       Current breakpoint: <Text style={styles.breakpoint}>{getBreakpoint()}</Text>
     </Text>
   )
@@ -147,6 +151,16 @@ const Hook = () => {
   )
 }
 
+const Store = observable({
+  highlight: false,
+})
+
+const ObservableView = Styled('View', () => ({
+  width: 30,
+  height: 30,
+  backgroundColor: Store.highlight ? 'red' : 'blue',
+}))
+
 export default function App() {
   const [highlighted, setHighlight] = useState(false)
   const [rounded, setRounded] = useState(false)
@@ -159,13 +173,20 @@ export default function App() {
             <>
               <View style={styles.header}>
                 <View style={styles.dot} />
-                <Text style={styles.heading}>responsive-react-native</Text>
+                <View styles={styles.row}>
+                  <Text style={styles.heading}>responsive-react-native</Text>
+                  <Text style={styles.annotation}>
+                    Width: {Dimensions.get('screen').width}px Scale:{' '}
+                    {Dimensions.get('screen').scale} FontScale: {Dimensions.get('screen').fontScale}
+                  </Text>
+                  <NestedBreakpoint />
+                </View>
               </View>
               <Text style={[styles.text, styles.spacer]}>
                 This plugin allows you to scale text and any arbitrary sizes according to the size
                 specified.
               </Text>
-              <NestedBreakpoint />
+
               <Text style={[styles.title, styles.spacer]}>Responsive Values</Text>
               <Text style={styles.spacer}>
                 Regular numeric stylesheet values like padding are automatically scaled.
@@ -198,6 +219,22 @@ export default function App() {
         </View>
         <Text style={[styles.title, styles.spacer]}>useBreakpoint</Text>
         <Hook />
+        <Text style={[styles.title, styles.spacer]}>MobX Observable Styles</Text>
+        <Text style={styles.spacer}>
+          When MobX observables are used to generate the styles they will automatically update when
+          the state changes.
+        </Text>
+        <View style={[styles.row, styles.spacer]}>
+          <ObservableView />
+          <Button
+            title="Highlight"
+            onPress={() => {
+              runInAction(() => {
+                Store.highlight = !Store.highlight
+              })
+            }}
+          />
+        </View>
       </Content>
       <SelectBreakpoint />
     </View>

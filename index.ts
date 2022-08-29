@@ -1,5 +1,5 @@
 import { createElement, useEffect, useState } from 'react'
-import { Dimensions, ViewStyle, TextStyle, View } from 'react-native'
+import { Dimensions, ViewStyle, TextStyle, View, StyleProp } from 'react-native'
 import type { Scale, Breakpoints, Value } from './types'
 
 export { Styled } from './styled'
@@ -184,7 +184,7 @@ export const Rerender = ({
   style = { flex: 1, width: '100%' },
 }: {
   children: () => JSX.Element | JSX.Element[]
-  style?: ViewStyle | ViewStyle[]
+  style?: StyleProp<ViewStyle> | StyleProp<ViewStyle>[]
 }) => {
   const [count, setCount] = useState(0)
 

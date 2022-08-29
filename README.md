@@ -118,6 +118,35 @@ const CustomView = Styled(
 export default () => <CustomView highlight />
 ```
 
+## Connect Styles to MobX Observables
+
+When passing a function returning a stylesheet and `mobx` is installed the styles will automatically be updated whenever any state changes.
+
+```jsx
+import { observable } from 'mobx'
+import { Styled } from 'responsive-react-native'
+
+const Store = observable({ highlight: false })
+
+const ObservableView = Styled('View', {
+  backgroundColor: Store.highlight ? 'red' : 'gray',
+})
+
+export default () => (
+  <View>
+    <ObservableView />
+    <Button
+      title="Highlight"
+      onPress={() =>
+        runInAction(() => {
+          Store.highlight = !Store.highlight
+        })
+      }
+    />
+  </View>
+)
+```
+
 ## `useBreakpoint`
 
 This React hook also avoids the need for components to be wrapped in `<Rerender />` and can be handy when dynamically rendering something based on the current breakpoint.

@@ -25,7 +25,7 @@ execSync('npm install $(npm pack .. | tail -1) --legacy-peer-deps', {
 })
 
 // Additional dependency.
-execSync('npm install react-native-cols --legacy-peer-deps', {
+execSync('npm install react-native-cols mobx --legacy-peer-deps', {
   cwd: join(process.cwd(), 'app'),
   stdio: 'inherit',
 })
