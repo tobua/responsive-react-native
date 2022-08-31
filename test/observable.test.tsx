@@ -30,7 +30,7 @@ const ObservableView = Styled(
   })
 )
 
-test('Prop values and changes are propaged to matching styles.', async () => {
+test('Prop values and changes are propaged to matching styles.', () => {
   setWidth(420)
   updateBreakpoint()
 
@@ -68,4 +68,29 @@ test('Prop values and changes are propaged to matching styles.', async () => {
 
   expect(styles.style.backgroundColor).toBe('blue')
   expect(styles.style.paddingLeft).toBe(40)
+})
+
+test('Style method also receives props.', () => {
+  const ObservableWithPropsView = Styled(
+    'View',
+    (props) => ({
+      paddingLeft: props.space,
+      marginLeft: props.space,
+    }),
+    (props) => ({
+      medium: {
+        paddingLeft: props.space * 2,
+      },
+    })
+  )
+
+  setWidth(420)
+  updateBreakpoint()
+
+  render(<ObservableWithPropsView space={20} accessibilityLabel="observable-view" />)
+
+  const view = screen.getByLabelText('observable-view')
+
+  expect(view.props.style.paddingLeft).toBe(40)
+  expect(view.props.style.marginLeft).toBe(20)
 })

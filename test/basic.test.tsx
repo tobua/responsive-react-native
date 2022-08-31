@@ -9,7 +9,7 @@ import {
   getBreakpoint,
   updateBreakpoint,
   reset,
-  useBreakpoint,
+  useResponsive,
 } from 'responsive-react-native'
 import { setWidth } from './helper/general'
 
@@ -190,14 +190,14 @@ test('Can scale and support object based responsive values.', () => {
   expect(shadowStyles.shadow.shadowOffset.height).toBe(4)
 })
 
-test('useBreakpoint hook can be used to rerender on breakpoint changes and set breakpoint.', () => {
+test('useResponsive hook can be used to rerender on breakpoint changes and set breakpoint.', () => {
   setWidth(420)
   updateBreakpoint()
 
   let onBreakpoint = (value: string) => console.log(value)
 
   const App = () => {
-    const { breakpoint, setBreakpoint: setBreakpointLocal } = useBreakpoint()
+    const { breakpoint, setBreakpoint: setBreakpointLocal } = useResponsive()
     onBreakpoint = setBreakpointLocal
     return <Text accessibilityLabel="text">{breakpoint}</Text>
   }
@@ -225,4 +225,31 @@ test('useBreakpoint hook can be used to rerender on breakpoint changes and set b
   text = screen.getByLabelText('text')
 
   expect(text.children[0]).toBe('small')
+})
+
+test('useResponsive hook contains correct orientation.', () => {
+  setWidth(420)
+  updateBreakpoint()
+
+  const App = () => {
+    const { orientation } = useResponsive()
+    return <Text accessibilityLabel="text">{orientation}</Text>
+  }
+
+  render(<App />)
+
+  let text = screen.getByLabelText('text')
+
+  expect(text.children[0]).toBe('portrait')
+
+  // Width > Height
+  setWidth(1000)
+  updateBreakpoint()
+  act(() => {
+    rerender()
+  })
+
+  text = screen.getByLabelText('text')
+
+  expect(text.children[0]).toBe('landscape')
 })

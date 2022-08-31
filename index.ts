@@ -156,7 +156,7 @@ export const removeListener = (listener: () => void) => {
 export const scaleableProperty = (property: string, value: any) =>
   // @ts-ignore
   typeof value === 'number' && sizeProperties[property]
-export const useBreakpoint = () => {
+export const useResponsive = () => {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export const useBreakpoint = () => {
     return () => removeListener(listener)
   }, [count])
 
-  return { breakpoint: getBreakpoint(), setBreakpoint }
+  return { breakpoint: getBreakpoint(), setBreakpoint, orientation: app.orientation }
 }
 export const reset = () => {
   app._breakpointAdapted = false

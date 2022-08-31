@@ -25,10 +25,10 @@ const importAutorunIfInstalled = async () => {
 
 importAutorunIfInstalled()
 
-type BaseStyles = Record<string, any> | (() => Record<string, any>)
+type BaseStyles = Record<string, any> | ((props: any) => Record<string, any>)
 type ConditionalStyles =
   | Record<string, Record<string, any>>
-  | (() => Record<string, Record<string, any>>)
+  | ((props: any) => Record<string, Record<string, any>>)
 
 const responsifyStyles = (styles: Record<string, any>) => {
   Object.keys(styles).forEach((key) => {
@@ -78,8 +78,8 @@ const generateStyles = (
 }
 
 const autoRunStyles = (
-  baseStyles: () => Record<string, any>,
-  conditionalStyles: () => Record<string, Record<string, any>>,
+  baseStyles: (props: any) => Record<string, any>,
+  conditionalStyles: (props: any) => Record<string, Record<string, any>>,
   props: Record<string, any>,
   ref: MutableRefObject<any>
 ) => {
@@ -92,9 +92,9 @@ const autoRunStyles = (
   let styles: Record<string, any> | null = null
 
   autorun(() => {
-    const currentStyles = baseStyles()
+    const currentStyles = baseStyles(props)
     const currentConditionalStyles =
-      typeof conditionalStyles === 'function' ? conditionalStyles() : conditionalStyles
+      typeof conditionalStyles === 'function' ? conditionalStyles(props) : conditionalStyles
     const breakpoint = getBreakpoint()
 
     if (typeof currentConditionalStyles[breakpoint] === 'object') {

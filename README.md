@@ -128,9 +128,9 @@ import { Styled } from 'responsive-react-native'
 
 const Store = observable({ highlight: false })
 
-const ObservableView = Styled('View', {
+const ObservableView = Styled('View', () => ({
   backgroundColor: Store.highlight ? 'red' : 'gray',
-})
+}))
 
 export default () => (
   <View>
@@ -147,15 +147,15 @@ export default () => (
 )
 ```
 
-## `useBreakpoint`
+## `useResponsive`
 
 This React hook also avoids the need for components to be wrapped in `<Rerender />` and can be handy when dynamically rendering something based on the current breakpoint.
 
 ```jsx
-import { useBreakpoint } from 'responsive-react-native'
+import { useResponsive } from 'responsive-react-native'
 
 export default function App() {
-  const { breakpoint, setBreakpoint } = useBreakpoint()
+  const { breakpoint, setBreakpoint, orientation } = useResponsive()
   return (
     <View style={{ margin: breakpoint === 'large' ? 0 : 10 }}>
       <Text>Current breakpoint: {breakpoint}</Text>
@@ -163,6 +163,45 @@ export default function App() {
     </View>
   )
 }
+```
+
+## Configuration
+
+The scaling of responsive values as well as the breakpoints can be configured.
+
+```ts
+import { configure } from 'responsive-react-native'
+
+configure({
+  // Initial breakpoint, default inferred from breakpoint values.
+  breakpoint: 'small',
+  // Available breakpoints, default { small: 360, medium: 420, large: 999 }.
+  breakpoints: {
+    tiny: 300,
+    normal: 600,
+    huge: 800,
+  },
+  // Responsive scaling configuration, default { minimum: 320, maximum: 520, factor: 0.5 }.
+  scale: {
+    minimum: 300,
+    maximum: 600,
+    factor: 1,
+  },
+  // Method used to calculate responsive values, default linear scaling according to "scale" configuration.
+  value: (value: number, breakpoint: string) => {
+    if (breakpoint === 'medium') {
+      return value
+    }
+
+    const halfValue = Math.round(value / 6)
+
+    if (breakpoint === 'small') {
+      return value - halfValue
+    }
+
+    return value + halfValue
+  },
+})
 ```
 
 ## Similar Approaches
