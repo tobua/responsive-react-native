@@ -67,7 +67,7 @@ test('Prop values and changes are propaged to matching styles.', () => {
   styles = setNativePropsMock.mock.calls[1][0]
 
   expect(styles.style.backgroundColor).toBe('blue')
-  expect(styles.style.paddingLeft).toBe(40)
+  expect(styles.style.paddingLeft).toBe(50)
 })
 
 test('Style method also receives props.', () => {

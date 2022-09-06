@@ -7,6 +7,7 @@ import {
   setBreakpoint,
   rerender,
   getBreakpoint,
+  getOrientation,
   updateBreakpoint,
   reset,
   useResponsive,
@@ -252,4 +253,129 @@ test('useResponsive hook contains correct orientation.', () => {
   text = screen.getByLabelText('text')
 
   expect(text.children[0]).toBe('landscape')
+})
+
+test('Selects different values based on current orientation.', () => {
+  setWidth(300)
+
+  expect(getOrientation()).toBe('portrait')
+
+  const orientationStyles = createStyles({
+    orientation: {
+      width: [10, 20],
+    },
+  })
+
+  expect(orientationStyles.orientation.width).toBe(10)
+
+  setWidth(900)
+
+  expect(getOrientation()).toBe('landscape')
+
+  expect(orientationStyles.orientation.width).toBe(20)
+})
+
+test('Selects different values based on current breakpoint.', () => {
+  setWidth(300)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('small')
+
+  const breakpointStyles = createStyles({
+    breakpoint: {
+      width: { small: 10, medium: 20, large: 30 },
+    },
+  })
+
+  expect(breakpointStyles.breakpoint.width).toBe(10)
+
+  setWidth(400)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('medium')
+
+  expect(breakpointStyles.breakpoint.width).toBe(20)
+
+  setWidth(500)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('large')
+
+  expect(breakpointStyles.breakpoint.width).toBe(30)
+})
+
+test('Missing breakpoints default to lower breakpoint.', () => {
+  setWidth(400)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('medium')
+
+  const breakpointStyles = createStyles({
+    breakpoint: {
+      width: { small: 10, large: 30 },
+    },
+  })
+
+  expect(breakpointStyles.breakpoint.width).toBe(10)
+
+  setWidth(500)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('large')
+
+  expect(breakpointStyles.breakpoint.width).toBe(30)
+})
+
+test('Breakpoints and orientation can be combined.', () => {
+  setWidth(400)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('portrait')
+
+  const breakpointStyles = createStyles({
+    breakpoint: {
+      width: { small: [10, 20], large: [30, 60] },
+      height: [{ small: 5, medium: 10 }, { small: 8 }],
+    },
+  })
+
+  expect(breakpointStyles.breakpoint.width).toBe(10)
+  expect(breakpointStyles.breakpoint.height).toBe(10)
+
+  setWidth(900)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('large')
+  expect(getOrientation()).toBe('landscape')
+
+  expect(breakpointStyles.breakpoint.width).toBe(60)
+  expect(breakpointStyles.breakpoint.height).toBe(8)
+})
+
+test('Breakpoints and orientation also work with non-numeric values.', () => {
+  setWidth(400)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('portrait')
+
+  const breakpointStyles = createStyles({
+    breakpoint: {
+      color: { small: ['blue', 'red'], large: ['green', 'yellow'] },
+      backgroundColor: [{ small: 'blue', medium: 'red' }, { small: 'green' }],
+    },
+  })
+
+  expect(breakpointStyles.breakpoint.color).toBe('blue')
+  expect(breakpointStyles.breakpoint.backgroundColor).toBe('red')
+
+  setWidth(900)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('large')
+  expect(getOrientation()).toBe('landscape')
+
+  expect(breakpointStyles.breakpoint.color).toBe('yellow')
+  expect(breakpointStyles.breakpoint.backgroundColor).toBe('green')
 })

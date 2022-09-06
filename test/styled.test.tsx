@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { act, render, screen } from '@testing-library/react-native'
-import { updateBreakpoint, Styled, rerender } from 'responsive-react-native'
-import { setWidth } from './helper/general'
+import {
+  updateBreakpoint,
+  Styled,
+  rerender,
+  getBreakpoint,
+  getOrientation,
+} from 'responsive-react-native'
+import { setWidth, setWidthAndHeight } from './helper/general'
 
 const setNativePropsMock = new View({}).setNativeProps as jest.Mock
 
@@ -181,4 +187,183 @@ test(`Multiple instances of the same Styled component don't affect each other.`,
 
   expect(secondView.props.style.backgroundColor).toBe('green')
   expect(secondView.props.style.paddingLeft).toBe(40)
+})
+
+test('Also supports breakpoint and orientation values.', () => {
+  const NestedView = Styled(
+    'View',
+    {
+      width: { small: [40, 60], large: [80, 100] },
+      height: [{ small: 10, medium: 20 }, { small: 30 }],
+      paddingLeft: [20, 40],
+      backgroundColor: ['green', 'blue'],
+    },
+    {
+      small: {
+        backgroundColor: ['red', 'yellow'],
+      },
+      large: {
+        backgroundColor: ['pink', 'purple'],
+      },
+    }
+  )
+
+  setWidth(420)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('portrait')
+
+  let view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('green')
+  expect(view.props.style.width).toBe(40)
+  expect(view.props.style.height).toBe(20)
+  expect(view.props.style.paddingLeft).toBe(20)
+
+  setWidth(320)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('small')
+  expect(getOrientation()).toBe('portrait')
+
+  view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('red')
+  expect(view.props.style.width).toBe(40)
+  expect(view.props.style.height).toBe(10)
+  expect(view.props.style.paddingLeft).toBe(20)
+
+  setWidth(640)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('large')
+  expect(getOrientation()).toBe('portrait')
+
+  view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('pink')
+  expect(view.props.style.width).toBe(80)
+  expect(view.props.style.height).toBe(20)
+  expect(view.props.style.paddingLeft).toBe(20)
+
+  setWidth(900)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('large')
+  expect(getOrientation()).toBe('landscape')
+
+  view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('purple')
+  expect(view.props.style.width).toBe(100)
+  expect(view.props.style.height).toBe(30)
+  expect(view.props.style.paddingLeft).toBe(40)
+
+  setWidthAndHeight(320, 200)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('small')
+  expect(getOrientation()).toBe('landscape')
+
+  view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('yellow')
+  expect(view.props.style.width).toBe(60)
+  expect(view.props.style.height).toBe(30)
+  expect(view.props.style.paddingLeft).toBe(40)
+
+  setWidthAndHeight(420, 200)
+  updateBreakpoint()
+
+  render(<NestedView accessibilityLabel="nested-view" />)
+
+  expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('landscape')
+
+  view = screen.getByLabelText('nested-view')
+
+  expect(view.props.style.backgroundColor).toBe('blue')
+  expect(view.props.style.width).toBe(60)
+  expect(view.props.style.height).toBe(30)
+  expect(view.props.style.paddingLeft).toBe(40)
+})
+
+test('Nested values also work with props and after rerender.', () => {
+  const CombinedView = Styled(
+    'View',
+    (props) => ({
+      width: props.active ? { small: [40, 60], large: [80, 100] } : { small: 10, medium: [12, 14] },
+      height: props.spaced ? [{ small: 10, medium: 20 }, { small: 30 }] : [40, 50],
+      backgroundColor: ['green', 'blue'],
+    }),
+    (props) => ({
+      small: {
+        backgroundColor: props.spaced ? ['red', 'yellow'] : ['pink', 'purple'],
+      },
+    })
+  )
+
+  setNativePropsMock.mockReset()
+
+  setWidthAndHeight(420, 800)
+  updateBreakpoint()
+
+  let onSpaced = (value: boolean) => console.log(value)
+
+  const App = () => {
+    const [spaced, setSpaced] = useState(false)
+
+    onSpaced = setSpaced
+
+    return <CombinedView active spaced={spaced} accessibilityLabel="combined-view" />
+  }
+
+  render(<App />)
+
+  expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('portrait')
+
+  let view = screen.getByLabelText('combined-view')
+
+  expect(view.props.style.width).toBe(40)
+  expect(view.props.style.height).toBe(40)
+  expect(view.props.style.backgroundColor).toBe('green')
+
+  act(() => {
+    onSpaced(true)
+  })
+
+  view = screen.getByLabelText('combined-view')
+
+  expect(view.props.style.width).toBe(40)
+  expect(view.props.style.height).toBe(20)
+  expect(view.props.style.backgroundColor).toBe('green')
+
+  setWidthAndHeight(320, 200)
+  updateBreakpoint()
+  act(() => {
+    rerender()
+  })
+
+  expect(getBreakpoint()).toBe('small')
+  expect(getOrientation()).toBe('landscape')
+
+  expect(setNativePropsMock.mock.calls.length).toBe(1)
+
+  const styles = setNativePropsMock.mock.calls[0][0]
+
+  expect(styles.style.width).toBe(60)
+  expect(styles.style.height).toBe(30)
+  expect(styles.style.backgroundColor).toBe('yellow')
 })

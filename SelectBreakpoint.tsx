@@ -40,13 +40,20 @@ const animate = (handle: Animated.Value, toValue: number) =>
     duration: 300,
   }).start()
 
+type Props = {
+  onChange?: (value: string) => void
+  initialBreakpoint?: string
+  waitForAnimation?: boolean
+} & ViewProps
+
 export const SelectBreakpoint = ({
   onChange,
   waitForAnimation = false,
+  initialBreakpoint = getBreakpoint(),
   ...props
-}: { onChange?: (value: string) => void; waitForAnimation?: boolean } & ViewProps) => {
+}: Props) => {
   const breakpoints = getBreakpoints()
-  const [size, setLocalSize] = useState(getBreakpoint())
+  const [size, setLocalSize] = useState(initialBreakpoint)
   const position = useRef(
     new Animated.Value(
       getPosition(Object.keys(breakpoints).findIndex((current) => current === String(size)))

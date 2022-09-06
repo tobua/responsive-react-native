@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { View, Text, Button, Dimensions } from 'react-native'
+import { View, Text, Dimensions, TouchableOpacity, Platform } from 'react-native'
 import {
   createStyles,
   Rerender,
   SelectBreakpoint,
   getBreakpoint,
+  getOrientation,
   configure,
   Styled,
-  useBreakpoint,
+  useResponsive,
 } from 'responsive-react-native'
 import { Cols, Col } from 'react-native-cols'
 import { observable, runInAction } from 'mobx'
@@ -33,7 +34,8 @@ const styles = createStyles({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: 60,
+    paddingBottom: 40,
+    paddingTop: 50,
   },
   wrapper: {
     alignSelf: 'stretch',
@@ -61,45 +63,70 @@ const styles = createStyles({
     fontSize: 15,
   },
   text: {
-    fontSize: 16,
+    fontSize: 10,
   },
   spacer: {
-    marginBottom: 10,
+    marginBottom: 6,
   },
   exampleView: {
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 8,
     borderRadius: 10,
-    backgroundColor: 'blue',
+    backgroundColor: 'dodgerblue',
   },
   exampleText: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: 'white',
   },
   col: {
     backgroundColor: 'lightblue',
-    height: 40,
-    borderRadius: 20,
+    height: 30,
+    borderRadius: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   breakpoint: {
     color: 'red',
     fontWeight: 'bold',
   },
+  orientation: {
+    color: ['lightblue', 'dodgerblue'],
+    fontWeight: 'bold',
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  buttonWrapper: {
+    padding: Platform.OS === 'ios' ? 0 : 5,
+    borderRadius: Platform.OS === 'ios' ? 0 : 5,
+    backgroundColor: Platform.OS === 'ios' ? 'white' : '#2196F3',
+    marginLeft: 10,
+  },
+  button: {
+    fontSize: 14,
+    color: Platform.OS === 'ios' ? '#007AFF' : 'white',
+  },
 })
 
 function NestedBreakpoint() {
+  console.log('nested', getOrientation(), styles.orientation.color)
   return (
     <Text style={[styles.annotation]}>
-      Current breakpoint: <Text style={styles.breakpoint}>{getBreakpoint()}</Text>
+      Breakpoint: <Text style={styles.breakpoint}>{getBreakpoint()}</Text> Orientation:{' '}
+      <Text style={styles.orientation}>{getOrientation()}</Text>
     </Text>
+  )
+}
+
+function Button({ onPress, title }) {
+  return (
+    <TouchableOpacity style={styles.buttonWrapper} onPress={onPress}>
+      <Text style={styles.button}>{title}</Text>
+    </TouchableOpacity>
   )
 }
 
@@ -109,28 +136,27 @@ const sizeToColsMap = {
   large: 3,
 }
 
-const Content = Styled('View', {
-  paddingTop: 60,
-  paddingLeft: 20,
-  paddingRight: 20,
+const Content = Styled('ScrollView', {
+  paddingLeft: 15,
+  paddingRight: 15,
 })
 
 const CustomView = Styled(
   'View',
   {
-    width: 40,
+    width: [40, 80],
     height: 40,
-    backgroundColor: 'green',
+    backgroundColor: 'lightblue',
   },
   {
     small: {
-      backgroundColor: 'red',
+      backgroundColor: 'lightskyblue',
     },
     large: {
-      backgroundColor: 'blue',
+      backgroundColor: 'dodgerblue',
     },
     highlight: {
-      backgroundColor: 'lightblue',
+      backgroundColor: 'red',
     },
     rounded: {
       borderRadius: 10,
@@ -139,12 +165,13 @@ const CustomView = Styled(
 )
 
 const Hook = () => {
-  const { breakpoint, setBreakpoint } = useBreakpoint()
+  const { breakpoint, orientation, setBreakpoint } = useResponsive()
 
   return (
-    <View style={styles.row}>
-      <Text>
-        Current breakpoint: <Text style={styles.breakpoint}>{breakpoint}</Text>
+    <View style={[styles.row, styles.spacer]}>
+      <Text style={styles.annotation}>
+        Breakpoint: <Text style={styles.breakpoint}>{breakpoint}</Text> Orientation:{' '}
+        <Text style={styles.orientation}>{orientation}</Text>
       </Text>
       <Button title="Set Small" onPress={() => setBreakpoint('small')} />
     </View>
@@ -156,9 +183,9 @@ const Store = observable({
 })
 
 const ObservableView = Styled('View', () => ({
-  width: 30,
+  width: [30, 60],
   height: 30,
-  backgroundColor: Store.highlight ? 'red' : 'blue',
+  backgroundColor: Store.highlight ? 'red' : 'lightblue',
 }))
 
 export default function App() {
@@ -186,16 +213,15 @@ export default function App() {
                 This plugin allows you to scale text and any arbitrary sizes according to the size
                 specified.
               </Text>
-
               <Text style={[styles.title, styles.spacer]}>Responsive Values</Text>
-              <Text style={styles.spacer}>
+              <Text style={[styles.text, styles.spacer]}>
                 Regular numeric stylesheet values like padding are automatically scaled.
               </Text>
               <View style={styles.exampleView}>
                 <Text style={styles.exampleText}>Hello Responsive World</Text>
               </View>
               <Text style={[styles.title, styles.spacer]}>Breakpoint-Based Grid</Text>
-              <Text style={styles.spacer}>
+              <Text style={[styles.text, styles.spacer]}>
                 During render the current breakpoint can be accessed to render elements accordingly.
               </Text>
               <Cols cols={sizeToColsMap[getBreakpoint()]}>
@@ -209,7 +235,7 @@ export default function App() {
           )}
         </Rerender>
         <Text style={[styles.title, styles.spacer]}>Styled-Like Interface</Text>
-        <Text style={styles.spacer}>
+        <Text style={[styles.text, styles.spacer]}>
           This interface doesn't require any rerenders and works well to assign props based styles.
         </Text>
         <View style={[styles.row, styles.spacer]}>
@@ -217,10 +243,8 @@ export default function App() {
           <Button title="Highlight" onPress={() => setHighlight(!highlighted)} />
           <Button title="Round" onPress={() => setRounded(!rounded)} />
         </View>
-        <Text style={[styles.title, styles.spacer]}>useBreakpoint</Text>
-        <Hook />
         <Text style={[styles.title, styles.spacer]}>MobX Observable Styles</Text>
-        <Text style={styles.spacer}>
+        <Text style={[styles.text, styles.spacer]}>
           When MobX observables are used to generate the styles they will automatically update when
           the state changes.
         </Text>
@@ -235,6 +259,8 @@ export default function App() {
             }}
           />
         </View>
+        <Text style={[styles.title, styles.spacer]}>useResponsive</Text>
+        <Hook />
       </Content>
       <SelectBreakpoint />
     </View>

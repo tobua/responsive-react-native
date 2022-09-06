@@ -47,8 +47,27 @@ export const App = () => (
 Instead of the values just jumping between breakpoints as is usually done this plugin will linearly scale all values automatically.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/tobua/responsive-react-native/main/scale.svg?sanitize=true" alt="Scaled values">
+  <img src="https://raw.githubusercontent.com/tobua/responsive-react-native/main/scale.svg" alt="Scaled values">
 </p>
+
+## Adaptive Values
+
+Similar to breakpoints in CSS values can be customized inline based on the current breakpoint or the orientation. An array `[portrait, landscape]` will pick the appropriate value depending on the orientation while an object `{ small: any, large: any }` will pick the value appropriate for the current breakpoint. If the current breakpoint is missing the nearest one below will be used.
+
+```js
+import { createStyles } from 'responsive-react-native'
+
+const styles = createStyles({
+  view: {
+    backgroundColor: ['blue', 'red'], // => blue in portrait, red in landscape.
+    height: { small: 40, large: 80 }, // => 40 for small and medium breakpoint, 80 on large breakpoint.
+    padding: [
+      { small: 40, medium: 60 },
+      { small: 20, large: 80 },
+    ], // Both approaches can be combined either way.
+  },
+})
+```
 
 ## Rerendering
 

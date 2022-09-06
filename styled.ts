@@ -3,9 +3,9 @@ import * as ReactNative from 'react-native'
 import {
   registerListener,
   removeListener,
-  scaleableProperty,
-  getValue,
+  responsiveProperty,
   getBreakpoint,
+  getOrientation,
 } from './index'
 
 // @ts-ignore
@@ -31,14 +31,8 @@ type ConditionalStyles =
   | ((props: any) => Record<string, Record<string, any>>)
 
 const responsifyStyles = (styles: Record<string, any>) => {
-  Object.keys(styles).forEach((key) => {
-    const value = styles[key]
-    if (typeof value === 'object') {
-      return responsifyStyles(value)
-    }
-    if (scaleableProperty(key, value)) {
-      styles[key] = getValue(value)
-    }
+  Object.keys(styles).forEach((property) => {
+    styles[property] = responsiveProperty(property, styles[property], responsifyStyles)
   })
 
   return styles
@@ -92,7 +86,7 @@ const autoRunStyles = (
   let styles: Record<string, any> | null = null
 
   autorun(() => {
-    const currentStyles = baseStyles(props)
+    let currentStyles = baseStyles(props)
     const currentConditionalStyles =
       typeof conditionalStyles === 'function' ? conditionalStyles(props) : conditionalStyles
     const breakpoint = getBreakpoint()
@@ -106,6 +100,8 @@ const autoRunStyles = (
         Object.assign(currentStyles, currentConditionalStyles[property])
       }
     })
+
+    currentStyles = responsifyStyles(currentStyles)
 
     if (styles) {
       ref.current?.setNativeProps({

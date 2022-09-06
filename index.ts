@@ -143,6 +143,7 @@ export const setBreakpoint = (breakpoint: string) => {
   app.rerender()
 }
 export const getBreakpoint = () => app.breakpoint
+export const getOrientation = () => app.orientation
 export const getValue = (value: number) => app.value(value, app.breakpoint)
 export const updateBreakpoint = () => {
   if (!app._breakpointAdapted) {
@@ -153,9 +154,7 @@ export const registerListener = (listener: () => void) => app.listener.push(list
 export const removeListener = (listener: () => void) => {
   app.listener = app.listener.filter((item) => item !== listener)
 }
-export const scaleableProperty = (property: string, value: any) =>
-  // @ts-ignore
-  typeof value === 'number' && sizeProperties[property]
+
 export const useResponsive = () => {
   const [count, setCount] = useState(0)
 
@@ -197,21 +196,76 @@ export const Rerender = ({
   return createElement(View, { style, key: count, children: children() })
 }
 
+// Does the object contain a breakpoint key?
+const hasBreakpointKey = (value: Record<string, any>) => {
+  return Object.keys(app.breakpoints).some((key) => typeof value[key] !== 'undefined')
+}
+
+const closestBreakpointValue = (value: Record<string, any>) => {
+  const breakpoints = Object.keys(app.breakpoints)
+  const currentBreakpointIndex = breakpoints.findIndex(
+    (current: string) => current === app.breakpoint
+  )
+
+  const applicableBreakpoints = breakpoints.splice(0, currentBreakpointIndex + 1).reverse()
+
+  for (let index = 0; index < applicableBreakpoints.length; index++) {
+    const current = value[applicableBreakpoints[index]]
+    if (typeof current !== 'undefined') {
+      if (Array.isArray(current) && current.length === 2) {
+        return app.orientation === 'portrait' ? current[0] : current[1]
+      }
+      return current
+    }
+  }
+}
+
+export const responsiveProperty = (
+  property: string,
+  value: any,
+  nestingFunction: (value: any) => any
+) => {
+  const valueType = typeof value
+
+  if (valueType === 'string') {
+    return value
+  }
+
+  if (valueType === 'number') {
+    // @ts-ignore
+    if (sizeProperties[property]) {
+      return app.value(value, app.breakpoint)
+    } else {
+      return value
+    }
+  }
+
+  const isArray = Array.isArray(value)
+
+  if (isArray && value.length === 2) {
+    const orientationValue = app.orientation === 'portrait' ? value[0] : value[1]
+    return typeof orientationValue === 'object'
+      ? closestBreakpointValue(orientationValue)
+      : orientationValue
+  }
+
+  if (!isArray && valueType === 'object' && hasBreakpointKey(value)) {
+    return closestBreakpointValue(value)
+  }
+
+  // Recursively scale nested values like shadowOffset.
+  if (typeof value === 'object') {
+    return nestingFunction(value)
+  }
+
+  return value
+}
+
 const createProxy = (target: Record<string, any>) =>
   new Proxy(target, {
     get(currentTarget, prop: string): any {
       const value = currentTarget[prop]
-
-      // Recursively scale nested values like shadowOffset.
-      if (typeof value === 'object') {
-        return createProxy(value)
-      }
-
-      if (!scaleableProperty(prop, value)) {
-        return value
-      }
-
-      return app.value(value, app.breakpoint)
+      return responsiveProperty(prop, value, createProxy)
     },
   })
 
@@ -225,15 +279,6 @@ export const createStyles = (sheet: Record<string, Record<string, any>>) => {
 
     if (process.env.NODE_ENV !== 'production' && typeof styles !== 'object') {
       console.warn(`Invalid input provided to createStyles() property ${key} to be an object.`)
-    }
-
-    // Only create proxy if there are any size properties that will scale.
-    const hasResponsiveProperties = Object.values(styles)
-      .map((value) => typeof value === 'number')
-      .some((value) => value === true)
-
-    if (!hasResponsiveProperties) {
-      return
     }
 
     sheet[key] = createProxy(styles)
