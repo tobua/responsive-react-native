@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, Dimensions, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, Dimensions, TouchableOpacity, Platform, Image } from 'react-native'
 import {
   createStyles,
   Rerender,
@@ -12,6 +12,8 @@ import {
 } from 'responsive-react-native'
 import { Cols, Col } from 'react-native-cols'
 import { observable, runInAction } from 'mobx'
+import logo from './logo.png'
+import { Expandable } from './Expandable'
 
 configure({
   value: (value, breakpoint) => {
@@ -52,12 +54,10 @@ const styles = createStyles({
   annotation: {
     fontSize: 12,
   },
-  dot: {
-    backgroundColor: 'black',
-    width: 40,
-    height: 40,
+  logo: {
+    width: 32,
+    height: 60,
     marginRight: 20,
-    borderRadius: 20,
   },
   subtitle: {
     fontSize: 15,
@@ -75,6 +75,17 @@ const styles = createStyles({
     backgroundColor: 'dodgerblue',
   },
   exampleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  adaptiveView: {
+    padding: { small: 10, medium: 20, large: 30 },
+    marginBottom: 8,
+    borderRadius: 10,
+    backgroundColor: { small: 'lightblue', medium: 'blue', large: 'dodgerblue' },
+  },
+  adaptiveText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
@@ -113,12 +124,27 @@ const styles = createStyles({
 })
 
 function NestedBreakpoint() {
-  console.log('nested', getOrientation(), styles.orientation.color)
   return (
     <Text style={[styles.annotation]}>
       Breakpoint: <Text style={styles.breakpoint}>{getBreakpoint()}</Text> Orientation:{' '}
       <Text style={styles.orientation}>{getOrientation()}</Text>
     </Text>
+  )
+}
+
+function Header() {
+  return (
+    <View style={styles.header}>
+      <Image style={styles.logo} source={logo} />
+      <View styles={styles.row}>
+        <Text style={styles.heading}>responsive-react-native</Text>
+        <Text style={styles.annotation}>
+          Width: {Dimensions.get('screen').width}px Scale: {Dimensions.get('screen').scale}{' '}
+          FontScale: {Dimensions.get('screen').fontScale}
+        </Text>
+        <NestedBreakpoint />
+      </View>
+    </View>
   )
 }
 
@@ -198,69 +224,74 @@ export default function App() {
         <Rerender style={styles.wrapper}>
           {() => (
             <>
-              <View style={styles.header}>
-                <View style={styles.dot} />
-                <View styles={styles.row}>
-                  <Text style={styles.heading}>responsive-react-native</Text>
-                  <Text style={styles.annotation}>
-                    Width: {Dimensions.get('screen').width}px Scale:{' '}
-                    {Dimensions.get('screen').scale} FontScale: {Dimensions.get('screen').fontScale}
-                  </Text>
-                  <NestedBreakpoint />
-                </View>
-              </View>
+              <Header />
               <Text style={[styles.text, styles.spacer]}>
                 This plugin allows you to scale text and any arbitrary sizes according to the size
                 specified.
               </Text>
-              <Text style={[styles.title, styles.spacer]}>Responsive Values</Text>
-              <Text style={[styles.text, styles.spacer]}>
-                Regular numeric stylesheet values like padding are automatically scaled.
-              </Text>
-              <View style={styles.exampleView}>
-                <Text style={styles.exampleText}>Hello Responsive World</Text>
-              </View>
-              <Text style={[styles.title, styles.spacer]}>Breakpoint-Based Grid</Text>
-              <Text style={[styles.text, styles.spacer]}>
-                During render the current breakpoint can be accessed to render elements accordingly.
-              </Text>
-              <Cols cols={sizeToColsMap[getBreakpoint()]}>
-                <Col style={styles.col} />
-                <Col style={styles.col} />
-                <Col style={styles.col} />
-                <Col style={styles.col} />
-                <Col style={styles.col} />
-              </Cols>
+              <Expandable title="Responsive Values" initiallyOpen>
+                <Text style={[styles.text, styles.spacer]}>
+                  Regular numeric stylesheet values like padding are automatically scaled.
+                </Text>
+                <View style={styles.exampleView}>
+                  <Text style={styles.exampleText}>Hello Responsive World</Text>
+                </View>
+              </Expandable>
+              <Expandable title="Adaptive Values">
+                <Text style={[styles.text, styles.spacer]}>
+                  The plugin can pick values based on the current breakpoint and orientation.
+                </Text>
+                <View style={styles.adaptiveView}>
+                  <Text style={styles.adaptiveText}>Hello Adaptive World</Text>
+                </View>
+              </Expandable>
+              <Expandable title="Breakpoint-Based Grid">
+                <Text style={[styles.text, styles.spacer]}>
+                  During render the current breakpoint can be accessed to render elements
+                  accordingly.
+                </Text>
+                <Cols cols={sizeToColsMap[getBreakpoint()]}>
+                  <Col style={styles.col} />
+                  <Col style={styles.col} />
+                  <Col style={styles.col} />
+                  <Col style={styles.col} />
+                  <Col style={styles.col} />
+                </Cols>
+              </Expandable>
             </>
           )}
         </Rerender>
-        <Text style={[styles.title, styles.spacer]}>Styled-Like Interface</Text>
-        <Text style={[styles.text, styles.spacer]}>
-          This interface doesn't require any rerenders and works well to assign props based styles.
-        </Text>
-        <View style={[styles.row, styles.spacer]}>
-          <CustomView highlight={highlighted} rounded={rounded} />
-          <Button title="Highlight" onPress={() => setHighlight(!highlighted)} />
-          <Button title="Round" onPress={() => setRounded(!rounded)} />
-        </View>
-        <Text style={[styles.title, styles.spacer]}>MobX Observable Styles</Text>
-        <Text style={[styles.text, styles.spacer]}>
-          When MobX observables are used to generate the styles they will automatically update when
-          the state changes.
-        </Text>
-        <View style={[styles.row, styles.spacer]}>
-          <ObservableView />
-          <Button
-            title="Highlight"
-            onPress={() => {
-              runInAction(() => {
-                Store.highlight = !Store.highlight
-              })
-            }}
-          />
-        </View>
-        <Text style={[styles.title, styles.spacer]}>useResponsive</Text>
-        <Hook />
+        <Expandable title="Styled-Like Interface">
+          <Text style={[styles.text, styles.spacer]}>
+            This interface doesn't require any rerenders and works well to assign props based
+            styles.
+          </Text>
+          <View style={[styles.row, styles.spacer]}>
+            <CustomView highlight={highlighted} rounded={rounded} />
+            <Button title="Highlight" onPress={() => setHighlight(!highlighted)} />
+            <Button title="Round" onPress={() => setRounded(!rounded)} />
+          </View>
+        </Expandable>
+        <Expandable title="MobX Observable Styles">
+          <Text style={[styles.text, styles.spacer]}>
+            When MobX observables are used to generate the styles they will automatically update
+            when the state changes.
+          </Text>
+          <View style={[styles.row, styles.spacer]}>
+            <ObservableView />
+            <Button
+              title="Highlight"
+              onPress={() => {
+                runInAction(() => {
+                  Store.highlight = !Store.highlight
+                })
+              }}
+            />
+          </View>
+        </Expandable>
+        <Expandable title="useResponsive">
+          <Hook />
+        </Expandable>
       </Content>
       <SelectBreakpoint />
     </View>

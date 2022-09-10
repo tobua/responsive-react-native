@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View } from 'react-native'
+import { View, TouchableHighlight } from 'react-native'
 import { act, render, screen } from '@testing-library/react-native'
 import {
   updateBreakpoint,
@@ -366,4 +366,58 @@ test('Nested values also work with props and after rerender.', () => {
   expect(styles.style.width).toBe(60)
   expect(styles.style.height).toBe(30)
   expect(styles.style.backgroundColor).toBe('yellow')
+})
+
+test('Constructor accepts various input methods for the component type.', () => {
+  const RegularStringView = Styled('View', {})
+
+  expect(typeof (<RegularStringView />)).toBe('object')
+  expect(typeof (<RegularStringView />).type).toBe('function')
+  expect((<RegularStringView test />).props.test).toBe(true)
+
+  const AnimatedNestedView = Styled('Animated.View', {})
+
+  expect(typeof (<AnimatedNestedView />)).toBe('object')
+
+  const ImageView = Styled('Image', {})
+
+  expect(typeof (<ImageView />)).toBe('object')
+
+  const TouchableOpacityView = Styled('TouchableOpacity', {})
+
+  expect(typeof (<TouchableOpacityView />)).toBe('object')
+
+  const TouchableHighlightView = Styled(TouchableHighlight, {})
+
+  expect(typeof (<TouchableHighlightView />)).toBe('object')
+})
+
+test('Styles from regular props are merged in.', () => {
+  const RegularView = Styled('View', {
+    color: 'red',
+  })
+  render(<RegularView accessibilityLabel="regular-view" style={{ backgroundColor: 'blue' }} />)
+
+  let view = screen.getByLabelText('regular-view')
+
+  expect(view.props.style[0].backgroundColor).toBe('blue')
+  expect(view.props.style[1].color).toBe('red')
+
+  render(<RegularView accessibilityLabel="regular-view" style={[{ backgroundColor: 'blue' }]} />)
+
+  view = screen.getByLabelText('regular-view')
+
+  expect(view.props.style[0].backgroundColor).toBe('blue')
+  expect(view.props.style[1].color).toBe('red')
+
+  const AnimatedView = Styled('Animated.View', {
+    color: 'red',
+  })
+  render(<AnimatedView accessibilityLabel="animated-view" style={{ backgroundColor: 'blue' }} />)
+
+  view = screen.getByLabelText('animated-view')
+
+  // Styles properties for animated views are automatically merged.
+  expect(view.props.style.backgroundColor).toBe('blue')
+  expect(view.props.style.color).toBe('red')
 })

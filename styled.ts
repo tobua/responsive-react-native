@@ -1,12 +1,7 @@
 import React, { useRef, useEffect, MutableRefObject } from 'react'
 import * as ReactNative from 'react-native'
-import {
-  registerListener,
-  removeListener,
-  responsiveProperty,
-  getBreakpoint,
-  getOrientation,
-} from './index'
+import { registerListener, removeListener, responsiveProperty, getBreakpoint } from './index'
+import { StyledComponent } from './types'
 
 // @ts-ignore
 let autorun: Function
@@ -42,14 +37,16 @@ const generateStyles = (
   baseStyles: BaseStyles,
   conditionalStyles: ConditionalStyles,
   props: Record<string, any>,
-  ref: MutableRefObject<any>
+  ref: MutableRefObject<any>,
+  isUpdate = false
 ) => {
   if (typeof baseStyles === 'function' || typeof conditionalStyles === 'function') {
     return autoRunStyles(
       baseStyles as () => Record<string, any>,
       conditionalStyles as () => Record<string, Record<string, any>>,
       props,
-      ref
+      ref,
+      isUpdate
     )
   }
 
@@ -68,6 +65,13 @@ const generateStyles = (
     }
   })
 
+  if (!isUpdate && props.style) {
+    if (Array.isArray(props.style)) {
+      return [...props.style, responsifyStyles(styles)]
+    }
+    return [props.style, responsifyStyles(styles)]
+  }
+
   return responsifyStyles(styles)
 }
 
@@ -75,7 +79,8 @@ const autoRunStyles = (
   baseStyles: (props: any) => Record<string, any>,
   conditionalStyles: (props: any) => Record<string, Record<string, any>>,
   props: Record<string, any>,
-  ref: MutableRefObject<any>
+  ref: MutableRefObject<any>,
+  isUpdate: boolean
 ) => {
   if (typeof autorun !== 'function') {
     console.warn(
@@ -103,7 +108,7 @@ const autoRunStyles = (
 
     currentStyles = responsifyStyles(currentStyles)
 
-    if (styles) {
+    if (!isUpdate && styles) {
       ref.current?.setNativeProps({
         style: currentStyles,
       })
@@ -112,17 +117,32 @@ const autoRunStyles = (
     }
   })
 
+  if (props.style) {
+    if (Array.isArray(props.style)) {
+      return [...props.style, styles as unknown as Record<string, any>]
+    }
+    return [props.style, styles as unknown as Record<string, any>]
+  }
+
   return styles as unknown as Record<string, any>
+}
+
+function resolveType(type: StyledComponent, Components: Record<string, any>) {
+  if (typeof type !== 'string' && !Array.isArray(type)) {
+    return type
+  }
+
+  const properties = Array.isArray(type) ? type : type.split('.')
+  return properties.reduce((items, property) => items[property], Components) as any
 }
 
 // TODO extend existing styled
 export function Styled<T extends Record<string, any>>(
-  type: string,
+  type: StyledComponent,
   baseStyles: BaseStyles,
   conditionalStyles: ConditionalStyles = {}
 ) {
-  // @ts-ignore
-  const Component = ReactNative[type]
+  const Component = resolveType(type, ReactNative)
 
   if (typeof Component !== 'object' && typeof Component !== 'function') {
     console.warn(
@@ -138,7 +158,7 @@ export function Styled<T extends Record<string, any>>(
     useEffect(() => {
       const listener = () => {
         ref.current?.setNativeProps({
-          style: generateStyles(baseStyles, conditionalStyles, props, ref),
+          style: generateStyles(baseStyles, conditionalStyles, props, ref, true),
         })
       }
       registerListener(listener)

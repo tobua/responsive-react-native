@@ -201,7 +201,7 @@ const hasBreakpointKey = (value: Record<string, any>) => {
   return Object.keys(app.breakpoints).some((key) => typeof value[key] !== 'undefined')
 }
 
-const closestBreakpointValue = (value: Record<string, any>) => {
+const closestBreakpointValue = (value: Record<string, any>, property: string) => {
   const breakpoints = Object.keys(app.breakpoints)
   const currentBreakpointIndex = breakpoints.findIndex(
     (current: string) => current === app.breakpoint
@@ -212,7 +212,7 @@ const closestBreakpointValue = (value: Record<string, any>) => {
   for (let index = 0; index < applicableBreakpoints.length; index++) {
     const current = value[applicableBreakpoints[index]]
     if (typeof current !== 'undefined') {
-      if (Array.isArray(current) && current.length === 2) {
+      if (Array.isArray(current) && current.length === 2 && property !== 'transform') {
         return app.orientation === 'portrait' ? current[0] : current[1]
       }
       return current
@@ -242,19 +242,19 @@ export const responsiveProperty = (
 
   const isArray = Array.isArray(value)
 
-  if (isArray && value.length === 2) {
+  if (isArray && value.length === 2 && property !== 'transform') {
     const orientationValue = app.orientation === 'portrait' ? value[0] : value[1]
     return typeof orientationValue === 'object'
-      ? closestBreakpointValue(orientationValue)
+      ? closestBreakpointValue(orientationValue, property)
       : orientationValue
   }
 
   if (!isArray && valueType === 'object' && hasBreakpointKey(value)) {
-    return closestBreakpointValue(value)
+    return closestBreakpointValue(value, property)
   }
 
   // Recursively scale nested values like shadowOffset.
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && property !== 'transform') {
     return nestingFunction(value)
   }
 

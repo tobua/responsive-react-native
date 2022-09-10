@@ -379,3 +379,16 @@ test('Breakpoints and orientation also work with non-numeric values.', () => {
   expect(breakpointStyles.breakpoint.color).toBe('yellow')
   expect(breakpointStyles.breakpoint.backgroundColor).toBe('green')
 })
+
+test('Array and object based styles still work as expected.', () => {
+  setWidth(400)
+  updateBreakpoint()
+
+  const breakpointStyles = createStyles({
+    regular: {
+      transform: [{ rotate: '45deg' }],
+    },
+  })
+
+  expect(breakpointStyles.regular.transform).toEqual([{ rotate: '45deg' }])
+})

@@ -50,6 +50,19 @@ Instead of the values just jumping between breakpoints as is usually done this p
   <img src="https://raw.githubusercontent.com/tobua/responsive-react-native/main/scale.svg" alt="Scaled values">
 </p>
 
+```js
+import { createStyles } from 'responsive-react-native'
+
+const styles = createStyles({
+  view: {
+    height: 100, // => 100px for 480px viewport width, 80px for 320px viewport, 120px for 640px viewport.
+    marginHorizontal: 20, // => 20px for 480px viewport width, 16px for 320px viewport, 24px for 640px viewport.
+  },
+})
+```
+
+The viewports as well as the strength of the scaling can be [configured](#configuration) as described below.
+
 ## Adaptive Values
 
 Similar to breakpoints in CSS values can be customized inline based on the current breakpoint or the orientation. An array `[portrait, landscape]` will pick the appropriate value depending on the orientation while an object `{ small: any, large: any }` will pick the value appropriate for the current breakpoint. If the current breakpoint is missing the nearest one below will be used.

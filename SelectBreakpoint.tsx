@@ -42,21 +42,23 @@ const animate = (handle: Animated.Value, toValue: number) =>
 
 type Props = {
   onChange?: (value: string) => void
-  initialBreakpoint?: string
+  breakpoint?: string
   waitForAnimation?: boolean
 } & ViewProps
 
 export const SelectBreakpoint = ({
   onChange,
   waitForAnimation = false,
-  initialBreakpoint = getBreakpoint(),
+  breakpoint = getBreakpoint(),
   ...props
 }: Props) => {
   const breakpoints = getBreakpoints()
-  const [size, setLocalSize] = useState(initialBreakpoint)
+  const [currentBreakpoint, setCurrentBreakpoint] = useState(breakpoint)
   const position = useRef(
     new Animated.Value(
-      getPosition(Object.keys(breakpoints).findIndex((current) => current === String(size)))
+      getPosition(
+        Object.keys(breakpoints).findIndex((current) => current === String(currentBreakpoint))
+      )
     )
   ).current
 
@@ -72,7 +74,7 @@ export const SelectBreakpoint = ({
 
             setTimeout(
               () => {
-                setLocalSize(key)
+                setCurrentBreakpoint(key)
                 setBreakpoint(key)
 
                 if (onChange) {
@@ -83,7 +85,9 @@ export const SelectBreakpoint = ({
             )
           }}
         >
-          <Text style={textStyle(key === size, index)}>{capitalizeFirstLetter(key)}</Text>
+          <Text style={textStyle(key === currentBreakpoint, index)}>
+            {capitalizeFirstLetter(key)}
+          </Text>
         </TouchableOpacity>
       ))}
     </View>
