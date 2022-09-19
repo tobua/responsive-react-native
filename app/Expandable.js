@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { View, Animated, Easing } from 'react-native'
 import { Styled } from 'responsive-react-native'
 
@@ -15,34 +15,31 @@ const Title = Styled('Text', {
 })
 
 const Icon = Styled('Animated.View', {
-  width: 22,
-  height: 10,
+  width: 16,
+  height: 16,
 })
 
 const IconLeft = Styled('View', {
   position: 'absolute',
-  top: 4,
+  top: 0,
   left: 0,
-  width: 14,
+  width: 16,
   height: 3,
   borderRadius: 3,
   backgroundColor: 'black',
-  transform: [{ rotate: '45deg' }],
 })
 
 const IconRight = Styled('View', {
   position: 'absolute',
-  top: 4,
-  right: 0,
-  width: 14,
-  height: 3,
+  top: 0,
+  left: 0,
+  width: 3,
+  height: 16,
   borderRadius: 3,
   backgroundColor: 'black',
-  transform: [{ rotate: '135deg' }],
 })
 
-export function Expandable({ title, children, initiallyOpen = false }) {
-  const [open, setOpen] = useState(initiallyOpen)
+export function Expandable({ title, children, open, onToggle }) {
   const caretSpin = useRef(new Animated.Value(open ? 1 : 0)).current
   const contentOpacity = useRef(new Animated.Value(open ? 1 : 0)).current
   const toggleOpen = useCallback(() => {
@@ -58,12 +55,12 @@ export function Expandable({ title, children, initiallyOpen = false }) {
       easing: Easing.linear,
       useNativeDriver: true,
     }).start()
-    setOpen(!open)
-  }, [open, caretSpin, contentOpacity])
+    onToggle()
+  }, [open, onToggle, caretSpin, contentOpacity])
 
   const spin = caretSpin.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '180deg'],
+    outputRange: ['45deg', '225deg'],
   })
 
   const opacity = contentOpacity.interpolate({

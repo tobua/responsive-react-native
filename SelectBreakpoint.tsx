@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Animated, Easing, ViewProps } from 'react-native'
-import { getBreakpoint, setBreakpoint, getBreakpoints } from './index'
+import { useResponsive, getBreakpoints } from './index'
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -42,25 +42,25 @@ const animate = (handle: Animated.Value, toValue: number) =>
 
 type Props = {
   onChange?: (value: string) => void
-  breakpoint?: string
   waitForAnimation?: boolean
 } & ViewProps
 
-export const SelectBreakpoint = ({
-  onChange,
-  waitForAnimation = false,
-  breakpoint = getBreakpoint(),
-  ...props
-}: Props) => {
+export const SelectBreakpoint = ({ onChange, waitForAnimation = false, ...props }: Props) => {
   const breakpoints = getBreakpoints()
-  const [currentBreakpoint, setCurrentBreakpoint] = useState(breakpoint)
-  const position = useRef(
-    new Animated.Value(
-      getPosition(
-        Object.keys(breakpoints).findIndex((current) => current === String(currentBreakpoint))
-      )
-    )
-  ).current
+  const { breakpoint, setBreakpoint } = useResponsive()
+  const currentIndex = Object.keys(breakpoints).findIndex(
+    (current) => current === String(breakpoint)
+  )
+  const currentPosition = getPosition(currentIndex)
+  const position = useRef(new Animated.Value(currentPosition)).current
+
+  useEffect(() => {
+    // Trigger animation if breakpoint is changed from outside.
+    // @ts-ignore
+    if (position._value !== currentPosition) {
+      animate(position, currentPosition)
+    }
+  }, [breakpoint, currentPosition, position])
 
   return (
     <View style={styles.wrapper} {...props}>
@@ -74,7 +74,6 @@ export const SelectBreakpoint = ({
 
             setTimeout(
               () => {
-                setCurrentBreakpoint(key)
                 setBreakpoint(key)
 
                 if (onChange) {
@@ -85,9 +84,7 @@ export const SelectBreakpoint = ({
             )
           }}
         >
-          <Text style={textStyle(key === currentBreakpoint, index)}>
-            {capitalizeFirstLetter(key)}
-          </Text>
+          <Text style={textStyle(key === breakpoint, index)}>{capitalizeFirstLetter(key)}</Text>
         </TouchableOpacity>
       ))}
     </View>

@@ -236,6 +236,8 @@ configure({
 })
 ```
 
+The `scale.factor` describes the degree to which the values are scaled between the viewports defined. A factor of `1` means that `0.5` times the `value` will be added or subtracted when the minimum or maximum viewport is reached. While very extreme a factor of `2` would lead to zero values at the minimum viewport and double the value at the maximum. The default of `0.5` has proven useful for mobile applications and will scale the value by 25%. This still results in a 50% difference between the minimum and maximum values.
+
 ## Similar Approaches
 
 A previous approach to make mobile applications responsive is to calculate percentages based on the full width of the screen. This approach is used by other responsive plugins for React Native and also used in Swift UI by using `UIScreen.main.bounds.width`. While this approach can certainly work it doesn't feel very intuitive. On the web similar units called `vw` (viewport width, 100vw = 100% viewport) and `vh` (viewport height) exist but are rarely used when compared to breakpoints. The approach taken by this plugin tries to get the best of both world by combining breakpoints and pixel based values. For accessibility purposes users often want to scale the font size system wide which this plugin automatically supports similar to `ScaledMetric` in iOS.

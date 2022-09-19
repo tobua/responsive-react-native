@@ -62,3 +62,11 @@ test("Zero values aren't scaled and negative values are scaled properly.", () =>
   setWidth(320)
   expectValuesForSeveralScales(-10, -5, -7, -10)
 })
+
+test("Values aren't scaled down to 0.", () => {
+  setWidth(320)
+  expectValuesForSeveralScales(0.5, 1, 1, 1)
+
+  setWidth(320)
+  expectValuesForSeveralScales(-0.5, -1, -1, -1)
+})

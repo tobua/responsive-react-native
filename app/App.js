@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, Text, Dimensions, TouchableOpacity, Platform, Image } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { View, Text, Dimensions, Platform, Image } from 'react-native'
 import {
   createStyles,
   Rerender,
@@ -84,6 +84,8 @@ const styles = createStyles({
     marginBottom: 8,
     borderRadius: 10,
     backgroundColor: { small: 'lightblue', medium: 'blue', large: 'dodgerblue' },
+    borderWidth: [3, 6],
+    borderColor: ['blue', 'red'],
   },
   adaptiveText: {
     fontSize: 16,
@@ -110,16 +112,6 @@ const styles = createStyles({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  buttonWrapper: {
-    padding: Platform.OS === 'ios' ? 0 : 5,
-    borderRadius: Platform.OS === 'ios' ? 0 : 5,
-    backgroundColor: Platform.OS === 'ios' ? 'white' : '#2196F3',
-    marginLeft: 10,
-  },
-  button: {
-    fontSize: 14,
-    color: Platform.OS === 'ios' ? '#007AFF' : 'white',
   },
 })
 
@@ -148,11 +140,23 @@ function Header() {
   )
 }
 
+const ButtonWrapper = Styled('TouchableOpacity', {
+  padding: Platform.OS === 'ios' ? 0 : 5,
+  borderRadius: Platform.OS === 'ios' ? 0 : 5,
+  backgroundColor: Platform.OS === 'ios' ? 'white' : '#2196F3',
+  marginLeft: 10,
+})
+
+const ButtonText = Styled('Text', {
+  fontSize: 14,
+  color: Platform.OS === 'ios' ? '#007AFF' : 'white',
+})
+
 function Button({ onPress, title }) {
   return (
-    <TouchableOpacity style={styles.buttonWrapper} onPress={onPress}>
-      <Text style={styles.button}>{title}</Text>
-    </TouchableOpacity>
+    <ButtonWrapper onPress={onPress}>
+      <ButtonText>{title}</ButtonText>
+    </ButtonWrapper>
   )
 }
 
@@ -163,8 +167,9 @@ const sizeToColsMap = {
 }
 
 const Content = Styled('ScrollView', {
-  paddingLeft: 15,
-  paddingRight: 15,
+  paddingLeft: 20,
+  paddingRight: 20,
+  width: '100%',
 })
 
 const CustomView = Styled(
@@ -217,6 +222,17 @@ const ObservableView = Styled('View', () => ({
 export default function App() {
   const [highlighted, setHighlight] = useState(false)
   const [rounded, setRounded] = useState(false)
+  const [openExpandable, setOpenExpandable] = useState([1, 2])
+  const toggleExpandable = useCallback(
+    (key) => {
+      if (openExpandable.includes(key)) {
+        setOpenExpandable(openExpandable.filter((item) => item !== key))
+      } else {
+        setOpenExpandable([...openExpandable, key])
+      }
+    },
+    [openExpandable, setOpenExpandable]
+  )
 
   return (
     <View style={styles.screen}>
@@ -229,7 +245,11 @@ export default function App() {
                 This plugin allows you to scale text and any arbitrary sizes according to the size
                 specified.
               </Text>
-              <Expandable title="Responsive Values" initiallyOpen>
+              <Expandable
+                title="Responsive Values"
+                open={openExpandable.includes(1)}
+                onToggle={() => toggleExpandable(1)}
+              >
                 <Text style={[styles.text, styles.spacer]}>
                   Regular numeric stylesheet values like padding are automatically scaled.
                 </Text>
@@ -237,7 +257,11 @@ export default function App() {
                   <Text style={styles.exampleText}>Hello Responsive World</Text>
                 </View>
               </Expandable>
-              <Expandable title="Adaptive Values">
+              <Expandable
+                title="Adaptive Values"
+                open={openExpandable.includes(2)}
+                onToggle={() => toggleExpandable(2)}
+              >
                 <Text style={[styles.text, styles.spacer]}>
                   The plugin can pick values based on the current breakpoint and orientation.
                 </Text>
@@ -245,7 +269,11 @@ export default function App() {
                   <Text style={styles.adaptiveText}>Hello Adaptive World</Text>
                 </View>
               </Expandable>
-              <Expandable title="Breakpoint-Based Grid">
+              <Expandable
+                title="Breakpoint-Based Grid"
+                open={openExpandable.includes(3)}
+                onToggle={() => toggleExpandable(3)}
+              >
                 <Text style={[styles.text, styles.spacer]}>
                   During render the current breakpoint can be accessed to render elements
                   accordingly.
@@ -261,7 +289,11 @@ export default function App() {
             </>
           )}
         </Rerender>
-        <Expandable title="Styled-Like Interface">
+        <Expandable
+          title="Styled-Like Interface"
+          open={openExpandable.includes(4)}
+          onToggle={() => toggleExpandable(4)}
+        >
           <Text style={[styles.text, styles.spacer]}>
             This interface doesn't require any rerenders and works well to assign props based
             styles.
@@ -272,7 +304,11 @@ export default function App() {
             <Button title="Round" onPress={() => setRounded(!rounded)} />
           </View>
         </Expandable>
-        <Expandable title="MobX Observable Styles">
+        <Expandable
+          title="MobX Observable Styles"
+          open={openExpandable.includes(5)}
+          onToggle={() => toggleExpandable(5)}
+        >
           <Text style={[styles.text, styles.spacer]}>
             When MobX observables are used to generate the styles they will automatically update
             when the state changes.
@@ -289,7 +325,11 @@ export default function App() {
             />
           </View>
         </Expandable>
-        <Expandable title="useResponsive">
+        <Expandable
+          title="useResponsive"
+          open={openExpandable.includes(6)}
+          onToggle={() => toggleExpandable(6)}
+        >
           <Hook />
         </Expandable>
       </Content>

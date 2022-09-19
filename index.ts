@@ -1,6 +1,7 @@
 import { createElement, useEffect, useState } from 'react'
 import { Dimensions, ViewStyle, TextStyle, View, StyleProp } from 'react-native'
 import type { Scale, Breakpoints, Value } from './types'
+import { avoidZero } from './helper'
 
 export { Styled } from './styled'
 export { SelectBreakpoint } from './SelectBreakpoint'
@@ -40,8 +41,12 @@ const app = {
   // Calculates a scaled value.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   value: (value: number, breakpoint: string) => {
+    if (value === 0) {
+      return 0
+    }
+
     if (app.width <= app.scale.minimum) {
-      return Math.round(value - app.scale.factor * (value / 2))
+      return avoidZero(Math.round(value - app.scale.factor * (value / 2)), value)
     }
 
     if (app.width >= app.scale.maximum) {
@@ -50,8 +55,9 @@ const app = {
 
     const percentage = (app.width - app.scale.minimum) / (app.scale.maximum - app.scale.minimum)
 
-    return Math.round(
-      value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value
+    return avoidZero(
+      Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value),
+      value
     )
   },
   // Updates the current breakpoint depending on window width.
