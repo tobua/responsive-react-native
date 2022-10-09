@@ -1,0 +1,25 @@
+{
+  "name": "responsive-react-native-documentation",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@codesandbox/sandpack-react": "^1.14.2",
+    "@stitches/react": "^1.2.8",
+    "next": "12.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-select": "^5.4.0",
+    "wasser": "^2.2.1"
+  },
+  "devDependencies": {
+    "eslint": "8.25.0",
+    "eslint-config-next": "12.3.1"
+  },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
+  }
+}

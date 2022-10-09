@@ -1,0 +1,38 @@
+export const deviceSizes = {
+  iphone14: {
+    id: 'iphone14',
+    name: 'iPhone 14',
+    width: 1170,
+    height: 2532,
+    size: 6.1,
+    ppi: 460,
+    scale: 3,
+  },
+  iphone14plus: {
+    id: 'iphone14plus',
+    name: 'iPhone 14 Plus',
+    width: 1284,
+    height: 2778,
+    size: 6.7,
+    ppi: 458,
+    scale: 3,
+  },
+  iphone14pro: {
+    id: 'iphone14pro',
+    name: 'iPhone 14 Pro',
+    width: 1179,
+    height: 2556,
+    size: 6.1,
+    ppi: 460,
+    scale: 3,
+  },
+  iphone14promax: {
+    id: 'iphone14promax',
+    name: 'iPhone 14 Pro Max',
+    width: 1290,
+    height: 2796,
+    size: 6.7,
+    ppi: 460,
+    scale: 3,
+  },
+}
