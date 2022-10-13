@@ -126,7 +126,7 @@ AppRegistry.registerComponent('responsive-app', () => App)
 
 ## Styled Components to Avoid Rerendering
 
-Similar to most CSS-in-JS React approaches known from the web this interface allows you to apply styles to components. When using props or breakpoints as conditional keys the styles will automatically be merged. This approach doesn't require a `<Rerender />` component and only the styles need to be recalculated when the breakpoint or window size changes. Numeric values are automatically scaled responsively.
+Similar to most CSS-in-JS React approaches known from the web this interface allows you to apply styles to components. When using props, breakpoints or the platform as conditional keys the styles will automatically be merged. This approach doesn't require a `<Rerender />` component and only the styles need to be recalculated when the breakpoint or window size changes. Numeric values are automatically scaled responsively.
 
 ```jsx
 import { Styled } from 'responsive-react-native'
@@ -138,11 +138,17 @@ const CustomView = Styled(
     padding: 10,
   },
   {
+    // Truthy prop.
+    highlight: {
+      backgroundColor: 'red',
+    },
+    // Current breakpoint.
     large: {
       backgroundColor: 'blue',
     },
-    highlight: {
-      backgroundColor: 'red',
+    // Current OS.
+    ios: {
+      padding: 5,
     },
   }
 )

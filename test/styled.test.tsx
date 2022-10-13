@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableHighlight } from 'react-native'
+import { View, TouchableHighlight, Platform } from 'react-native'
 import { act, render, screen } from '@testing-library/react-native'
 import {
   updateBreakpoint,
@@ -32,6 +32,12 @@ const CustomView = Styled(
     },
     spaced: {
       paddingLeft: 40,
+    },
+    ios: {
+      margin: 5,
+    },
+    android: {
+      margin: 15,
     },
   }
 )
@@ -420,4 +426,25 @@ test('Styles from regular props are merged in.', () => {
   // Styles properties for animated views are automatically merged.
   expect(view.props.style.backgroundColor).toBe('blue')
   expect(view.props.style.color).toBe('red')
+})
+
+test('OS specific conditional styles can be used.', () => {
+  setWidth(420)
+  updateBreakpoint()
+
+  render(<CustomView accessibilityLabel="custom-view" />)
+
+  let view = screen.getByLabelText('custom-view')
+
+  expect(view.props.style.margin).toBe(5)
+
+  Platform.OS = 'android'
+
+  render(<CustomView accessibilityLabel="custom-view" />)
+
+  view = screen.getByLabelText('custom-view')
+
+  expect(view.props.style.margin).toBe(15)
+
+  Platform.OS = 'ios'
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import { render, screen, act } from '@testing-library/react-native'
 import {
   createStyles,
@@ -391,4 +391,32 @@ test('Array and object based styles still work as expected.', () => {
   })
 
   expect(breakpointStyles.regular.transform).toEqual([{ rotate: '45deg' }])
+})
+
+test('Selects different values based on current platform.', () => {
+  setWidth(300)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('small')
+
+  const breakpointStyles = createStyles({
+    breakpoint: {
+      width: { android: 10, ios: 20 },
+    },
+  })
+
+  expect(breakpointStyles.breakpoint.width).toBe(15)
+
+  setWidth(420)
+  updateBreakpoint()
+
+  expect(getBreakpoint()).toBe('medium')
+
+  expect(breakpointStyles.breakpoint.width).toBe(20)
+
+  Platform.OS = 'android'
+
+  expect(breakpointStyles.breakpoint.width).toBe(10)
+
+  Platform.OS = 'ios'
 })

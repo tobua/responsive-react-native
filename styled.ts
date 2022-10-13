@@ -59,6 +59,10 @@ const generateStyles = (
     Object.assign(styles, conditionalStyles[breakpoint])
   }
 
+  if (typeof conditionalStyles[ReactNative.Platform.OS] === 'object') {
+    Object.assign(styles, conditionalStyles[ReactNative.Platform.OS])
+  }
+
   Object.keys(props).forEach((property) => {
     if (typeof conditionalStyles[property] === 'object' && props[property] === true) {
       Object.assign(styles, conditionalStyles[property])
@@ -98,6 +102,10 @@ const autoRunStyles = (
 
     if (typeof currentConditionalStyles[breakpoint] === 'object') {
       Object.assign(currentStyles, currentConditionalStyles[breakpoint])
+    }
+
+    if (typeof currentConditionalStyles[ReactNative.Platform.OS] === 'object') {
+      Object.assign(currentStyles, currentConditionalStyles[ReactNative.Platform.OS])
     }
 
     Object.keys(props).forEach((property) => {

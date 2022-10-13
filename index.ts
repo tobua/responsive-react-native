@@ -1,5 +1,5 @@
 import { createElement, useEffect, useState } from 'react'
-import { Dimensions, ViewStyle, TextStyle, View, StyleProp } from 'react-native'
+import { Dimensions, ViewStyle, TextStyle, View, StyleProp, Platform } from 'react-native'
 import type { Scale, Breakpoints, Value } from './types'
 import { avoidZero } from './helper'
 
@@ -207,6 +207,10 @@ const hasBreakpointKey = (value: Record<string, any>) => {
   return Object.keys(app.breakpoints).some((key) => typeof value[key] !== 'undefined')
 }
 
+const hasPlatformKey = (value: Record<string, any>) => {
+  return typeof value.ios !== 'undefined' || typeof value.android !== 'undefined'
+}
+
 const closestBreakpointValue = (value: Record<string, any>, property: string) => {
   const breakpoints = Object.keys(app.breakpoints)
   const currentBreakpointIndex = breakpoints.findIndex(
@@ -257,6 +261,10 @@ export const responsiveProperty = (
 
   if (!isArray && valueType === 'object' && hasBreakpointKey(value)) {
     return closestBreakpointValue(value, property)
+  }
+
+  if (!isArray && valueType === 'object' && hasPlatformKey(value)) {
+    return app.value(value[Platform.OS], app.breakpoint)
   }
 
   // Recursively scale nested values like shadowOffset.
