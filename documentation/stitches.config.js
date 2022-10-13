@@ -6,6 +6,8 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       color: {
         gray: 'lightgray',
         white: 'white',
+        highlight: '#82D9FF',
+        interact: '#FF85FA',
       },
       space: {
         small: '10px',

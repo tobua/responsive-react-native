@@ -40,6 +40,7 @@ export const Buttons = () => {
         Getting Started
       </Button>
       <Button href="https://github.com/tobua/responsive-react-native">GitHub</Button>
+      <Button href="#styled">↓ Styled API</Button>
     </Wrapper>
   )
 }

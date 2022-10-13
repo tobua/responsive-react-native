@@ -123,6 +123,27 @@ export default function App() {
               value={{ value: phone.id, label: phone.name }}
               onChange={(selected) => setPhone(deviceSizes[selected.value])}
               options={options}
+              styles={{
+                container: (provided) => ({
+                  ...provided,
+                  marginBottom: 20,
+                  outline: 'none',
+                  borderColor: 'initial',
+                  zIndex: 999,
+                }),
+                // var(--sp-colors-surface2)
+                control: (provided) => ({
+                  ...provided,
+                  borderColor: 'var(--sp-colors-surface2)',
+                }),
+                indicatorSeparator: () => ({
+                  display: 'none',
+                }),
+                indicatorContainer: (provided) => ({
+                  ...provided,
+                  color: 'red',
+                }),
+              }}
             />
             <Phone>
               <PhoneInner>

@@ -1,10 +1,18 @@
 import Head from 'next/head'
-import { SandpackProvider, SandpackCodeViewer } from '@codesandbox/sandpack-react'
 import { styled, theme } from '../stitches.config'
 import { Footer } from '../markup/Footer'
 import { Repl } from '../markup/Repl'
 import { Features } from '../markup/Features'
 import { Buttons } from '../markup/Buttons'
+import {
+  ResponsiveStyleSheet,
+  ScaledValues,
+  AdaptiveValues,
+  Breakpoints,
+} from '../markup/FeatureBig'
+import { Center, Content } from '../markup/General'
+import { Code } from '../markup/Code'
+import { StyledIntro } from '../markup/StyledIntro'
 
 const Intro = styled('div', {
   position: 'relative',
@@ -19,28 +27,6 @@ const IntroBackground = styled('main', {
   background: `linear-gradient(#FF85FA, #82D9FF)`,
   height: '100vh',
   paddingTop: theme.space.medium,
-})
-
-const Center = styled('div', {
-  display: 'flex',
-  justifyContent: 'center',
-})
-
-const Content = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  flex: 1,
-  height: '100%',
-  maxWidth: 1000,
-  paddingLeft: theme.space.medium,
-  paddingRight: theme.space.medium,
-  variants: {
-    size: {
-      wide: {
-        maxWidth: 1200,
-      },
-    },
-  },
 })
 
 const SkewedSeparator = styled('div', {
@@ -87,11 +73,7 @@ export default function Home() {
           <IntroGrid>
             <Title>Out-of-the-box Responsive StyleSheets for React Native.</Title>
             <Features />
-            <SandpackProvider
-              style={{ flexBasis: '50%' }}
-              template="react"
-              files={{
-                '/App.js': `import { createStyles } from 'responsive-react-native'
+            <Code>{`import { createStyles } from 'responsive-react-native'
 
 const styles = createStyles({
   view: {
@@ -109,11 +91,7 @@ export default () => (
   <View style={styles.view}>
     <Text style={styels.text}>Hello Responsive</Text>
   </View>
-)`,
-              }}
-            >
-              <SandpackCodeViewer />
-            </SandpackProvider>
+)`}</Code>
             <Buttons />
           </IntroGrid>
         </IntroBackground>
@@ -124,6 +102,11 @@ export default () => (
           <Repl />
         </Content>
       </Center>
+      <ResponsiveStyleSheet />
+      <ScaledValues />
+      <AdaptiveValues />
+      <Breakpoints />
+      <StyledIntro />
       <Center>
         <Content>
           <Footer />
