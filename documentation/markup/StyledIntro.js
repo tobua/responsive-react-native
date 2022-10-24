@@ -1,7 +1,8 @@
 import { styled, theme } from '../stitches.config'
 import { Center, Content } from './General'
+import { Code } from './Code'
 
-const Title = styled('div', {
+const Title = styled('h1', {
   fontSize: 50,
   fontWeight: 'bold',
   fontFamily: 'serif',
@@ -17,6 +18,19 @@ const Description = styled('div', {
   paddingLeft: '20%',
   paddingRight: '20%',
   textAlign: 'center',
+  marginBottom: theme.space.large,
+})
+
+const SubTitle = styled('h2', {
+  fontSize: 24,
+  fontWeight: 'bold',
+  fontFamily: 'sans-serif',
+  marginBottom: 0,
+})
+
+const DescriptionSmall = styled('p', {
+  fontFamily: 'sans-serif',
+  marginBottom: theme.space.medium,
 })
 
 export const StyledIntro = () => (
@@ -30,6 +44,50 @@ export const StyledIntro = () => (
         especially <strong>removes the need for any rerenders</strong> when the styles should
         change.
       </Description>
+      <Code backgroundColor="black" theme="dark">{`import { Styled } from 'responsive-react-native'
+
+const CustomView = Styled(
+  'View',
+  {
+    backgroundColor: 'gray',
+    padding: 10,
+  },
+  {
+    // Truthy prop.
+    highlight: {
+      backgroundColor: 'red',
+    }
+  }
+)
+
+export default () => <CustomView highlight />`}</Code>
+      <SubTitle>Observable Styles with MobX</SubTitle>
+      <DescriptionSmall>
+        When a function is passed and MobX is installed the styles will automatically adapt whenever
+        any of the state accessed inside changes.
+      </DescriptionSmall>
+      <Code backgroundColor="black" theme="dark">{`import { observable } from 'mobx'
+import { Styled } from 'responsive-react-native'
+
+const Store = observable({ highlight: false })
+
+const ObservableView = Styled('View', () => ({
+  backgroundColor: Store.highlight ? 'red' : 'gray',
+}))
+
+export default () => (
+  <View>
+    <ObservableView />
+    <Button
+      title="Highlight"
+      onPress={() =>
+        runInAction(() => {
+          Store.highlight = !Store.highlight
+        })
+      }
+    />
+  </View>
+)`}</Code>
     </Content>
   </Center>
 )

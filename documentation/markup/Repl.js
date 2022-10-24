@@ -6,8 +6,9 @@ import {
   SandpackPreview,
 } from '@codesandbox/sandpack-react'
 import Select from 'react-select'
-import { deviceSizes } from '../helper/devices'
+import { deviceSizes } from 'device-sizes'
 import { styled, theme } from '../stitches.config'
+import { PhoneCutout } from './PhoneCutout'
 
 const Wrapper = styled('section', {
   display: 'flex',
@@ -34,6 +35,7 @@ const Phone = styled('div', {
 })
 
 const PhoneInner = styled('div', {
+  position: 'relative',
   borderRadius: 5,
   background: 'white',
   height: '100%',
@@ -147,6 +149,7 @@ export default function App() {
             />
             <Phone>
               <PhoneInner>
+                <PhoneCutout type={phone.camera} />
                 <SandpackPreview />
               </PhoneInner>
             </Phone>
