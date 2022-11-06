@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { styled, theme } from '../stitches.config'
 import { Footer } from '../markup/Footer'
-import { Code } from '../markup/Code'
 import { Layout } from '../markup/Layout'
+import { Code } from '../markup/Code'
 
 const Center = styled('div', {
   display: 'flex',
@@ -30,13 +30,13 @@ const Title = styled('h2', {
   fontFamily: 'sans-serif',
 })
 
-export default function GettingStarted() {
+export default function Styled() {
   return (
     <>
       <Head>
-        <title>Getting Started - Responsive React Native</title>
+        <title>Styled Interface - Responsive React Native</title>
       </Head>
-      <Layout>Getting Started</Layout>
+      <Layout>Styled Interface</Layout>
       <Center>
         <Content>
           <Title>Installation</Title>

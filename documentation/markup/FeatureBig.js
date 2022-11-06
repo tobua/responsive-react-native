@@ -130,7 +130,9 @@ export default () => <View style={styles.view} />`}</Code>
             <Description>
               Any size property will be linearly scaled depending on the current viewport size.
             </Description>
-            <Image width="100%" height="300px" src="/scale.svg" />
+            <div style={{ height: 300, position: 'relative' }}>
+              <Image fill src="/scale.svg" alt="Illustration of responsive scaling." />
+            </div>
           </Right>
         </Grid>
       </Content>

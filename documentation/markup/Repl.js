@@ -13,7 +13,7 @@ import { PhoneCutout } from './PhoneCutout'
 const Wrapper = styled('section', {
   display: 'flex',
   alignItems: 'center',
-  height: '80vh',
+  marginBottom: theme.space.huge,
 })
 
 const EditorWrapper = styled('div', {
@@ -31,7 +31,6 @@ const Phone = styled('div', {
   border: '10px solid black',
   background: 'black',
   borderRadius: 10,
-  height: 600,
 })
 
 const PhoneInner = styled('div', {
@@ -40,6 +39,7 @@ const PhoneInner = styled('div', {
   background: 'white',
   height: '100%',
   padding: theme.space.small,
+  paddingTop: theme.space.large,
 })
 
 const Label = styled('p', {
@@ -65,12 +65,14 @@ const options = Object.keys(deviceSizes).map((key) => ({
 
 export const Repl = () => {
   const [phone, setPhone] = useState(deviceSizes['iphone14'])
+
   return (
     <Wrapper>
       <style>{`.sp-wrapper { width: 100%; }
 .sp-layout { background-color: initial; border: initial; width: 100%; }
 .sp-editor { border: 1px solid var(--sp-colors-surface2); border-radius: 5px; }
 .sp-tabs { background: initial; }
+.sp-stack { max-height: 500px; }
 .sp-code-editor { background: initial; }
 .cm-editor { background-color: initial !important; }
 .sp-preview { height: 100%; background-color: initial; }
@@ -83,24 +85,45 @@ import { createStyles } from 'responsive-react-native'
 import { Scale } from './scale.js'
 
 const styles = createStyles({
-  view: {
-    backgroundColor: 'red',
-    width: 200,
-    height: 100,
-    padding: 10
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   title: {
-    fontSize: 20
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  box: {
+    display: 'inline-flex',
+    padding: 10,
+    backgroundColor: 'lightgray'
+  },
+  smallBox: {
+    width: 100,
+    height: 100
+  },
+  largeBox: {
+    width: 150,
+    height: 150
   }
 })
 
 export default function App() {
   return (
     <View>
-      <Text style={styles.title}>Hello World</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>My Responsive App</Text>
+        <Text>👤</Text>
+      </View>
       <Scale />
-      <View style={styles.view}>
-        <Text>hello</Text>
+      <View>
+      <View style={[styles.box, styles.smallBox]}>
+        <Text>100x100</Text>
+      </View>
+      <View style={[styles.box, styles.largeBox]}>
+        <Text>150x150</Text>
+      </View>
       </View>
     </View>
   )
@@ -147,7 +170,12 @@ export default function App() {
                 }),
               }}
             />
-            <Phone>
+            <Phone
+              css={{
+                width: phone.width / phone.scale,
+                height: phone.height / phone.scale,
+              }}
+            >
               <PhoneInner>
                 <PhoneCutout type={phone.camera} />
                 <SandpackPreview />

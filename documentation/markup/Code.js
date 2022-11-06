@@ -1,14 +1,18 @@
 import { SandpackProvider, SandpackCodeViewer } from '@codesandbox/sandpack-react'
+import { Indicate } from 'indicate'
 
 export const Code = ({ children, backgroundColor = 'white', theme = 'light' }) => (
-  <SandpackProvider
-    style={{ flexBasis: '50%' }}
-    template="react"
-    files={{
-      '/App.js': children,
-    }}
-    theme={theme}
-  >
-    <SandpackCodeViewer style={{ backgroundColor }} />
-  </SandpackProvider>
+  <Indicate horizontal theme={{ innerWrapper: { display: 'flex' } }}>
+    <SandpackProvider
+      template="react"
+      files={{
+        '/App.js': children,
+      }}
+      theme={theme}
+    >
+      <span style={{ '--sp-colors-surface1': backgroundColor }}>
+        <SandpackCodeViewer />
+      </span>
+    </SandpackProvider>
+  </Indicate>
 )

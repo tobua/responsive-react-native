@@ -1,4 +1,5 @@
-import { styled, theme } from '../stitches.config'
+import { Camera } from 'device-sizes'
+import { styled } from '../stitches.config'
 
 const Wrapper = styled('div', {
   position: 'absolute',
@@ -12,20 +13,23 @@ const Wrapper = styled('div', {
   height: 30,
   variants: {
     position: {
-      left: {
+      [Camera.Left]: {
         justifyContent: 'flex-start',
       },
-      right: {
+      [Camera.Right]: {
         justifyContent: 'flex-end',
       },
       top: {
         alignItems: 'flex-start',
       },
+      center: {
+        alignItems: 'center',
+      },
     },
   },
 })
 
-const Camera = styled('div', {
+const Cutout = styled('div', {
   width: 10,
   height: 10,
   backgroundColor: 'black',
@@ -40,8 +44,15 @@ const Notch = styled('div', {
   borderBottomRightRadius: 10,
 })
 
+const DynamicIsland = styled('div', {
+  width: '20%',
+  height: '60%',
+  backgroundColor: 'black',
+  borderRadius: 10,
+})
+
 export const PhoneCutout = ({ type }) => {
-  if (type === 'notch') {
+  if (type === Camera.Notch) {
     return (
       <Wrapper position="top">
         <Notch />
@@ -49,9 +60,17 @@ export const PhoneCutout = ({ type }) => {
     )
   }
 
+  if (type === Camera.DynamicIsland) {
+    return (
+      <Wrapper position="center">
+        <DynamicIsland />
+      </Wrapper>
+    )
+  }
+
   return (
     <Wrapper position={type}>
-      <Camera />
+      <Cutout />
     </Wrapper>
   )
 }

@@ -13,37 +13,7 @@ import {
 import { Center, Content } from '../markup/General'
 import { Code } from '../markup/Code'
 import { StyledIntro } from '../markup/StyledIntro'
-
-const Intro = styled('div', {
-  position: 'relative',
-  width: '100%',
-  overflow: 'hidden',
-})
-
-const IntroBackground = styled('main', {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  background: `linear-gradient(#FF85FA, #82D9FF)`,
-  height: '100vh',
-  paddingTop: theme.space.medium,
-})
-
-const SkewedSeparator = styled('div', {
-  background: 'white',
-  width: '120vw',
-  height: '15vh',
-  transform: 'rotate(-5deg)',
-  position: 'absolute',
-  top: '93vh',
-  left: '-5vw',
-  '@desktop': {
-    transform: 'rotate(-3deg)',
-  },
-  '@widescreen': {
-    transform: 'rotate(-2deg)',
-  },
-})
+import { Layout } from '../markup/Layout'
 
 const Title = styled('h1', {
   color: 'white',
@@ -68,12 +38,11 @@ export default function Home() {
       <Head>
         <title>Responsive React Native</title>
       </Head>
-      <Intro>
-        <IntroBackground>
-          <IntroGrid>
-            <Title>Out-of-the-box Responsive StyleSheets for React Native.</Title>
-            <Features />
-            <Code>{`import { createStyles } from 'responsive-react-native'
+      <Layout type="intro">
+        <IntroGrid>
+          <Title>Out-of-the-box Responsive StyleSheets for React Native.</Title>
+          <Features />
+          <Code>{`import { createStyles } from 'responsive-react-native'
 
 const styles = createStyles({
   view: {
@@ -92,11 +61,9 @@ export default () => (
     <Text style={styels.text}>Hello Responsive</Text>
   </View>
 )`}</Code>
-            <Buttons />
-          </IntroGrid>
-        </IntroBackground>
-        <SkewedSeparator />
-      </Intro>
+          <Buttons />
+        </IntroGrid>
+      </Layout>
       <Center>
         <Content size="wide">
           <Repl />
