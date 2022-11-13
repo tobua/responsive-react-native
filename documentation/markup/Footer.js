@@ -1,4 +1,5 @@
 import { styled, theme } from '../stitches.config'
+import { Link } from './Link'
 
 const Text = styled('p', {
   fontFamily: 'sans-serif',
@@ -18,17 +19,6 @@ const Column = styled('div', {
   alignItems: 'flex-start', // Avoid stretching links to keep gradient for text width.
   flexDirection: 'column',
   gap: theme.space.small,
-})
-
-const Link = styled('a', {
-  fontFamily: 'sans-serif',
-  color: 'black',
-  textDecoration: 'none',
-  '&:hover': {
-    background: '-webkit-linear-gradient(60deg, #FF85FA, #82D9FF)',
-    '-webkit-background-clip': 'text',
-    '-webkit-text-fill-color': 'transparent',
-  },
 })
 
 export const Footer = () => {

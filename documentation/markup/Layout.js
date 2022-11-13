@@ -1,24 +1,5 @@
 import { styled, theme } from '../stitches.config'
 
-const Wrapper = styled('footer', {
-  display: 'flex',
-  flexDirection: 'column',
-  flexBasis: '50%',
-  gap: theme.space.medium,
-})
-
-const Title = styled('div', {
-  fontSize: 24,
-  fontWeight: 'bold',
-  fontFamily: 'sans-serif',
-  color: theme.color.white,
-})
-
-const Description = styled('div', {
-  fontFamily: 'sans-serif',
-  color: theme.color.white,
-})
-
 const Intro = styled('div', {
   position: 'relative',
   width: '100%',
@@ -70,6 +51,7 @@ const TitleCode = styled('h1', {
   margin: 0,
   padding: 0,
   gridColumn: '1 / 3',
+  marginTop: theme.space.large,
 })
 
 export const Layout = ({ type = 'code', children }) => {

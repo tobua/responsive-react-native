@@ -63,7 +63,7 @@ const styles = createStyles({
 
 The viewports as well as the strength of the scaling can be [configured](#configuration) as described below.
 
-## Adaptive Values
+## Adaptive Values (Breakpoints and Orientation)
 
 Similar to breakpoints in CSS values can be customized inline based on the current breakpoint or the orientation. An array `[portrait, landscape]` will pick the appropriate value depending on the orientation while an object `{ small: any, large: any }` will pick the value appropriate for the current breakpoint. If the current breakpoint is missing the nearest one below will be used.
 

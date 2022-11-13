@@ -7,7 +7,7 @@ const Title = styled('h1', {
   fontWeight: 'bold',
   fontFamily: 'serif',
   textAlign: 'center',
-  marginBottom: theme.space.large,
+  margin: 0,
   background: '-webkit-linear-gradient(90deg, #FF85FA, #82D9FF)',
   '-webkit-background-clip': 'text',
   '-webkit-text-fill-color': 'transparent',
@@ -18,19 +18,21 @@ const Description = styled('div', {
   paddingLeft: '20%',
   paddingRight: '20%',
   textAlign: 'center',
-  marginBottom: theme.space.large,
+  margin: 0,
+  marginBottom: theme.space.medium,
 })
 
 const SubTitle = styled('h2', {
   fontSize: 24,
   fontWeight: 'bold',
   fontFamily: 'sans-serif',
-  marginBottom: 0,
+  margin: 0,
 })
 
 const DescriptionSmall = styled('p', {
   fontFamily: 'sans-serif',
   marginBottom: theme.space.medium,
+  margin: 0,
 })
 
 export const StyledIntro = () => (

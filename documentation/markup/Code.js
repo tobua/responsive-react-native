@@ -2,7 +2,7 @@ import { SandpackProvider, SandpackCodeViewer } from '@codesandbox/sandpack-reac
 import { Indicate } from 'indicate'
 
 export const Code = ({ children, backgroundColor = 'white', theme = 'light' }) => (
-  <Indicate horizontal theme={{ innerWrapper: { display: 'flex' } }}>
+  <Indicate horizontal theme={{ innerWrapper: { display: 'block' } }}>
     <SandpackProvider
       template="react"
       files={{
