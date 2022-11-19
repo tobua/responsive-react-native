@@ -17,7 +17,7 @@ export const Content = styled('div', {
   variants: {
     size: {
       wide: {
-        maxWidth: 1200,
+        maxWidth: 1400,
       },
     },
   },
@@ -40,4 +40,9 @@ export const InlineCode = styled('span', {
   background: theme.color.codeBackground,
   padding: 2,
   borderRadius: 4,
+})
+
+export const Important = styled('span', {
+  color: theme.color.highlight,
+  fontWeight: 'bold',
 })

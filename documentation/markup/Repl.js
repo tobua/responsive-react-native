@@ -65,22 +65,26 @@ const options = Object.keys(deviceSizes).map((key) => ({
 
 export const Repl = () => {
   const [phone, setPhone] = useState(deviceSizes['iphone14'])
+  const aspectRatioWidth = phone.width / phone.height
+  const sizeHeight = phone.size
+  const sizeWidth = phone.size * aspectRatioWidth
 
   return (
     <Wrapper>
       <style>{`.sp-wrapper { width: 100%; }
-.sp-layout { background-color: initial; border: initial; width: 100%; }
+.sp-layout { background-color: initial; border: initial; width: 100%; display: flex; flex-wrap: nowrap; }
 .sp-editor { border: 1px solid var(--sp-colors-surface2); border-radius: 5px; }
 .sp-tabs { background: initial; }
 .sp-stack { max-height: 500px; }
 .sp-code-editor { background: initial; }
 .cm-editor { background-color: initial !important; }
 .sp-preview { height: 100%; background-color: initial; }
+.sp-preview-iframe { height: 100%; }
 .sp-preview-container { background: initial; }`}</style>
       <SandpackProvider
         template="react"
         files={{
-          '/App.js': `import { View, Text } from 'react-native'
+          '/App.js': `import { View, Text, Dimensions } from 'react-native'
 import { createStyles } from 'responsive-react-native'
 import { Scale } from './scale.js'
 
@@ -114,7 +118,7 @@ export default function App() {
     <View>
       <View style={styles.header}>
         <Text style={styles.title}>My Responsive App</Text>
-        <Text>👤</Text>
+        <Text>👤{Dimensions.get('window').width}</Text>
       </View>
       <Scale />
       <View>
@@ -156,24 +160,38 @@ export default function App() {
                   borderColor: 'initial',
                   zIndex: 999,
                 }),
-                // var(--sp-colors-surface2)
-                control: (provided) => ({
+                control: (provided, state) => ({
                   ...provided,
-                  borderColor: 'var(--sp-colors-surface2)',
+                  boxShadow: undefined,
+                  borderColor: state.isFocused ? 'black' : 'var(--sp-colors-surface2)',
+                  '&:hover': {
+                    borderColor: 'black',
+                  },
                 }),
                 indicatorSeparator: () => ({
                   display: 'none',
                 }),
                 indicatorContainer: (provided) => ({
                   ...provided,
-                  color: 'red',
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? '#82D9FF'
+                    : state.isFocused
+                    ? '#FF85FA'
+                    : 'transparent',
+                  cursor: 'pointer',
+                  ':active': {
+                    backgroundColor: '#FF85FA',
+                  },
                 }),
               }}
             />
             <Phone
               css={{
-                width: phone.width / phone.scale,
-                height: phone.height / phone.scale,
+                width: sizeWidth * 100,
+                height: sizeHeight * 100,
               }}
             >
               <PhoneInner>
@@ -182,10 +200,11 @@ export default function App() {
               </PhoneInner>
             </Phone>
             <Label weight="bold">
-              {phone.width} x {phone.height} <Scale>@{phone.scale}x</Scale>
+              {phone.width} x {phone.height} · {phone.size}"
             </Label>
             <Label>
-              {phone.width / phone.scale} x {phone.height / phone.scale}
+              {phone.width / phone.scale} x {phone.height / phone.scale}{' '}
+              <Scale>@{phone.scale}x</Scale>
             </Label>
           </Preview>
         </SandpackLayout>

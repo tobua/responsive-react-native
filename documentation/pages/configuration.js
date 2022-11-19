@@ -4,6 +4,7 @@ import { theme } from '../stitches.config'
 import { Footer } from '../markup/Footer'
 import { Code } from '../markup/Code'
 import { Layout } from '../markup/Layout'
+import { Anchor } from '../markup/Link'
 import { Center, Content, InlineCode, Text, Title } from '../markup/General'
 
 export default function Configuration() {
@@ -19,7 +20,9 @@ export default function Configuration() {
             While the defaults should work fine to get started it's also possible to configure
             almost any behaviour.
           </Text>
-          <Title>Breakpoints</Title>
+          <Anchor id="breakpoint">
+            <Title>Breakpoints</Title>
+          </Anchor>
           <Text>
             By default small, medium and large breakpoints are available. The number of breakpoints,
             their names as well as the starting point can all be changed. The number defines the
@@ -40,7 +43,9 @@ configure({
   // Initial breakpoint, default inferred from breakpoint values.
   breakpoint: 'small'
 })`}</Code>
-          <Title>Scaled Values</Title>
+          <Anchor id="scaled-values">
+            <Title>Scaled Values</Title>
+          </Anchor>
           <Text>
             Regular pixel based values will not be adapted based on breakpoints, but linearly scaled
             between a minimum and a maximum breakpoint. In the middle between these two points the
