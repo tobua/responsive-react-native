@@ -32,6 +32,10 @@ const IntroGrid = styled('div', {
   alignItems: 'center',
   height: '80%',
   maxWidth: 1000,
+  '@tablet': {
+    gridTemplateColumns: '1fr',
+    height: 'auto',
+  },
 })
 
 export default function Home() {
@@ -66,11 +70,7 @@ export default () => (
           <Buttons />
         </IntroGrid>
       </Layout>
-      <Center>
-        <Content size="wide">
-          <Repl />
-        </Content>
-      </Center>
+      <Repl />
       <ResponsiveStyleSheet />
       <ScaledValues />
       <AdaptiveValues />

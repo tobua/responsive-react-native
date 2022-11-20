@@ -18,8 +18,8 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
       },
     },
     media: {
-      tablet: '(min-width: 500px)',
-      desktop: '(min-width: 1000px)',
+      phone: '(max-width: 500px)',
+      tablet: '(max-width: 1000px)',
       widescreen: '(min-width: 1500px)',
     },
     utils: {

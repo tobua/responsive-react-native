@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { theme } from '../stitches.config'
 import { Footer } from '../markup/Footer'
 import { Layout } from '../markup/Layout'
-import { Code } from '../markup/Code'
+import { Code, CodeRepl } from '../markup/Code'
 import { NextPage } from '../markup/NextPage'
 import { Center, Content, Important, InlineCode, Text, Title } from '../markup/General'
 
@@ -72,17 +72,22 @@ export default () => <CustomView highlight />`}</Code>
             method interface stays the same except that for the second and third argument a method
             returning base styles or conditional styles has to be passed.
           </Text>
-          <Code backgroundColor={theme.color.codeBackground}>{`import { observable } from 'mobx'
+          <CodeRepl
+            backgroundColor={theme.color.codeBackground}
+          >{`import { observable, runInAction } from 'mobx'
+import { View, Button } from 'react-native'
 import { Styled } from 'responsive-react-native'
 
 const Store = observable({ highlight: false })
 
 const ObservableView = Styled('View', () => ({
   backgroundColor: Store.highlight ? 'red' : 'gray',
+  width: 50,
+  height: 50
 }))
 
 export default () => (
-  <View>
+  <View style={{ padding: 10 }}>
     <ObservableView />
     <Button
       title="Highlight"
@@ -93,7 +98,7 @@ export default () => (
       }
     />
   </View>
-)`}</Code>
+)`}</CodeRepl>
           <Text>
             When the state changes and this results in different styles being returned the styles
             will adapt without any React component themselves having to rerender.

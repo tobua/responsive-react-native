@@ -17,6 +17,9 @@ export const Content = styled('div', {
   variants: {
     size: {
       wide: {
+        maxWidth: 1200,
+      },
+      ultrawide: {
         maxWidth: 1400,
       },
     },
