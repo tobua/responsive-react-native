@@ -89,7 +89,9 @@ const styles = createStyles({
   }
 })`}</Code>
           <Text>In this example the background will be blue on portrait and red on landscape.</Text>
-          <Title>useResponsive React Hook</Title>
+          <Title>
+            <InlineCode>useResponsive</InlineCode> React Hook
+          </Title>
           <Text>
             The current breakpoint as well as the orientation can be accessed during rendering to
             adapt the layout or content. Using this hook will automatically rerender the component
@@ -108,6 +110,34 @@ export default function App() {
     </View>
   )
 }`}</Code>
+          <Title>
+            <InlineCode>{`getValue(value: number)`}</InlineCode>
+          </Title>
+          <Text>
+            Internally used to render the scaleable stylesheet values this helper function can be
+            used to get any responsive value.
+          </Text>
+          <Code
+            backgroundColor={theme.color.codeBackground}
+          >{`import { getValue } from 'responsive-react-native'
+
+export const Header = () => <View style={{ height: getValue(50) }} />`}</Code>
+          <Title>
+            <InlineCode>{`<SelectBreakpoint />`}</InlineCode> Component to Test Breakpoints
+          </Title>
+          <Text>
+            This utility component can be placed anywhere to get a UI to quickly switch between
+            different breakpoints.
+          </Text>
+          <Code
+            backgroundColor={theme.color.codeBackground}
+          >{`import { SelectBreakpoint } from 'responsive-react-native'
+
+export const Settings = () => (
+  <View>
+    <SelectBreakpoint />
+  </View>
+)`}</Code>
           <NextPage name="Styled API" href="/styled" />
         </Content>
       </Center>

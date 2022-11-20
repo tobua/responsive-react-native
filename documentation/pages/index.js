@@ -15,6 +15,7 @@ import { Code } from '../markup/Code'
 import { StyledIntro } from '../markup/StyledIntro'
 import { Layout } from '../markup/Layout'
 import { NextPage } from '../markup/NextPage'
+import { BlogPost } from '../markup/BlogPost'
 
 const Title = styled('h1', {
   color: 'white',
@@ -75,6 +76,7 @@ export default () => (
       <AdaptiveValues />
       <Breakpoints />
       <StyledIntro />
+      <BlogPost />
       <Center>
         <Content>
           <NextPage name="Getting Started" href="/getting-started" />

@@ -43,8 +43,7 @@ export const StyledIntro = () => (
       </a>
       <Description>
         Guaranteed to take the React Native development experience to the next level the Styled API
-        especially <strong>removes the need for any rerenders</strong> when the styles should
-        change.
+        especially <strong>removes the need for any rerenders</strong> when the styles change.
       </Description>
       <Code backgroundColor="black" theme="dark">{`import { Styled } from 'responsive-react-native'
 
