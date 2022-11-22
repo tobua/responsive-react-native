@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { styled } from '../stitches.config'
+import { styled, theme } from '../stitches.config'
 
 export const TextLink = styled(NextLink, {
   outline: 'none',
@@ -11,6 +11,23 @@ export const TextLink = styled(NextLink, {
     background: '-webkit-linear-gradient(180deg, #FF85FA, #82D9FF)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent',
+  },
+  variants: {
+    color: {
+      black: {
+        color: 'black',
+        background: 'none',
+        '-webkit-background-clip': 'initial',
+        '-webkit-text-fill-color': 'initial',
+        '&:hover,&:focus': {
+          fontWeight: 'bold',
+          color: theme.color.highlight,
+          background: 'none',
+          '-webkit-background-clip': 'initial',
+          '-webkit-text-fill-color': 'initial',
+        },
+      },
+    },
   },
 })
 

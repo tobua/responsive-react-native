@@ -1,5 +1,5 @@
 import { styled, theme } from '../stitches.config'
-import { Center, Content } from './General'
+import { ContentGrid } from './General'
 import * as Icon from './Icon'
 import { Code } from './Code'
 import Image from 'next/image'
@@ -11,6 +11,9 @@ const Grid = styled('div', {
   alignItems: 'center',
   height: '80%',
   marginBottom: theme.space.huge,
+  '@phone': {
+    gridTemplateColumns: '1fr',
+  },
 })
 
 const Left = styled('div', {
@@ -18,6 +21,10 @@ const Left = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
+  overflow: 'hidden',
+  '@phone': {
+    gridColumn: 'initial',
+  },
   variants: {
     position: {
       center: {
@@ -32,6 +39,10 @@ const Right = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
+  overflow: 'hidden',
+  '@phone': {
+    gridColumn: 'initial',
+  },
   variants: {
     position: {
       center: {
@@ -69,21 +80,20 @@ const InlineCode = styled('span', {
 
 export const ResponsiveStyleSheet = () => {
   return (
-    <Center>
-      <Content>
-        <Grid>
-          <Left>
-            <Heading>
-              <Icon.Stylesheet size={40} color="black" />
-              <Title>Responsive StyleSheet</Title>
-            </Heading>
-            <Description>
-              By default the <InlineCode>createStyles</InlineCode> method can replace any call to
-              the default React Native <InlineCode>StyleSheet.create</InlineCode>.
-            </Description>
-          </Left>
-          <Right>
-            <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
+    <ContentGrid>
+      <Grid>
+        <Left>
+          <Heading>
+            <Icon.Stylesheet size={40} color="black" />
+            <Title>Responsive StyleSheet</Title>
+          </Heading>
+          <Description>
+            By default the <InlineCode>createStyles</InlineCode> method can replace any call to the
+            default React Native <InlineCode>StyleSheet.create</InlineCode>.
+          </Description>
+        </Left>
+        <Right>
+          <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
 
 const styles = createStyles({
   view: {
@@ -93,20 +103,18 @@ const styles = createStyles({
 })
 
 export default () => <View style={styles.view} />`}</Code>
-          </Right>
-        </Grid>
-      </Content>
-    </Center>
+        </Right>
+      </Grid>
+    </ContentGrid>
   )
 }
 
 export const ScaledValues = () => {
   return (
-    <Center>
-      <Content>
-        <Grid>
-          <Left position="center">
-            <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
+    <ContentGrid>
+      <Grid>
+        <Left position="center">
+          <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
 
 const styles = createStyles({
   view: {
@@ -121,60 +129,57 @@ const styles = createStyles({
 })
 
 export default () => <View style={styles.view} />`}</Code>
-          </Left>
-          <Right>
-            <Heading>
-              <Icon.ScaledValues size={40} color="black" />
-              <Title>Scaled Values</Title>
-            </Heading>
-            <Description>
-              Any size property will be linearly scaled depending on the current viewport size.
-            </Description>
-            <div style={{ height: 300, position: 'relative' }}>
-              <Image fill src="/scale.svg" alt="Illustration of responsive scaling." />
-            </div>
-          </Right>
-        </Grid>
-      </Content>
-    </Center>
+        </Left>
+        <Right>
+          <Heading>
+            <Icon.ScaledValues size={40} color="black" />
+            <Title>Scaled Values</Title>
+          </Heading>
+          <Description>
+            Any size property will be linearly scaled depending on the current viewport size.
+          </Description>
+          <div style={{ height: 300, position: 'relative' }}>
+            <Image fill src="/scale.svg" alt="Illustration of responsive scaling." />
+          </div>
+        </Right>
+      </Grid>
+    </ContentGrid>
   )
 }
 
 export const AdaptiveValues = () => {
   return (
-    <Center>
-      <Content>
-        <Grid>
-          <Left>
-            <Heading>
-              <Icon.AdaptiveValues size={40} color="black" />
-              <Title>Adaptive Values</Title>
-            </Heading>
-            <Description>
-              Using a special syntax different values can be used depending on breakpoint,
-              orientation or platform. All (??) values will still be scaled to match the current
-              viewport size.
-            </Description>
-            <ul>
-              <li>
-                <Description>
-                  Breakpoint: <InlineCode>{`{ [breakpoint]: value }`}</InlineCode>
-                </Description>
-              </li>
-              <li>
-                <Description>
-                  Orientation: <InlineCode>[portrait, landscale]</InlineCode>
-                </Description>
-              </li>
-              <li>
-                <Description>
-                  Platform: <InlineCode>{`{ ios: value, android: value }`}</InlineCode>
-                </Description>
-              </li>
-            </ul>
-          </Left>
-          <Right>
-            <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
+    <ContentGrid>
+      <Grid>
+        <Left>
+          <Heading>
+            <Icon.AdaptiveValues size={40} color="black" />
+            <Title>Adaptive Values</Title>
+          </Heading>
+          <Description>
+            Using a special syntax different values can be used depending on breakpoint, orientation
+            or platform. All (??) values will still be scaled to match the current viewport size.
+          </Description>
+          <ul>
+            <li>
+              <Description>
+                Breakpoint: <InlineCode>{`{ [breakpoint]: value }`}</InlineCode>
+              </Description>
+            </li>
+            <li>
+              <Description>
+                Orientation: <InlineCode>[portrait, landscale]</InlineCode>
+              </Description>
+            </li>
+            <li>
+              <Description>
+                Platform: <InlineCode>{`{ ios: value, android: value }`}</InlineCode>
+              </Description>
+            </li>
+          </ul>
+        </Left>
+        <Right>
+          <Code backgroundColor="#EFEFEF">{`import { createStyles } from 'responsive-react-native'
 
 const styles = createStyles({
   view: {
@@ -188,20 +193,18 @@ const styles = createStyles({
 })
 
 export default () => <View style={styles.view} />`}</Code>
-          </Right>
-        </Grid>
-      </Content>
-    </Center>
+        </Right>
+      </Grid>
+    </ContentGrid>
   )
 }
 
 export const Breakpoints = () => {
   return (
-    <Center>
-      <Content>
-        <Grid>
-          <Left>
-            <Code backgroundColor="#EFEFEF">{`import { useResponsive } from 'responsive-react-native'
+    <ContentGrid>
+      <Grid>
+        <Left>
+          <Code backgroundColor="#EFEFEF">{`import { useResponsive } from 'responsive-react-native'
 
 export default () => {
   const { breakpoint, orientation } = useResponsive()
@@ -214,21 +217,20 @@ export default () => {
     <View style={styles.view} />
   )
 }`}</Code>
-          </Left>
-          <Right>
-            <Heading>
-              <Icon.Breakpoints size={40} color="black" />
-              <Title>Breakpoints</Title>
-            </Heading>
-            <Description>
-              In addition to picking values based on breakpoint the current breakpoint can also be
-              accessed to dynamically render specific content. In addition to the default{' '}
-              <InlineCode>small</InlineCode>, <InlineCode>medium</InlineCode> and{' '}
-              <InlineCode>large</InlineCode> breakpoint other breakpoints can be configured.
-            </Description>
-          </Right>
-        </Grid>
-      </Content>
-    </Center>
+        </Left>
+        <Right>
+          <Heading>
+            <Icon.Breakpoints size={40} color="black" />
+            <Title>Breakpoints</Title>
+          </Heading>
+          <Description>
+            In addition to picking values based on breakpoint the current breakpoint can also be
+            accessed to dynamically render specific content. In addition to the default{' '}
+            <InlineCode>small</InlineCode>, <InlineCode>medium</InlineCode> and{' '}
+            <InlineCode>large</InlineCode> breakpoint other breakpoints can be configured.
+          </Description>
+        </Right>
+      </Grid>
+    </ContentGrid>
   )
 }

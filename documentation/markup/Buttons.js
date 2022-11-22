@@ -6,6 +6,9 @@ const Wrapper = styled('div', {
   alignItems: 'center',
   gap: theme.space.medium,
   gridColumn: '1 / 3',
+  '@tablet': {
+    gridColumn: 'initial',
+  },
 })
 
 const Button = styled('a', {

@@ -1,30 +1,31 @@
 import { styled, theme } from '../stitches.config'
 
-export const Center = styled('div', {
-  display: 'flex',
-  justifyContent: 'center',
-})
-
-export const Content = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  flex: 1,
-  height: '100%',
-  maxWidth: 1000,
-  paddingLeft: theme.space.medium,
-  paddingRight: theme.space.medium,
-  gap: theme.space.medium,
+const ContentGridWrapper = styled('div', {
+  display: 'grid',
+  gridTemplateColumns: `minmax(${theme.space.medium}, 1fr) minmax(0, 1000px) minmax(${theme.space.medium}, 1fr)`,
   variants: {
     size: {
       wide: {
-        maxWidth: 1200,
+        gridTemplateColumns: 'minmax(20px, 1fr) minmax(0, 1200px) minmax(20px, 1fr)',
       },
       ultrawide: {
-        maxWidth: 1400,
+        gridTemplateColumns: 'minmax(20px, 1fr) minmax(0, 1400px) minmax(20px, 1fr)',
       },
     },
   },
 })
+
+const ContentGridCenter = styled('div', {
+  display: 'grid',
+  gridColumn: '2',
+  gap: theme.space.medium,
+})
+
+export const ContentGrid = ({ children, css, size }) => (
+  <ContentGridWrapper size={size}>
+    <ContentGridCenter css={css}>{children}</ContentGridCenter>
+  </ContentGridWrapper>
+)
 
 export const Title = styled('h2', {
   fontFamily: 'sans-serif',

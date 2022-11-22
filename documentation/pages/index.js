@@ -10,7 +10,7 @@ import {
   AdaptiveValues,
   Breakpoints,
 } from '../markup/FeatureBig'
-import { Center, Content } from '../markup/General'
+import { ContentGrid } from '../markup/General'
 import { Code } from '../markup/Code'
 import { StyledIntro } from '../markup/StyledIntro'
 import { Layout } from '../markup/Layout'
@@ -23,6 +23,9 @@ const Title = styled('h1', {
   margin: 0,
   padding: 0,
   gridColumn: '1 / 3',
+  '@tablet': {
+    gridColumn: 'initial',
+  },
 })
 
 const IntroGrid = styled('div', {
@@ -32,6 +35,8 @@ const IntroGrid = styled('div', {
   alignItems: 'center',
   height: '80%',
   maxWidth: 1000,
+  marginLeft: theme.space.medium,
+  marginRight: theme.space.medium,
   '@tablet': {
     gridTemplateColumns: '1fr',
     height: 'auto',
@@ -77,16 +82,10 @@ export default () => (
       <Breakpoints />
       <StyledIntro />
       <BlogPost />
-      <Center>
-        <Content>
-          <NextPage name="Getting Started" href="/getting-started" />
-        </Content>
-      </Center>
-      <Center>
-        <Content>
-          <Footer />
-        </Content>
-      </Center>
+      <ContentGrid>
+        <NextPage name="Getting Started" href="/getting-started" />
+      </ContentGrid>
+      <Footer />
     </>
   )
 }

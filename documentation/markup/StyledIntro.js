@@ -1,5 +1,5 @@
 import { styled, theme } from '../stitches.config'
-import { Center, Content } from './General'
+import { ContentGrid } from './General'
 import { Code } from './Code'
 
 const Title = styled('h1', {
@@ -36,16 +36,15 @@ const DescriptionSmall = styled('p', {
 })
 
 export const StyledIntro = () => (
-  <Center>
-    <Content>
-      <a id="styled">
-        <Title>Styled API</Title>
-      </a>
-      <Description>
-        Guaranteed to take the React Native development experience to the next level the Styled API
-        especially <strong>removes the need for any rerenders</strong> when the styles change.
-      </Description>
-      <Code backgroundColor="black" theme="dark">{`import { Styled } from 'responsive-react-native'
+  <ContentGrid>
+    <a id="styled">
+      <Title>Styled API</Title>
+    </a>
+    <Description>
+      Guaranteed to take the React Native development experience to the next level the Styled API
+      especially <strong>removes the need for any rerenders</strong> when the styles change.
+    </Description>
+    <Code backgroundColor="black" theme="dark">{`import { Styled } from 'responsive-react-native'
 
 const CustomView = Styled(
   'View',
@@ -62,12 +61,12 @@ const CustomView = Styled(
 )
 
 export default () => <CustomView highlight />`}</Code>
-      <SubTitle>Observable Styles with MobX</SubTitle>
-      <DescriptionSmall>
-        When a function is passed and MobX is installed the styles will automatically adapt whenever
-        any of the state accessed inside changes.
-      </DescriptionSmall>
-      <Code backgroundColor="black" theme="dark">{`import { observable } from 'mobx'
+    <SubTitle>Observable Styles with MobX</SubTitle>
+    <DescriptionSmall>
+      When a function is passed and MobX is installed the styles will automatically adapt whenever
+      any of the state accessed inside changes.
+    </DescriptionSmall>
+    <Code backgroundColor="black" theme="dark">{`import { observable } from 'mobx'
 import { Styled } from 'responsive-react-native'
 
 const Store = observable({ highlight: false })
@@ -89,6 +88,5 @@ export default () => (
     />
   </View>
 )`}</Code>
-    </Content>
-  </Center>
+  </ContentGrid>
 )

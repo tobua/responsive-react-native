@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Center, Content } from './General'
+import { ContentGrid } from './General'
 import { styled, theme } from '../stitches.config'
 
 const Wrapper = styled('a', {
@@ -15,6 +15,8 @@ const Blockquote = styled('blockquote', {
   display: 'flex',
   alignItems: 'center',
   gap: theme.space.small,
+  margin: 0,
+  marginBottom: theme.space.small,
 })
 
 const Cite = styled('cite', {
@@ -30,24 +32,17 @@ const Quote = styled('span', {
 
 export const BlogPost = () => {
   return (
-    <Center>
-      <Content css={{ alignItems: 'center' }}>
-        <Wrapper href="https://onwebfocus.com/styled">
-          <Image
-            width={100}
-            height={100}
-            src="/onwebfocus.png"
-            alt="Article in onbwefocus.com blog."
-          />
-          <div>
-            <Blockquote cite="https://onwebfocus.com/styled">
-              <Quote>"</Quote>This plugin however goes much further while still being simpler.
-              <Quote>"</Quote>
-            </Blockquote>
-            <Cite>onwebfocus.com Blog</Cite>
-          </div>
-        </Wrapper>
-      </Content>
-    </Center>
+    <ContentGrid css={{ justifyContent: 'center' }}>
+      <Wrapper href="https://onwebfocus.com/styled">
+        <Image width={80} height={80} src="/onwebfocus.png" alt="Article in onbwefocus.com blog." />
+        <div>
+          <Blockquote cite="https://onwebfocus.com/styled">
+            <Quote>"</Quote>This plugin however goes much further while still being simpler.
+            <Quote>"</Quote>
+          </Blockquote>
+          <Cite>onwebfocus.com Blog</Cite>
+        </div>
+      </Wrapper>
+    </ContentGrid>
   )
 }

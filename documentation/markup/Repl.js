@@ -9,7 +9,7 @@ import Select from 'react-select'
 import { deviceSizes, Type } from 'device-sizes'
 import { styled, theme } from '../stitches.config'
 import { PhoneCutout } from './PhoneCutout'
-import { Center, Content } from '../markup/General'
+import { ContentGrid } from '../markup/General'
 
 const Wrapper = styled('section', {
   display: 'flex',
@@ -22,10 +22,21 @@ const EditorWrapper = styled('div', {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  '@phone': {
+    display: 'none',
+  },
 })
 
 const Preview = styled('div', {
   marginLeft: theme.space.medium,
+  '@tablet': {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
+    marginLeft: 0,
+    marginTop: theme.space.medium,
+  },
 })
 
 const Phone = styled('div', {
@@ -71,10 +82,9 @@ export const Repl = () => {
   const sizeWidth = phone.size * aspectRatioWidth
 
   return (
-    <Center>
-      <Content size={phone.type === Type.Tablet ? 'ultrawide' : 'wide'}>
-        <Wrapper>
-          <style>{`.sp-wrapper { width: 100%; }
+    <ContentGrid size={phone.type === Type.Tablet ? 'ultrawide' : 'wide'}>
+      <Wrapper>
+        <style>{`.sp-wrapper { width: 100%; }
 .sp-layout { background-color: initial; border: initial; width: 100%; display: flex; flex-wrap: nowrap; }
 .sp-editor { border: 1px solid var(--sp-colors-surface2); border-radius: 5px; }
 .sp-tabs { background: initial; }
@@ -83,11 +93,15 @@ export const Repl = () => {
 .cm-editor { background-color: initial !important; }
 .sp-preview { height: 100%; background-color: initial; }
 .sp-preview-iframe { height: 100%; }
-.sp-preview-container { background: initial; }`}</style>
-          <SandpackProvider
-            template="react"
-            files={{
-              '/App.js': `import { View, Text, Dimensions } from 'react-native'
+.sp-preview-container { background: initial; }
+
+@media only screen and (max-width: 1000px) {
+  .sp-layout { flex-wrap: wrap; }
+}`}</style>
+        <SandpackProvider
+          template="react"
+          files={{
+            '/App.js': `import { View, Text, Dimensions } from 'react-native'
 import { createStyles } from 'responsive-react-native'
 import { Scale } from './scale.js'
 
@@ -135,85 +149,84 @@ export default function App() {
     </View>
   )
 }`,
-              '/scale.js': `export function Scale() {
+            '/scale.js': `export function Scale() {
   return <p>scale</p>
 }`,
-            }}
-            customSetup={{
-              dependencies: {
-                'react-native-web': 'latest',
-                'responsive-react-native': 'latest',
-              },
-            }}
-          >
-            <SandpackLayout>
-              <EditorWrapper>
-                <SandpackCodeEditor />
-              </EditorWrapper>
-              <Preview>
-                <Select
-                  value={{ value: phone.id, label: phone.name }}
-                  onChange={(selected) => setPhone(deviceSizes[selected.value])}
-                  options={options}
-                  styles={{
-                    container: (provided) => ({
-                      ...provided,
-                      marginBottom: 20,
-                      outline: 'none',
-                      borderColor: 'initial',
-                      zIndex: 999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      boxShadow: undefined,
-                      borderColor: state.isFocused ? 'black' : 'var(--sp-colors-surface2)',
-                      '&:hover': {
-                        borderColor: 'black',
-                      },
-                    }),
-                    indicatorSeparator: () => ({
-                      display: 'none',
-                    }),
-                    indicatorContainer: (provided) => ({
-                      ...provided,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? '#82D9FF'
-                        : state.isFocused
-                        ? '#FF85FA'
-                        : 'transparent',
-                      cursor: 'pointer',
-                      ':active': {
-                        backgroundColor: '#FF85FA',
-                      },
-                    }),
-                  }}
-                />
-                <Phone
-                  css={{
-                    width: sizeWidth * 100,
-                    height: sizeHeight * 100,
-                  }}
-                >
-                  <PhoneInner>
-                    <PhoneCutout type={phone.camera} />
-                    <SandpackPreview />
-                  </PhoneInner>
-                </Phone>
-                <Label weight="bold">
-                  {phone.width} x {phone.height} · {phone.size}"
-                </Label>
-                <Label>
-                  {phone.width / phone.scale} x {phone.height / phone.scale}{' '}
-                  <Scale>@{phone.scale}x</Scale>
-                </Label>
-              </Preview>
-            </SandpackLayout>
-          </SandpackProvider>
-        </Wrapper>
-      </Content>
-    </Center>
+          }}
+          customSetup={{
+            dependencies: {
+              'react-native-web': 'latest',
+              'responsive-react-native': 'latest',
+            },
+          }}
+        >
+          <SandpackLayout>
+            <EditorWrapper>
+              <SandpackCodeEditor />
+            </EditorWrapper>
+            <Preview>
+              <Select
+                value={{ value: phone.id, label: phone.name }}
+                onChange={(selected) => setPhone(deviceSizes[selected.value])}
+                options={options}
+                styles={{
+                  container: (provided) => ({
+                    ...provided,
+                    marginBottom: 20,
+                    outline: 'none',
+                    borderColor: 'initial',
+                    zIndex: 999,
+                  }),
+                  control: (provided, state) => ({
+                    ...provided,
+                    boxShadow: undefined,
+                    borderColor: state.isFocused ? 'black' : 'var(--sp-colors-surface2)',
+                    '&:hover': {
+                      borderColor: 'black',
+                    },
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  indicatorContainer: (provided) => ({
+                    ...provided,
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected
+                      ? '#82D9FF'
+                      : state.isFocused
+                      ? '#FF85FA'
+                      : 'transparent',
+                    cursor: 'pointer',
+                    ':active': {
+                      backgroundColor: '#FF85FA',
+                    },
+                  }),
+                }}
+              />
+              <Phone
+                css={{
+                  width: sizeWidth * 100,
+                  height: sizeHeight * 100,
+                }}
+              >
+                <PhoneInner>
+                  <PhoneCutout type={phone.camera} />
+                  <SandpackPreview />
+                </PhoneInner>
+              </Phone>
+              <Label weight="bold">
+                {phone.width} x {phone.height} · {phone.size}"
+              </Label>
+              <Label>
+                {phone.width / phone.scale} x {phone.height / phone.scale}{' '}
+                <Scale>@{phone.scale}x</Scale>
+              </Label>
+            </Preview>
+          </SandpackLayout>
+        </SandpackProvider>
+      </Wrapper>
+    </ContentGrid>
   )
 }

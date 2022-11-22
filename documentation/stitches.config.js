@@ -20,6 +20,7 @@ export const { styled, css, globalCss, keyframes, getCssText, theme, createTheme
     media: {
       phone: '(max-width: 500px)',
       tablet: '(max-width: 1000px)',
+      desktop: '(min-width: 1000px)',
       widescreen: '(min-width: 1500px)',
     },
     utils: {
