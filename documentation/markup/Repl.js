@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   SandpackProvider,
   SandpackLayout,
   SandpackCodeEditor,
   SandpackPreview,
+  useSandpack,
 } from '@codesandbox/sandpack-react'
 import Select from 'react-select'
 import { deviceSizes, Type } from 'device-sizes'
@@ -75,11 +76,93 @@ const options = Object.keys(deviceSizes).map((key) => ({
   label: deviceSizes[key].name,
 }))
 
-export const Repl = () => {
-  const [phone, setPhone] = useState(deviceSizes['iphone14'])
+// useSandpack has to be wrapped by SandpackProvider.
+const SandpackInner = ({ phone, setPhone }) => {
   const aspectRatioWidth = phone.width / phone.height
   const sizeHeight = phone.size
   const sizeWidth = phone.size * aspectRatioWidth
+  const { sandpack } = useSandpack()
+
+  const handlePhoneChange = useCallback((selected) => {
+    const phone = deviceSizes[selected.value]
+
+    Object.values(sandpack.clients).forEach((client) => {
+      client.dispatch({ type: 'refresh' })
+    })
+
+    setPhone(phone)
+  })
+
+  return (
+    <SandpackLayout>
+      <EditorWrapper>
+        <SandpackCodeEditor />
+      </EditorWrapper>
+      <Preview>
+        <Select
+          value={{ value: phone.id, label: phone.name }}
+          onChange={handlePhoneChange}
+          options={options}
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              marginBottom: 20,
+              outline: 'none',
+              borderColor: 'initial',
+              zIndex: 999,
+            }),
+            control: (provided, state) => ({
+              ...provided,
+              boxShadow: undefined,
+              borderColor: state.isFocused ? 'black' : 'var(--sp-colors-surface2)',
+              '&:hover': {
+                borderColor: 'black',
+              },
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            indicatorContainer: (provided) => ({
+              ...provided,
+            }),
+            option: (provided, state) => ({
+              ...provided,
+              backgroundColor: state.isSelected
+                ? '#82D9FF'
+                : state.isFocused
+                ? '#FF85FA'
+                : 'transparent',
+              cursor: 'pointer',
+              ':active': {
+                backgroundColor: '#FF85FA',
+              },
+            }),
+          }}
+        />
+        <Phone
+          css={{
+            width: sizeWidth * 100,
+            height: sizeHeight * 100,
+          }}
+        >
+          <PhoneInner>
+            <PhoneCutout type={phone.camera} />
+            <SandpackPreview width="100%" height="100%" showOpenInCodeSandbox={false} />
+          </PhoneInner>
+        </Phone>
+        <Label weight="bold">
+          {phone.width} x {phone.height} · {phone.size}"
+        </Label>
+        <Label>
+          {phone.width / phone.scale} x {phone.height / phone.scale} <Scale>@{phone.scale}x</Scale>
+        </Label>
+      </Preview>
+    </SandpackLayout>
+  )
+}
+
+export const Repl = () => {
+  const [phone, setPhone] = useState(deviceSizes['iphone14'])
 
   return (
     <ContentGrid size={phone.type === Type.Tablet ? 'ultrawide' : 'wide'}>
@@ -99,10 +182,13 @@ export const Repl = () => {
   .sp-layout { flex-wrap: wrap; }
 }`}</style>
         <SandpackProvider
+          width="100%"
+          height="100%"
           template="react"
           files={{
             '/App.js': `import { View, Text, Dimensions } from 'react-native'
 import { createStyles } from 'responsive-react-native'
+import { Header } from './components.js'
 import { Scale } from './scale.js'
 
 const styles = createStyles({
@@ -133,10 +219,7 @@ const styles = createStyles({
 export default function App() {
   return (
     <View>
-      <View style={styles.header}>
-        <Text style={styles.title}>My Responsive App</Text>
-        <Text>👤{Dimensions.get('window').width}</Text>
-      </View>
+      <Header />
       <Scale />
       <View>
       <View style={[styles.box, styles.smallBox]}>
@@ -145,6 +228,7 @@ export default function App() {
       <View style={[styles.box, styles.largeBox]}>
         <Text>150x150</Text>
       </View>
+      <Text>{Dimensions.get('window').width}</Text>
       </View>
     </View>
   )
@@ -152,6 +236,40 @@ export default function App() {
             '/scale.js': `export function Scale() {
   return <p>scale</p>
 }`,
+            '/components.js': `import { View, Text, Dimensions } from 'react-native'
+import { createStyles } from 'responsive-react-native'
+
+const styles = createStyles({
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  box: {
+    display: 'inline-flex',
+    padding: 10,
+    backgroundColor: 'lightgray'
+  },
+  smallBox: {
+    width: 100,
+    height: 100
+  },
+  largeBox: {
+    width: 150,
+    height: 150
+  }
+})
+
+export const Header = () => (
+  <View style={styles.header}>
+    <Text style={styles.title}>My Responsive App</Text>
+    <Text>👤</Text>
+  </View>
+)`,
           }}
           customSetup={{
             dependencies: {
@@ -160,71 +278,7 @@ export default function App() {
             },
           }}
         >
-          <SandpackLayout>
-            <EditorWrapper>
-              <SandpackCodeEditor />
-            </EditorWrapper>
-            <Preview>
-              <Select
-                value={{ value: phone.id, label: phone.name }}
-                onChange={(selected) => setPhone(deviceSizes[selected.value])}
-                options={options}
-                styles={{
-                  container: (provided) => ({
-                    ...provided,
-                    marginBottom: 20,
-                    outline: 'none',
-                    borderColor: 'initial',
-                    zIndex: 999,
-                  }),
-                  control: (provided, state) => ({
-                    ...provided,
-                    boxShadow: undefined,
-                    borderColor: state.isFocused ? 'black' : 'var(--sp-colors-surface2)',
-                    '&:hover': {
-                      borderColor: 'black',
-                    },
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  indicatorContainer: (provided) => ({
-                    ...provided,
-                  }),
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isSelected
-                      ? '#82D9FF'
-                      : state.isFocused
-                      ? '#FF85FA'
-                      : 'transparent',
-                    cursor: 'pointer',
-                    ':active': {
-                      backgroundColor: '#FF85FA',
-                    },
-                  }),
-                }}
-              />
-              <Phone
-                css={{
-                  width: sizeWidth * 100,
-                  height: sizeHeight * 100,
-                }}
-              >
-                <PhoneInner>
-                  <PhoneCutout type={phone.camera} />
-                  <SandpackPreview />
-                </PhoneInner>
-              </Phone>
-              <Label weight="bold">
-                {phone.width} x {phone.height} · {phone.size}"
-              </Label>
-              <Label>
-                {phone.width / phone.scale} x {phone.height / phone.scale}{' '}
-                <Scale>@{phone.scale}x</Scale>
-              </Label>
-            </Preview>
-          </SandpackLayout>
+          <SandpackInner phone={phone} setPhone={setPhone} />
         </SandpackProvider>
       </Wrapper>
     </ContentGrid>

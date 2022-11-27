@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document'
+import { getSandpackCssText } from '@codesandbox/sandpack-react'
 import { getCssText, globalCss } from '../stitches.config'
 
 const globalStyles = globalCss({
@@ -18,7 +19,16 @@ export default function MyDocument() {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
-        <style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
+        <style
+          key="stitches-css"
+          id="stitches"
+          dangerouslySetInnerHTML={{ __html: getCssText() }}
+        />
+        <style
+          key="sandpack-css"
+          id="sandpack"
+          dangerouslySetInnerHTML={{ __html: getSandpackCssText() }}
+        />
       </Head>
       <body>
         <Main />
