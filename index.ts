@@ -140,6 +140,10 @@ const sizeProperties: Partial<Record<keyof ViewStyle | keyof TextStyle, true>> =
   borderTopLeftRadius: true,
   borderTopRightRadius: true,
   borderTopStartRadius: true,
+  // @ts-ignore Will be released with React Native 0.71 (already works in web).
+  gap: true,
+  rowGap: true,
+  columnGap: true,
 }
 
 export const getBreakpoints = () => app.breakpoints

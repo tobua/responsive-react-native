@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   SandpackProvider,
   SandpackLayout,
@@ -51,7 +51,7 @@ const PhoneInner = styled('div', {
   borderRadius: 5,
   background: 'white',
   height: '100%',
-  padding: theme.space.small,
+  padding: 0,
   paddingTop: theme.space.large,
 })
 
@@ -87,11 +87,17 @@ const SandpackInner = ({ phone, setPhone }) => {
     const phone = deviceSizes[selected.value]
 
     Object.values(sandpack.clients).forEach((client) => {
-      client.dispatch({ type: 'refresh' })
+      client.iframe.contentWindow.postMessage(phone.width / phone.scale, '*')
     })
 
     setPhone(phone)
   })
+
+  useEffect(() => {
+    Object.values(sandpack.clients).forEach((client) => {
+      client.iframe.contentWindow.postMessage(phone.width / phone.scale, '*')
+    })
+  }, [sandpack])
 
   return (
     <SandpackLayout>
@@ -147,7 +153,7 @@ const SandpackInner = ({ phone, setPhone }) => {
         >
           <PhoneInner>
             <PhoneCutout type={phone.camera} />
-            <SandpackPreview width="100%" height="100%" showOpenInCodeSandbox={false} />
+            <SandpackPreview showOpenInCodeSandbox={false} />
           </PhoneInner>
         </Phone>
         <Label weight="bold">
@@ -174,7 +180,7 @@ export const Repl = () => {
 .sp-stack { max-height: 500px; }
 .sp-code-editor { background: initial; }
 .cm-editor { background-color: initial !important; }
-.sp-preview { height: 100%; background-color: initial; }
+.sp-preview { height: 100%; background-color: initial; max-height: initial; }
 .sp-preview-iframe { height: 100%; }
 .sp-preview-container { background: initial; }
 
@@ -182,16 +188,29 @@ export const Repl = () => {
   .sp-layout { flex-wrap: wrap; }
 }`}</style>
         <SandpackProvider
-          width="100%"
-          height="100%"
           template="react"
           files={{
-            '/App.js': `import { View, Text, Dimensions } from 'react-native'
-import { createStyles } from 'responsive-react-native'
+            '/App.js': `import { useState } from 'react'
+import { View, Text, Dimensions } from 'react-native'
+import { createStyles, Rerender, rerender } from 'responsive-react-native'
 import { Header } from './components.js'
-import { Scale } from './scale.js'
+import { Breakpoint } from './breakpoint.js'
+
+let widthState
+
+window.addEventListener('message', (event) => {
+  Dimensions.get('window').width = event.data
+  if (widthState) {
+    widthState[1](event.data)
+    rerender()
+  }
+}, false)
 
 const styles = createStyles({
+  wrapper: {
+    gap: 10,
+    paddingHorizontal: 20
+  },
   header: {
     display: 'flex',
     flexDirection: 'row',
@@ -202,39 +221,33 @@ const styles = createStyles({
     fontWeight: 'bold'
   },
   box: {
-    display: 'inline-flex',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    backgroundColor: 'lightgray'
-  },
-  smallBox: {
+    backgroundColor: 'lightgray',
     width: 100,
     height: 100
   },
-  largeBox: {
-    width: 150,
-    height: 150
-  }
 })
 
 export default function App() {
+  widthState = useState(Dimensions.get('window').width)
+
   return (
-    <View>
-      <Header />
-      <Scale />
-      <View>
-      <View style={[styles.box, styles.smallBox]}>
-        <Text>100x100</Text>
-      </View>
-      <View style={[styles.box, styles.largeBox]}>
-        <Text>150x150</Text>
-      </View>
-      <Text>{Dimensions.get('window').width}</Text>
-      </View>
-    </View>
+    <Rerender>
+      {() => (
+        <View style={styles.wrapper}>
+          <Header />
+          <Text>Width: {widthState[0]}</Text>
+          <View style={[styles.box, styles.smallBox]}>
+            <Text>100x100</Text>
+          </View>
+          <Breakpoint />
+        </View>
+      )}
+    </Rerender>
   )
-}`,
-            '/scale.js': `export function Scale() {
-  return <p>scale</p>
 }`,
             '/components.js': `import { View, Text, Dimensions } from 'react-native'
 import { createStyles } from 'responsive-react-native'
@@ -243,7 +256,8 @@ const styles = createStyles({
   header: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   title: {
     fontSize: 20,
@@ -270,6 +284,37 @@ export const Header = () => (
     <Text>👤</Text>
   </View>
 )`,
+            '/breakpoint.js': `import { View, Text, Dimensions } from 'react-native'
+import { createStyles, useResponsive } from 'responsive-react-native'
+
+const styles = createStyles({
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10
+  },
+  tile: {
+    backgroundColor: '#82D9FF',
+    width: 50,
+    height: 50,
+    borderRadius: 10
+  }
+})
+
+const tileCount = { small: 2, medium: 3, large: 4 }
+
+export const Breakpoint = () => {
+  const { breakpoint } = useResponsive()
+  
+  return (
+    <>
+      <Text>Breakpoint: {breakpoint}</Text>
+      <View style={styles.header}>
+        {Array.from(Array(tileCount[breakpoint])).map((value, index) => <View key={index} style={styles.tile} />)}
+      </View>
+    </>
+  )
+}`,
           }}
           customSetup={{
             dependencies: {
