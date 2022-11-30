@@ -9,7 +9,6 @@ const Grid = styled('div', {
   gridTemplateColumns: '1fr 1fr',
   gap: theme.space.large,
   alignItems: 'center',
-  height: '80%',
   marginBottom: theme.space.huge,
   '@phone': {
     gridTemplateColumns: '1fr',
@@ -139,7 +138,12 @@ export default () => <View style={styles.view} />`}</Code>
             Any size property will be linearly scaled depending on the current viewport size.
           </Description>
           <div style={{ height: 300, position: 'relative' }}>
-            <Image fill src="/scale.svg" alt="Illustration of responsive scaling." />
+            <Image
+              fill
+              src="/scale.svg"
+              sizes="(max-width: 500px) 100vw, 50vw"
+              alt="Illustration of responsive scaling."
+            />
           </div>
         </Right>
       </Grid>

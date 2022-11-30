@@ -106,6 +106,8 @@ const SandpackInner = ({ phone, setPhone }) => {
       </EditorWrapper>
       <Preview>
         <Select
+          id="phone-select"
+          instanceId="responsive-phone-select"
           value={{ value: phone.id, label: phone.name }}
           onChange={handlePhoneChange}
           options={options}
@@ -190,11 +192,11 @@ export const Repl = () => {
         <SandpackProvider
           template="react"
           files={{
-            '/App.js': `import { useState } from 'react'
-import { View, Text, Dimensions } from 'react-native'
-import { createStyles, Rerender, rerender } from 'responsive-react-native'
-import { Header } from './components.js'
-import { Breakpoint } from './breakpoint.js'
+            '/App.js': {
+              code: `import { useState } from 'react'
+import { Dimensions, Text } from 'react-native'
+import { Rerender, rerender } from 'responsive-react-native'
+import Screen from './screen.js'
 
 let widthState
 
@@ -205,6 +207,22 @@ window.addEventListener('message', (event) => {
     rerender()
   }
 }, false)
+
+export default function Wrapper() {
+  widthState = useState(Dimensions.get('window').width)
+  return (
+    <Rerender>
+      {() => <Screen width={widthState[0]} />}
+    </Rerender>
+  )
+}`,
+              hidden: true,
+            },
+            '/screen.js': {
+              code: `import { View, Text } from 'react-native'
+import { createStyles } from 'responsive-react-native'
+import { Header } from './components.js'
+import { Breakpoint } from './breakpoint.js'
 
 const styles = createStyles({
   wrapper: {
@@ -231,24 +249,20 @@ const styles = createStyles({
   },
 })
 
-export default function App() {
-  widthState = useState(Dimensions.get('window').width)
-
+export default function App({ width }) {
   return (
-    <Rerender>
-      {() => (
-        <View style={styles.wrapper}>
-          <Header />
-          <Text>Width: {widthState[0]}</Text>
-          <View style={[styles.box, styles.smallBox]}>
-            <Text>100x100</Text>
-          </View>
-          <Breakpoint />
-        </View>
-      )}
-    </Rerender>
+    <View style={styles.wrapper}>
+      <Header />
+      <Text>Width: {width}</Text>
+      <View style={[styles.box, styles.smallBox]}>
+        <Text>100x100</Text>
+      </View>
+      <Breakpoint />
+    </View>
   )
 }`,
+              active: true,
+            },
             '/components.js': `import { View, Text, Dimensions } from 'react-native'
 import { createStyles } from 'responsive-react-native'
 
@@ -310,7 +324,9 @@ export const Breakpoint = () => {
     <>
       <Text>Breakpoint: {breakpoint}</Text>
       <View style={styles.header}>
-        {Array.from(Array(tileCount[breakpoint])).map((value, index) => <View key={index} style={styles.tile} />)}
+        {Array.from(Array(tileCount[breakpoint])).map(
+          (value, index) => <View key={index} style={styles.tile} />
+        )}
       </View>
     </>
   )

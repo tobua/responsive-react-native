@@ -17,15 +17,16 @@ const IntroBackground = styled('main', {
   '@tablet': {
     height: 'auto',
     paddingBottom: theme.space.huge,
-    marginBottom: theme.space.huge,
+    marginBottom: theme.space.large,
   },
   variants: {
     type: {
       code: {
-        height: '20vh',
+        height: 180,
         '@tablet': {
-          height: '10vh',
+          height: 160,
           marginBottom: 0,
+          paddingBottom: 0,
         },
       },
     },
@@ -35,7 +36,7 @@ const IntroBackground = styled('main', {
 const SkewedSeparator = styled('div', {
   background: 'white',
   width: '120vw',
-  height: '15vh',
+  height: 200,
   transform: 'rotate(-5deg)',
   position: 'absolute',
   top: '93vh',
@@ -48,16 +49,16 @@ const SkewedSeparator = styled('div', {
   },
   '@tablet': {
     top: 'initial',
-    bottom: '2vh',
-    height: '10vh',
+    bottom: '-2vh',
+    height: 100,
     transform: 'rotate(-3deg)',
   },
   variants: {
     type: {
       code: {
-        top: '13vh',
+        top: '70%',
         '@tablet': {
-          //
+          top: '80%',
         },
       },
     },

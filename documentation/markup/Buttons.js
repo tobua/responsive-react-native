@@ -9,6 +9,9 @@ const Wrapper = styled('div', {
   '@tablet': {
     gridColumn: 'initial',
   },
+  '@phone': {
+    flexWrap: 'wrap',
+  },
 })
 
 const Button = styled('a', {
@@ -16,6 +19,7 @@ const Button = styled('a', {
   fontFamily: 'sans-serif',
   color: theme.color.white,
   padding: theme.space.small,
+  whiteSpace: 'nowrap',
   borderRadius: 10,
   border: '3px solid white',
   '&:hover': {
