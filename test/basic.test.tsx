@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { View, Text, Platform } from 'react-native'
 import { render, screen, act } from '@testing-library/react-native'
 import {
@@ -17,7 +17,12 @@ import { setWidth } from './helper/general'
 beforeEach(reset)
 
 const styles = createStyles({
-  wrapper: { backgroundColor: 'red', margin: 10, flex: 1 },
+  wrapper: {
+    backgroundColor: 'red',
+    margin: 10,
+    flex: 1,
+    color: { small: 'green', large: 'blue' },
+  },
   text: { fontSize: 20, borderWidth: 40 },
 })
 
@@ -419,4 +424,59 @@ test('Selects different values based on current platform.', () => {
   expect(breakpointStyles.breakpoint.width).toBe(10)
 
   Platform.OS = 'ios'
+})
+
+test('Any type of component inside Rerender will rerender.', () => {
+  const arePropsEqual = () => true
+  const MemoizedComponent = memo(
+    () => <View accessibilityLabel="view" style={styles.wrapper} />,
+    arePropsEqual
+  )
+
+  render(
+    <Rerender>
+      {() => (
+        <>
+          <MemoizedComponent />
+          <Text accessibilityLabel="text" style={styles.text} />
+        </>
+      )}
+    </Rerender>
+  )
+
+  let view = screen.getByLabelText('view')
+  let text = screen.getByLabelText('text')
+
+  expect(view.props.style.backgroundColor).toBe('red')
+  expect(view.props.style.margin).toBe(10)
+  expect(view.props.style.color).toBe('green')
+  expect(text.props.style.fontSize).toBe(20)
+
+  setWidth(320)
+
+  act(() => {
+    rerender()
+  })
+
+  view = screen.getByLabelText('view')
+  text = screen.getByLabelText('text')
+
+  expect(view.props.style.backgroundColor).toBe('red')
+  expect(view.props.style.flex).toBe(1)
+  expect(view.props.style.color).toBe('green')
+  expect(text.props.style.fontSize).toBe(15)
+
+  setWidth(640)
+
+  act(() => {
+    rerender()
+  })
+
+  view = screen.getByLabelText('view')
+  text = screen.getByLabelText('text')
+
+  expect(view.props.style.backgroundColor).toBe('red')
+  expect(view.props.style.margin).toBe(13)
+  expect(view.props.style.color).toBe('blue')
+  expect(text.props.style.fontSize).toBe(25)
 })

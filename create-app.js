@@ -13,6 +13,8 @@ execSync(`npx react-native init ${appName}`, {
 })
 
 copyFileSync('app/App.js', `${appName}/App.js`)
+copyFileSync('app/Expandable.js', `${appName}/Expandable.js`)
+copyFileSync('logo.png', `${appName}/logo.png`)
 
 rmSync('app', { recursive: true })
 
