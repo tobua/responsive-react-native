@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://github.com/tobua/responsive-react-native/raw/main/video.gif" alt="Responsive Video" width="250">
-  <!--- Recorded in iOS Simulator and converted with Gifsky from Mac App Store. -->
+  <a href="https://responsive-react-native.vercel.app/">
+    <img src="https://github.com/tobua/responsive-react-native/raw/main/video.gif" alt="Responsive Video" width="250">
+    <!--- Recorded in iOS Simulator and converted with Gifsky from Mac App Store. -->
+  </a>
 </p>
 
 # responsive-react-native
@@ -13,6 +15,8 @@ Unlike web browsers React Native doesn't support media queries to create respons
 - Supports breakpoints
 - Size calculated based on viewport size or user preference
 - Styled-components like component interface to avoid rerender
+- Check out the web based [documentation](https://responsive-react-native.vercel.app/) with examples
+- Here is a [blog post](https://onwebfocus.com/styled) discussing this plugin
 
 ## Installation and Usage
 
