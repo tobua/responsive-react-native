@@ -279,13 +279,16 @@ export const responsiveProperty = (
   return value
 }
 
-const createProxy = (target: Record<string, any>) =>
-  new Proxy(target, {
-    get(currentTarget, prop: string): any {
-      const value = currentTarget[prop]
+const createProxy = (target: Record<string, any>) => {
+  // Copy target to avoid proxy modifying the original.
+  const initialTarget = { ...target }
+  return new Proxy(target, {
+    get(_, prop: string): any {
+      const value = initialTarget[prop]
       return responsiveProperty(prop, value, createProxy)
     },
   })
+}
 
 export const createStyles = (sheet: Record<string, Record<string, any>>) => {
   if (process.env.NODE_ENV !== 'production' && typeof sheet !== 'object') {
