@@ -122,6 +122,31 @@ export default function App() {
 
 export const Header = () => <View style={{ height: getValue(50) }} />`}</Code>
         <Title>
+          <InlineCode>{`linearScale(value: number, breakpoint: string)`}</InlineCode>
+        </Title>
+        <Text>
+          Method used to scale values linearly according to{' '}
+          <TextLink href="/configuration#scaled-values">scale</TextLink> configured. Useful when
+          overriding the default <InlineCode>value</InlineCode> method but still needing the
+          linearly scaled value.
+        </Text>
+        <Code
+          backgroundColor={theme.color.codeBackground}
+        >{`import { linearScale, configure } from 'responsive-react-native'
+
+configure({
+  value: (value: number, breakpoint: string, orientation: 'portrait' | 'landscape') => {
+    const scaledValue = linearScale(value, breakpoint)
+
+    // Linear scaling only for portrait.
+    if (orientation === 'portrait') {
+      return scaledValue
+    }
+
+    return value
+  },
+})`}</Code>
+        <Title>
           <InlineCode>{`<SelectBreakpoint />`}</InlineCode> Component to Test Breakpoints
         </Title>
         <Text>

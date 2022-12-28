@@ -80,7 +80,7 @@ configure({
 
 configure({
   // Method used to calculate responsive values, default linear scaling according to "scale" configuration.
-  value: (value: number, breakpoint: string) => {
+  value: (value: number, breakpoint: string, orientation: 'portrait' | 'landscape') => {
     if (breakpoint === 'medium') {
       return value
     }

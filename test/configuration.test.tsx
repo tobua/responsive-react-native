@@ -1,4 +1,10 @@
-import { setBreakpoint, getBreakpoint, getBreakpoints, configure } from 'responsive-react-native'
+import {
+  setBreakpoint,
+  getBreakpoint,
+  getBreakpoints,
+  configure,
+  createStyles,
+} from 'responsive-react-native'
 
 test('Can configure breakpoints.', () => {
   configure({
@@ -37,4 +43,42 @@ test('Can configure initial breakpoint.', () => {
   expect(Object.keys(getBreakpoints())).toEqual(['tiny', 'huge'])
 
   expect(getBreakpoint()).toBe('huge')
+})
+
+test('Custom value method receives all parameters.', () => {
+  const styles = createStyles({
+    test: {
+      width: 50,
+      height: 10,
+    },
+  })
+
+  const valueMock = jest.fn(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (value: number, breakpoint: string, orientation: 'portrait' | 'landscape') => value * 2
+  )
+
+  configure({
+    breakpoint: 'custom',
+    // @ts-ignore
+    value: valueMock,
+  })
+
+  let readStyle = styles.test.width
+
+  expect(readStyle).toBe(100)
+  expect(valueMock).toHaveBeenCalled()
+  expect(valueMock.mock.calls.length).toBe(1)
+  expect(valueMock.mock.calls[0][0]).toBe(50)
+  expect(valueMock.mock.calls[0][1]).toBe('custom')
+  expect(valueMock.mock.calls[0][2]).toBe('portrait')
+
+  readStyle = styles.test.height
+
+  expect(readStyle).toBe(20)
+  expect(valueMock).toHaveBeenCalled()
+  expect(valueMock.mock.calls.length).toBe(2)
+  expect(valueMock.mock.calls[1][0]).toBe(10)
+  expect(valueMock.mock.calls[1][1]).toBe('custom')
+  expect(valueMock.mock.calls[1][2]).toBe('portrait')
 })

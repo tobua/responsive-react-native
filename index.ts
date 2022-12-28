@@ -6,6 +6,33 @@ import { avoidZero } from './helper'
 export { Styled } from './styled'
 export { SelectBreakpoint } from './SelectBreakpoint'
 
+export const linearScale = (
+  value: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  breakpoint: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  orientation: 'portrait' | 'landscape'
+) => {
+  if (value === 0) {
+    return 0
+  }
+
+  if (app.width <= app.scale.minimum) {
+    return avoidZero(Math.round(value - app.scale.factor * (value / 2)), value)
+  }
+
+  if (app.width >= app.scale.maximum) {
+    return Math.round(value + app.scale.factor * (value / 2))
+  }
+
+  const percentage = (app.width - app.scale.minimum) / (app.scale.maximum - app.scale.minimum)
+
+  return avoidZero(
+    Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value),
+    value
+  )
+}
+
 const app = {
   get orientation() {
     const { width, height } = Dimensions.get('screen')
@@ -39,27 +66,7 @@ const app = {
     app.listener.forEach((listener) => listener())
   },
   // Calculates a scaled value.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  value: (value: number, breakpoint: string) => {
-    if (value === 0) {
-      return 0
-    }
-
-    if (app.width <= app.scale.minimum) {
-      return avoidZero(Math.round(value - app.scale.factor * (value / 2)), value)
-    }
-
-    if (app.width >= app.scale.maximum) {
-      return Math.round(value + app.scale.factor * (value / 2))
-    }
-
-    const percentage = (app.width - app.scale.minimum) / (app.scale.maximum - app.scale.minimum)
-
-    return avoidZero(
-      Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value),
-      value
-    )
-  },
+  value: linearScale,
   // Updates the current breakpoint depending on window width.
   updateBreakpoint: () => {
     const breakpointKeys = Object.keys(app.breakpoints)
@@ -154,7 +161,7 @@ export const setBreakpoint = (breakpoint: string) => {
 }
 export const getBreakpoint = () => app.breakpoint
 export const getOrientation = () => app.orientation
-export const getValue = (value: number) => app.value(value, app.breakpoint)
+export const getValue = (value: number) => app.value(value, app.breakpoint, app.orientation)
 export const updateBreakpoint = () => {
   if (!app._breakpointAdapted) {
     app.breakpoint = app.updateBreakpoint()
@@ -248,7 +255,7 @@ export const responsiveProperty = (
   if (valueType === 'number') {
     // @ts-ignore
     if (sizeProperties[property]) {
-      return app.value(value, app.breakpoint)
+      return app.value(value, app.breakpoint, app.orientation)
     } else {
       return value
     }
@@ -268,7 +275,7 @@ export const responsiveProperty = (
   }
 
   if (!isArray && valueType === 'object' && hasPlatformKey(value)) {
-    return app.value(value[Platform.OS], app.breakpoint)
+    return app.value(value[Platform.OS], app.breakpoint, app.orientation)
   }
 
   // Recursively scale nested values like shadowOffset.
