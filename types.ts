@@ -6,6 +6,10 @@ export interface Scale {
 
 export type Breakpoints = Record<string, number>
 
-export type Value = (value: number, breakpoint: string) => number
+export type Value = (
+  value: number,
+  breakpoint: string,
+  orientation: 'portrait' | 'landscape'
+) => number
 
 export type StyledComponent = string | string[] | Function

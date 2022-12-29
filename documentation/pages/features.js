@@ -160,6 +160,8 @@ configure({
 export const Settings = () => (
   <View>
     <SelectBreakpoint />
+    <SelectBreakpoint color="blue" fontSize={16} />
+    <SelectBreakpoint style={{ marginHorizontal: 40 }} />
   </View>
 )`}</Code>
         <NextPage name="Styled API" href="/styled" />

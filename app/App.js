@@ -113,6 +113,9 @@ const styles = createStyles({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  selectBreakpoint: {
+    marginHorizontal: 50,
+  },
 })
 
 function NestedBreakpoint() {
@@ -333,7 +336,7 @@ export default function App() {
           <Hook />
         </Expandable>
       </Content>
-      <SelectBreakpoint />
+      <SelectBreakpoint style={styles.selectBreakpoint} />
     </View>
   )
 }

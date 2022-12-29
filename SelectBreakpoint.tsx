@@ -1,33 +1,29 @@
-import React, { useEffect, useRef } from 'react'
+import React, { CSSProperties, useEffect, useRef } from 'react'
 import { View, TouchableOpacity, Text, Animated, Easing, ViewProps } from 'react-native'
 import { useResponsive, getBreakpoints, Styled, getValue } from './index'
 
 const Wrapper = Styled(View, {
   flexDirection: 'row',
   alignItems: 'center',
-  marginHorizontal: { small: 20 },
 })
 
 const Button = Styled(TouchableOpacity, {
-  marginHorizontal: 20,
   alignItems: 'center',
   flex: 1,
 })
 
 const Cursor = Styled(Animated.View, {
   position: 'absolute',
-  width: '33.3%',
   height: '100%',
   borderRadius: 10,
 })
 
 const getPosition = (index: number, length: number) => (100 / length) * index // (index + 1) * 20 + index * 60 - 5
-const getFontSize = (index: number) => 12 + index * 2
 const capitalizeFirstLetter = (value: string) => value.charAt(0).toUpperCase() + value.slice(1)
 
-const textStyle = (active: boolean, index: number) => {
+const textStyle = (active: boolean, index: number, fontSize: number) => {
   return {
-    fontSize: getValue(getFontSize(index)),
+    fontSize: getValue(fontSize + index * 2),
     color: active ? '#FFFFFF' : '#000000',
   }
 }
@@ -44,12 +40,15 @@ type Props = {
   onChange?: (value: string) => void
   waitForAnimation?: boolean
   color?: string
+  style?: CSSProperties
+  fontSize?: number
 } & ViewProps
 
 export const SelectBreakpoint = ({
   onChange,
   waitForAnimation = false,
   color = 'red',
+  fontSize = 12,
   ...props
 }: Props) => {
   const breakpoints = getBreakpoints()
@@ -57,7 +56,8 @@ export const SelectBreakpoint = ({
   const currentIndex = Object.keys(breakpoints).findIndex(
     (current) => current === String(breakpoint)
   )
-  const currentPosition = getPosition(currentIndex, Object.keys(breakpoints).length)
+  const breakpointCount = Object.keys(breakpoints).length
+  const currentPosition = getPosition(currentIndex, breakpointCount)
   const position = useRef(new Animated.Value(currentPosition)).current
   const animatedPosition = position.interpolate({
     inputRange: [0, 100],
@@ -74,7 +74,12 @@ export const SelectBreakpoint = ({
 
   return (
     <Wrapper {...props}>
-      <Cursor style={[{ backgroundColor: color }, { left: animatedPosition }]} />
+      <Cursor
+        style={[
+          { backgroundColor: color, width: `${100 / breakpointCount}%` },
+          { left: animatedPosition },
+        ]}
+      />
       {Object.keys(breakpoints).map((key, index) => (
         <Button
           key={key}
@@ -93,7 +98,9 @@ export const SelectBreakpoint = ({
             )
           }}
         >
-          <Text style={textStyle(key === breakpoint, index)}>{capitalizeFirstLetter(key)}</Text>
+          <Text style={textStyle(key === breakpoint, index, fontSize)}>
+            {capitalizeFirstLetter(key)}
+          </Text>
         </Button>
       ))}
     </Wrapper>
