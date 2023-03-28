@@ -2,5 +2,6 @@ node_modules
 package-lock.json
 dist
 app/**/*
-!app/App.js
-!app/Expandable.js
+!app/App.tsx
+!app/Expandable.tsx
+!app/global.d.ts

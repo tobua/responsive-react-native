@@ -8,17 +8,27 @@ const appName = 'ResponsiveApp'
 
 console.log('⌛ Initializing a fresh RN project...')
 
-execSync(`npx react-native init ${appName}`, {
-  stdio: 'inherit',
-})
+try {
+  execSync(`npx react-native init ${appName}`, {
+    stdio: 'inherit',
+  })
+} catch (error) {
+  // Ignore errors (ruby version check).
+}
 
-copyFileSync('app/App.js', `${appName}/App.js`)
-copyFileSync('app/Expandable.js', `${appName}/Expandable.js`)
+copyFileSync('app/App.tsx', `${appName}/App.tsx`)
+copyFileSync('app/Expandable.tsx', `${appName}/Expandable.tsx`)
+copyFileSync('app/global.d.ts', `${appName}/global.d.ts`)
 copyFileSync('logo.png', `${appName}/logo.png`)
 
 rmSync('app', { recursive: true })
 
 renameSync(appName, 'app')
+
+// Run build to ensure distributed files for plugin exist.
+execSync('npm run build', {
+  stdio: 'inherit',
+})
 
 // Install this package locally, avoiding symlinks.
 execSync('npm install $(npm pack .. | tail -1) --legacy-peer-deps', {

@@ -5,11 +5,14 @@ import { useResponsive, getBreakpoints, Styled, getValue } from './index'
 const Wrapper = Styled(View, {
   flexDirection: 'row',
   alignItems: 'center',
+  height: 24,
 })
 
 const Button = Styled(TouchableOpacity, {
   alignItems: 'center',
   flex: 1,
+  justifyContent: 'center',
+  height: '100%',
 })
 
 const Cursor = Styled(Animated.View, {

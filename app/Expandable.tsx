@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React, { ReactNode, useCallback, useRef } from 'react'
 import { View, Animated, Easing } from 'react-native'
 import { Styled } from 'responsive-react-native'
 
@@ -39,7 +39,17 @@ const IconRight = Styled('View', {
   backgroundColor: 'black',
 })
 
-export function Expandable({ title, children, open, onToggle }) {
+export function Expandable({
+  title,
+  children,
+  open,
+  onToggle,
+}: {
+  title: string
+  children: ReactNode
+  open: boolean
+  onToggle: () => void
+}) {
   const caretSpin = useRef(new Animated.Value(open ? 1 : 0)).current
   const contentOpacity = useRef(new Animated.Value(open ? 1 : 0)).current
   const toggleOpen = useCallback(() => {

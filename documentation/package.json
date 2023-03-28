@@ -7,19 +7,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^1.18.4",
+    "@codesandbox/sandpack-react": "^2.1.11",
     "@stitches/react": "^1.2.8",
     "device-sizes": "^1.2.3",
-    "indicate": "^6.0.0",
-    "next": "13.1.1",
+    "indicate": "^6.0.1",
+    "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-select": "^5.7.0",
-    "wasser": "^2.2.1"
+    "react-select": "^5.7.2",
+    "wasser": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "8.30.0",
-    "eslint-config-next": "13.1.1"
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4"
   },
   "eslintConfig": {
     "extends": "next/core-web-vitals"

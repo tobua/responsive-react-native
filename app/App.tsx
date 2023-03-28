@@ -131,7 +131,7 @@ function Header() {
   return (
     <View style={styles.header}>
       <Image style={styles.logo} source={logo} />
-      <View styles={styles.row}>
+      <View style={styles.row}>
         <Text style={styles.heading}>responsive-react-native</Text>
         <Text style={styles.annotation}>
           Width: {Dimensions.get('screen').width}px Scale: {Dimensions.get('screen').scale}{' '}
@@ -155,7 +155,7 @@ const ButtonText = Styled('Text', {
   color: Platform.OS === 'ios' ? '#007AFF' : 'white',
 })
 
-function Button({ onPress, title }) {
+function Button({ onPress, title }: { onPress: Function; title: string }) {
   return (
     <ButtonWrapper onPress={onPress}>
       <ButtonText>{title}</ButtonText>
@@ -227,7 +227,7 @@ export default function App() {
   const [rounded, setRounded] = useState(false)
   const [openExpandable, setOpenExpandable] = useState([1, 2])
   const toggleExpandable = useCallback(
-    (key) => {
+    (key: number) => {
       if (openExpandable.includes(key)) {
         setOpenExpandable(openExpandable.filter((item) => item !== key))
       } else {
@@ -281,12 +281,22 @@ export default function App() {
                   During render the current breakpoint can be accessed to render elements
                   accordingly.
                 </Text>
-                <Cols cols={sizeToColsMap[getBreakpoint()]}>
-                  <Col style={styles.col} />
-                  <Col style={styles.col} />
-                  <Col style={styles.col} />
-                  <Col style={styles.col} />
-                  <Col style={styles.col} />
+                <Cols cols={sizeToColsMap[getBreakpoint() as 'small' | 'medium' | 'large']}>
+                  <Col style={styles.col}>
+                    <View />
+                  </Col>
+                  <Col style={styles.col}>
+                    <View />
+                  </Col>
+                  <Col style={styles.col}>
+                    <View />
+                  </Col>
+                  <Col style={styles.col}>
+                    <View />
+                  </Col>
+                  <Col style={styles.col}>
+                    <View />
+                  </Col>
                 </Cols>
               </Expandable>
             </>
