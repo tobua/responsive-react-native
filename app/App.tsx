@@ -131,7 +131,7 @@ function Header() {
   return (
     <View style={styles.header}>
       <Image style={styles.logo} source={logo} />
-      <View style={styles.row}>
+      <View>
         <Text style={styles.heading}>responsive-react-native</Text>
         <Text style={styles.annotation}>
           Width: {Dimensions.get('screen').width}px Scale: {Dimensions.get('screen').scale}{' '}

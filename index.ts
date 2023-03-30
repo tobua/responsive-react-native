@@ -245,7 +245,7 @@ export const responsiveProperty = (
   property: string,
   value: any,
   nestingFunction: (value: any) => any
-) => {
+): any => {
   const valueType = typeof value
 
   if (valueType === 'string') {
@@ -264,10 +264,13 @@ export const responsiveProperty = (
   const isArray = Array.isArray(value)
 
   if (isArray && value.length === 2 && property !== 'transform') {
-    const orientationValue = app.orientation === 'portrait' ? value[0] : value[1]
-    return typeof orientationValue === 'object'
-      ? closestBreakpointValue(orientationValue, property)
-      : orientationValue
+    let orientationValue = app.orientation === 'portrait' ? value[0] : value[1]
+
+    if (typeof orientationValue === 'object') {
+      orientationValue = closestBreakpointValue(orientationValue, property)
+    }
+
+    return responsiveProperty(property, orientationValue, nestingFunction)
   }
 
   if (!isArray && valueType === 'object' && hasBreakpointKey(value)) {

@@ -271,13 +271,17 @@ test('Selects different values based on current orientation.', () => {
     },
   })
 
+  expect(orientationStyles.orientation.width).toBe(8)
+
+  setWidth(400)
+
   expect(orientationStyles.orientation.width).toBe(10)
 
   setWidth(900)
 
   expect(getOrientation()).toBe('landscape')
 
-  expect(orientationStyles.orientation.width).toBe(20)
+  expect(orientationStyles.orientation.width).toBe(25)
 })
 
 test('Selects different values based on current breakpoint.', () => {
@@ -355,7 +359,7 @@ test('Breakpoints and orientation can be combined.', () => {
   expect(getOrientation()).toBe('landscape')
 
   expect(breakpointStyles.breakpoint.width).toBe(60)
-  expect(breakpointStyles.breakpoint.height).toBe(8)
+  expect(breakpointStyles.breakpoint.height).toBe(10)
 })
 
 test('Breakpoints and orientation also work with non-numeric values.', () => {

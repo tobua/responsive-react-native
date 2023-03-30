@@ -241,8 +241,8 @@ test('Also supports breakpoint and orientation values.', () => {
 
   expect(view.props.style.backgroundColor).toBe('red')
   expect(view.props.style.width).toBe(40)
-  expect(view.props.style.height).toBe(10)
-  expect(view.props.style.paddingLeft).toBe(20)
+  expect(view.props.style.height).toBe(8)
+  expect(view.props.style.paddingLeft).toBe(15)
 
   setWidth(640)
   updateBreakpoint()
@@ -256,8 +256,8 @@ test('Also supports breakpoint and orientation values.', () => {
 
   expect(view.props.style.backgroundColor).toBe('pink')
   expect(view.props.style.width).toBe(80)
-  expect(view.props.style.height).toBe(20)
-  expect(view.props.style.paddingLeft).toBe(20)
+  expect(view.props.style.height).toBe(25)
+  expect(view.props.style.paddingLeft).toBe(25)
 
   setWidth(900)
   updateBreakpoint()
@@ -271,8 +271,8 @@ test('Also supports breakpoint and orientation values.', () => {
 
   expect(view.props.style.backgroundColor).toBe('purple')
   expect(view.props.style.width).toBe(100)
-  expect(view.props.style.height).toBe(30)
-  expect(view.props.style.paddingLeft).toBe(40)
+  expect(view.props.style.height).toBe(38)
+  expect(view.props.style.paddingLeft).toBe(50)
 
   setWidthAndHeight(320, 200)
   updateBreakpoint()
@@ -286,8 +286,8 @@ test('Also supports breakpoint and orientation values.', () => {
 
   expect(view.props.style.backgroundColor).toBe('yellow')
   expect(view.props.style.width).toBe(60)
-  expect(view.props.style.height).toBe(30)
-  expect(view.props.style.paddingLeft).toBe(40)
+  expect(view.props.style.height).toBe(23)
+  expect(view.props.style.paddingLeft).toBe(30)
 
   setWidthAndHeight(420, 200)
   updateBreakpoint()
@@ -370,7 +370,7 @@ test('Nested values also work with props and after rerender.', () => {
   const styles = setNativePropsMock.mock.calls[0][0]
 
   expect(styles.style.width).toBe(60)
-  expect(styles.style.height).toBe(30)
+  expect(styles.style.height).toBe(23)
   expect(styles.style.backgroundColor).toBe('yellow')
 })
 
