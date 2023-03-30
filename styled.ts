@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, MutableRefObject } from 'react'
+import React, { useRef, useEffect, MutableRefObject, CSSProperties } from 'react'
 import * as ReactNative from 'react-native'
 import { registerListener, removeListener, responsiveProperty, getBreakpoint } from './index'
 import { StyledComponent } from './types'
@@ -16,6 +16,19 @@ const importAutorunIfInstalled = async () => {
     const mobx = await import('mobx')
     autorun = mobx.autorun
   } catch (_) {}
+}
+
+const assignStyles = (styles: CSSProperties, ref: MutableRefObject<any>) => {
+  if (ref.current) {
+    if (ref.current.setNativeProps) {
+      ref.current.setNativeProps({
+        style: styles,
+      })
+    } else {
+      // react-native-web compatibility
+      Object.assign(ref.current.style, styles)
+    }
+  }
 }
 
 importAutorunIfInstalled()
@@ -117,9 +130,7 @@ const autoRunStyles = (
     currentStyles = responsifyStyles(currentStyles)
 
     if (!isUpdate && styles) {
-      ref.current?.setNativeProps({
-        style: currentStyles,
-      })
+      assignStyles(currentStyles, ref)
     } else {
       styles = currentStyles
     }
@@ -165,9 +176,7 @@ export function Styled<T extends Record<string, any>>(
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       const listener = () => {
-        ref.current?.setNativeProps({
-          style: generateStyles(baseStyles, conditionalStyles, props, ref, true),
-        })
+        assignStyles(generateStyles(baseStyles, conditionalStyles, props, ref, true), ref)
       }
       registerListener(listener)
 

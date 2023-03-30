@@ -18,7 +18,7 @@
     "wasser": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "eslint-config-next": "13.2.4"
   },
   "eslintConfig": {

@@ -87,7 +87,10 @@ const SandpackInner = ({ phone, setPhone }) => {
     const phone = deviceSizes[selected.value]
 
     Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage(phone.width / phone.scale, '*')
+      client.iframe.contentWindow.postMessage(
+        { type: 'width', width: phone.width / phone.scale },
+        '*'
+      )
     })
 
     setPhone(phone)
@@ -95,7 +98,10 @@ const SandpackInner = ({ phone, setPhone }) => {
 
   useEffect(() => {
     Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage(phone.width / phone.scale, '*')
+      client.iframe.contentWindow.postMessage(
+        { type: 'width', width: phone.width / phone.scale },
+        '*'
+      )
     })
   }, [sandpack])
 
@@ -193,26 +199,32 @@ export const Repl = () => {
           template="react"
           files={{
             '/App.js': {
-              code: `import { useState } from 'react'
+              code: `import { useState, useEffect } from 'react'
 import { Dimensions, Text } from 'react-native'
 import { Rerender, rerender } from 'responsive-react-native'
 import Screen from './screen.js'
 
-let widthState
-
-window.addEventListener('message', (event) => {
-  Dimensions.get('window').width = event.data
-  if (widthState) {
-    widthState[1](event.data)
-    rerender()
-  }
-}, false)
-
 export default function Wrapper() {
-  widthState = useState(Dimensions.get('window').width)
+  const [width, setWidth] = useState(Dimensions.get('window').width)
+
+  useEffect(() => {
+    function messageListener(event) {
+      // Ignore messages originating from sandbox itself.
+      if (typeof event.data === 'object' && event.data.type === 'width') {
+        Dimensions.get('window').width = event.data.width
+        setWidth(event.data.width)
+        rerender()
+      }
+    }
+
+    window.addEventListener('message', messageListener)
+
+    return () => window.removeEventListener('message', messageListener)
+  }, [])
+
   return (
     <Rerender>
-      {() => <Screen width={widthState[0]} />}
+      {() => <Screen width={width} />}
     </Rerender>
   )
 }`,
@@ -249,7 +261,7 @@ const styles = createStyles({
   },
 })
 
-export default function App({ width }) {
+export default function Screen({ width }) {
   return (
     <View style={styles.wrapper}>
       <Header />

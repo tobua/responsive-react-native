@@ -30,7 +30,7 @@ export const CodeRepl = ({ children, backgroundColor = 'white', theme = 'light' 
     <style>{`.sp-stack.sp-preview { height: auto; }
     .sp-code-editor { overflow: initial; }
     .sp-layout { background-color: ${backgroundColor}; }
-    .cm-editor > .cm-scroller { overflow-x: initial; }`}</style>
+    .cm-editor .cm-scroller { overflow-x: initial; }`}</style>
     <SandpackProvider
       template="react"
       files={{
