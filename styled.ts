@@ -176,6 +176,7 @@ export function Styled<T extends Record<string, any>>(
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       const listener = () => {
+        // @ts-ignore TODO should be fixed... error only in build, not editor.
         assignStyles(generateStyles(baseStyles, conditionalStyles, props, ref, true), ref)
       }
       registerListener(listener)

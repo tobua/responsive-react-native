@@ -45,6 +45,7 @@ type Props = {
   color?: string
   style?: CSSProperties
   fontSize?: number
+  labels?: { [key: string]: string }
 } & ViewProps
 
 export const SelectBreakpoint = ({
@@ -52,6 +53,7 @@ export const SelectBreakpoint = ({
   waitForAnimation = false,
   color = 'red',
   fontSize = 12,
+  labels = {},
   ...props
 }: Props) => {
   const breakpoints = getBreakpoints()
@@ -102,7 +104,7 @@ export const SelectBreakpoint = ({
           }}
         >
           <Text style={textStyle(key === breakpoint, index, fontSize)}>
-            {capitalizeFirstLetter(key)}
+            {labels[key] ?? capitalizeFirstLetter(key)}
           </Text>
         </Button>
       ))}
