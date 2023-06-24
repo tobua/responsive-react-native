@@ -42,6 +42,19 @@ configure({
   // Initial breakpoint, default inferred from breakpoint values.
   breakpoint: 'small'
 })`}</Code>
+        <Text>
+          When configuring breakpoints with TypeScript use the following to override{' '}
+          <InlineCode>Breakpoint</InlineCode> types for proper type checking.
+        </Text>
+        <Code
+          backgroundColor={theme.color.codeBackground}
+        >{`declare module 'responsive-react-native' {
+  interface Breakpoints {
+    tiny: number
+    normal: number
+    huge: number
+  }
+}`}</Code>
         <Anchor id="scaled-values">
           <Title>Scaled Values</Title>
         </Anchor>

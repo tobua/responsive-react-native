@@ -1,10 +1,25 @@
 import { createElement, useEffect, useState } from 'react'
 import { Dimensions, ViewStyle, TextStyle, View, StyleProp, Platform } from 'react-native'
-import type { Scale, Breakpoints, Value } from './types'
+import type {
+  Scale,
+  Value,
+  StyleSheet,
+  BreakpointKeys,
+  NativeStyle,
+  PlatformStyleProp,
+  MediaStyleProp,
+  OrientationStyleProp,
+  StyleSheetFlat,
+  StyleProps,
+  Breakpoints,
+  CurrentBreakpoints,
+} from './types'
 import { avoidZero } from './helper'
 
 export { Styled } from './styled'
 export { SelectBreakpoint } from './SelectBreakpoint'
+
+export { Breakpoints }
 
 export const linearScale = (
   value: number,
@@ -41,13 +56,13 @@ const app = {
   get width() {
     return Dimensions.get('window').width
   },
-  _breakpoints: { small: 360, medium: 420, large: 999 } as Breakpoints,
+  _breakpoints: { small: 360, medium: 420, large: 999 } as CurrentBreakpoints,
   _breakpoint: 'small',
   _breakpointAdapted: false,
   get breakpoints() {
     return this._breakpoints
   },
-  set breakpoints(value: Breakpoints) {
+  set breakpoints(value: CurrentBreakpoints) {
     this._breakpoints = value
   },
   get breakpoint() {
@@ -159,7 +174,7 @@ export const setBreakpoint = (breakpoint: string) => {
   app.breakpoint = breakpoint
   app.rerender()
 }
-export const getBreakpoint = () => app.breakpoint
+export const getBreakpoint = () => app.breakpoint as keyof CurrentBreakpoints
 export const getOrientation = () => app.orientation
 export const getValue = (value: number) => app.value(value, app.breakpoint, app.orientation)
 export const updateBreakpoint = () => {
@@ -214,16 +229,21 @@ export const Rerender = ({
 }
 
 // Does the object contain a breakpoint key?
-const hasBreakpointKey = (value: Record<string, any>) => {
-  return Object.keys(app.breakpoints).some((key) => typeof value[key] !== 'undefined')
+const hasBreakpointKey = <T extends keyof NativeStyle>(value: MediaStyleProp<T>) => {
+  return (Object.keys(app.breakpoints) as BreakpointKeys).some(
+    (key) => typeof value[key] !== 'undefined'
+  )
 }
 
-const hasPlatformKey = (value: Record<string, any>) => {
+const hasPlatformKey = <T extends keyof NativeStyle>(value: PlatformStyleProp<T>) => {
   return typeof value.ios !== 'undefined' || typeof value.android !== 'undefined'
 }
 
-const closestBreakpointValue = (value: Record<string, any>, property: string) => {
-  const breakpoints = Object.keys(app.breakpoints)
+const closestBreakpointValue = <T extends keyof NativeStyle>(
+  value: OrientationStyleProp<T>,
+  property: T
+) => {
+  const breakpoints = Object.keys(app.breakpoints) as BreakpointKeys
   const currentBreakpointIndex = breakpoints.findIndex(
     (current: string) => current === app.breakpoint
   )
@@ -231,6 +251,7 @@ const closestBreakpointValue = (value: Record<string, any>, property: string) =>
   const applicableBreakpoints = breakpoints.splice(0, currentBreakpointIndex + 1).reverse()
 
   for (let index = 0; index < applicableBreakpoints.length; index++) {
+    // @ts-ignore TODO this assumes nesting.
     const current = value[applicableBreakpoints[index]]
     if (typeof current !== 'undefined') {
       if (Array.isArray(current) && current.length === 2 && property !== 'transform') {
@@ -242,7 +263,7 @@ const closestBreakpointValue = (value: Record<string, any>, property: string) =>
 }
 
 export const responsiveProperty = (
-  property: string,
+  property: keyof NativeStyle,
   value: any,
   nestingFunction: (value: any) => any
 ): any => {
@@ -289,33 +310,37 @@ export const responsiveProperty = (
   return value
 }
 
-const createProxy = (target: Record<string, any>) => {
+const createProxy = <T extends keyof NativeStyle>(target: StyleProps<T>) => {
   // Copy target to avoid proxy modifying the original.
   const initialTarget = { ...target }
   return new Proxy(target, {
-    get(_, prop: string): any {
+    get(_, prop: keyof StyleProps<T>): any {
       const value = initialTarget[prop]
       return responsiveProperty(prop, value, createProxy)
     },
   })
 }
 
-export const createStyles = (sheet: Record<string, Record<string, any>>) => {
+export const createStyles = <K extends string, T extends Record<K, NativeStyle>>(
+  sheet: StyleSheet<K, T>
+) => {
   if (process.env.NODE_ENV !== 'production' && typeof sheet !== 'object') {
     console.warn('Invalid input provided to createStyles() needs to be an object.')
   }
 
   Object.keys(sheet).forEach((key) => {
-    const styles = sheet[key]
+    const styles = sheet[key as K]
 
     if (process.env.NODE_ENV !== 'production' && typeof styles !== 'object') {
-      console.warn(`Invalid input provided to createStyles() property ${key} to be an object.`)
+      console.warn(
+        `Invalid input provided to createStyles() property ${String(key)} to be an object.`
+      )
     }
 
-    sheet[key] = createProxy(styles)
+    sheet[key as K] = createProxy(styles) as any
   })
 
-  return sheet
+  return sheet as StyleSheetFlat<K, T>
 }
 
 export const configure = ({
@@ -324,7 +349,7 @@ export const configure = ({
   scale,
   value,
 }: {
-  breakpoints?: Breakpoints
+  breakpoints?: CurrentBreakpoints
   breakpoint?: string
   scale?: { minimum?: number; maximum?: number; factor?: number }
   value?: Value

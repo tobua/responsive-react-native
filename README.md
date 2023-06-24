@@ -15,6 +15,7 @@ Unlike web browsers React Native doesn't support media queries to create respons
 - Supports breakpoints
 - Size calculated based on viewport size or user preference
 - Styled-components like component interface to avoid rerender
+- Type checking with TypeScript
 - Check out the web based [documentation](https://responsive-react-native.vercel.app/) with examples
 - Here is a [blog post](https://onwebfocus.com/styled) discussing this plugin
 
@@ -133,18 +134,20 @@ AppRegistry.registerComponent('responsive-app', () => App)
 Similar to most CSS-in-JS React approaches known from the web this interface allows you to apply styles to components. When using props, breakpoints or the platform as conditional keys the styles will automatically be merged. This approach doesn't require a `<Rerender />` component and only the styles need to be recalculated when the breakpoint or window size changes. Numeric values are automatically scaled responsively.
 
 ```jsx
+import { View } from 'react-native'
 import { Styled } from 'responsive-react-native'
 
 const CustomView = Styled(
-  'View',
+  View,
   {
-    backgroundColor: 'gray',
+    backgroundColor: ['gray', 'white'], // White in landscape.
     padding: 10,
   },
   {
     // Truthy prop.
     highlight: {
       backgroundColor: 'red',
+      padding: { small: 20, large: 60 }, // Full stylesheet support.
     },
     // Current breakpoint.
     large: {
@@ -247,6 +250,18 @@ configure({
 ```
 
 The `scale.factor` describes the degree to which the values are scaled between the viewports defined. A factor of `1` means that `0.5` times the `value` will be added or subtracted when the minimum or maximum viewport is reached. While very extreme a factor of `2` would lead to zero values at the minimum viewport and double the value at the maximum. The default of `0.5` has proven useful for mobile applications and will scale the value by 25%. This still results in a 50% difference between the minimum and maximum values.
+
+When configuring breakpoints with TypeScript use the following to override `Breakpoint` types for proper type checking.
+
+```ts
+declare module 'responsive-react-native' {
+  interface Breakpoints {
+    tiny: number
+    normal: number
+    huge: number
+  }
+}
+```
 
 ## Similar Approaches
 

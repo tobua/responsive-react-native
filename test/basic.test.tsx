@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { View, Text, Platform } from 'react-native'
+import { View, Text, Platform, Image } from 'react-native'
 import { render, screen, act } from '@testing-library/react-native'
 import {
   createStyles,
@@ -11,6 +11,7 @@ import {
   updateBreakpoint,
   reset,
   useResponsive,
+  configure,
 } from 'responsive-react-native'
 import { setWidth } from './helper/general'
 
@@ -192,8 +193,8 @@ test('Can scale and support object based responsive values.', () => {
   expect(shadowStyles.shadow.shadowRadius).toBe(6)
   expect(shadowStyles.shadow.shadowOpacity).toBe(1)
   expect(shadowStyles.shadow.shadowColor).toBe('black')
-  expect(shadowStyles.shadow.shadowOffset.width).toBe(4)
-  expect(shadowStyles.shadow.shadowOffset.height).toBe(4)
+  expect(shadowStyles.shadow.shadowOffset?.width).toBe(4)
+  expect(shadowStyles.shadow.shadowOffset?.height).toBe(4)
 })
 
 test('useResponsive hook can be used to rerender on breakpoint changes and set breakpoint.', () => {
@@ -483,4 +484,97 @@ test('Any type of component inside Rerender will rerender.', () => {
   expect(view.props.style.margin).toBe(13)
   expect(view.props.style.color).toBe('blue')
   expect(text.props.style.fontSize).toBe(25)
+})
+
+// Moved from configuration, as default breakpoints used without override.
+test('Can configure initial breakpoint.', () => {
+  configure({
+    breakpoints: {
+      small: 300,
+      medium: 400,
+      large: 999,
+      // @ts-expect-error
+      tiny: 5,
+    },
+    breakpoint: 'large',
+  })
+
+  expect(getBreakpoint()).toBe('large')
+
+  configure({
+    breakpoint: 'small',
+  })
+
+  expect(getBreakpoint()).toBe('small')
+})
+
+test('Returned stylesheet types can be rendered in appropriate tags.', () => {
+  const sheet = createStyles({
+    view: {
+      backgroundColor: 'red',
+      margin: [10, 5],
+      flex: 1,
+    },
+    text: {
+      fontSize: 20,
+      color: ['red', 'blue'],
+    },
+    image: {
+      rotation: 45,
+    },
+  })
+
+  const markup = () => (
+    <>
+      <View style={sheet.view} />
+      <Text style={sheet.text}>Hello</Text>
+      <Image style={sheet.image} source={{ uri: 'missing.png' }} />
+    </>
+  )
+
+  expect(markup).toBeDefined()
+})
+
+test('Proper types for createStyle stylesheet.', () => {
+  const sheet = createStyles({
+    view: {
+      backgroundColor: 'red',
+      margin: [10, 5],
+      flex: 1,
+      color: { small: 'green', large: 'blue' },
+      shadowColor: { small: ['blue', 'red'] },
+      padding: { ios: 9, android: 20 },
+      // @ts-expect-error Requires both platforms.
+      paddingTop: { android: 20 },
+      // @ts-expect-error Non view properties.
+      rotation: false,
+    },
+    text: {
+      fontSize: 20,
+      borderWidth: 40,
+      // @ts-expect-error
+      borderStyle: false,
+      backfaceVisibility: 'hidden',
+      // @ts-expect-error Missing breakpoint.
+      display: { medium: 'flex', huge: 'none' },
+    },
+    image: {
+      // @ts-expect-error Non-existing property.
+      nonExistingProperty: 5,
+      rotation: 45,
+    },
+    viewAnother: {
+      testID: 'hello',
+      // @ts-expect-error
+      accessibilityHint: 'hey',
+    },
+  })
+
+  expect(sheet.view.flexShrink).toBeUndefined()
+  // @ts-expect-error
+  expect(sheet.view.backgroundColor === 5).toBe(false)
+  // @ts-expect-error
+  expect(sheet.view.margin.landscape).not.toBe(10)
+
+  expect(sheet.view.shadowColor).toBe('blue')
 })

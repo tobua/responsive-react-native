@@ -6,9 +6,15 @@ import {
   createStyles,
 } from 'responsive-react-native'
 
+// For tests of type overrides, see ./types/configuration.test.tsx
+
 test('Can configure breakpoints.', () => {
   configure({
-    breakpoints: { tiny: 300, huge: 999 },
+    breakpoints: {
+      // @ts-expect-error
+      tiny: 300,
+      huge: 999,
+    },
   })
 
   const Breakpoints = getBreakpoints()
@@ -23,20 +29,11 @@ test('Can configure breakpoints.', () => {
 
 test('Can configure initial breakpoint.', () => {
   configure({
-    breakpoints: { small: 300, medium: 400, large: 999 },
-    breakpoint: 'large',
-  })
-
-  expect(getBreakpoint()).toBe('large')
-
-  configure({
-    breakpoint: 'small',
-  })
-
-  expect(getBreakpoint()).toBe('small')
-
-  configure({
-    breakpoints: { tiny: 300, huge: 999 },
+    breakpoints: {
+      // @ts-expect-error
+      tiny: 300,
+      huge: 999,
+    },
     breakpoint: 'huge',
   })
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableHighlight, Platform } from 'react-native'
+import { View, TouchableHighlight, Platform, Text, Animated, Image } from 'react-native'
 import { act, render, screen } from '@testing-library/react-native'
 import {
   updateBreakpoint,
@@ -7,8 +7,11 @@ import {
   rerender,
   getBreakpoint,
   getOrientation,
+  reset,
 } from 'responsive-react-native'
 import { setWidth, setWidthAndHeight } from './helper/general'
+
+beforeEach(reset)
 
 const setNativePropsMock = new View({}).setNativeProps as jest.Mock
 
@@ -308,14 +311,20 @@ test('Also supports breakpoint and orientation values.', () => {
 test('Nested values also work with props and after rerender.', () => {
   const CombinedView = Styled(
     'View',
-    (props) => ({
+    (props: any) => ({
       width: props.active ? { small: [40, 60], large: [80, 100] } : { small: 10, medium: [12, 14] },
       height: props.spaced ? [{ small: 10, medium: 20 }, { small: 30 }] : [40, 50],
       backgroundColor: ['green', 'blue'],
     }),
-    (props) => ({
+    (props: any) => ({
       small: {
         backgroundColor: props.spaced ? ['red', 'yellow'] : ['pink', 'purple'],
+      },
+      active: {
+        backgroundColor: 'lightblue',
+      },
+      spaced: {
+        paddingLeft: 40,
       },
     })
   )
@@ -326,13 +335,16 @@ test('Nested values also work with props and after rerender.', () => {
   updateBreakpoint()
 
   let onSpaced = (value: boolean) => console.log(value)
+  let onActive = (value: boolean) => console.log(value)
 
   const App = () => {
     const [spaced, setSpaced] = useState(false)
+    const [active, setActive] = useState(true)
 
     onSpaced = setSpaced
+    onActive = setActive
 
-    return <CombinedView active spaced={spaced} accessibilityLabel="combined-view" />
+    return <CombinedView active={active} spaced={spaced} accessibilityLabel="combined-view" />
   }
 
   render(<App />)
@@ -344,15 +356,16 @@ test('Nested values also work with props and after rerender.', () => {
 
   expect(view.props.style.width).toBe(40)
   expect(view.props.style.height).toBe(40)
-  expect(view.props.style.backgroundColor).toBe('green')
+  expect(view.props.style.backgroundColor).toBe('lightblue')
 
   act(() => {
     onSpaced(true)
+    onActive(false)
   })
 
   view = screen.getByLabelText('combined-view')
 
-  expect(view.props.style.width).toBe(40)
+  expect(view.props.style.width).toBe(12)
   expect(view.props.style.height).toBe(20)
   expect(view.props.style.backgroundColor).toBe('green')
 
@@ -369,7 +382,7 @@ test('Nested values also work with props and after rerender.', () => {
 
   const styles = setNativePropsMock.mock.calls[0][0]
 
-  expect(styles.style.width).toBe(60)
+  expect(styles.style.width).toBe(10)
   expect(styles.style.height).toBe(23)
   expect(styles.style.backgroundColor).toBe('yellow')
 })
@@ -379,7 +392,7 @@ test('Constructor accepts various input methods for the component type.', () => 
 
   expect(typeof (<RegularStringView />)).toBe('object')
   expect(typeof (<RegularStringView />).type).toBe('function')
-  expect((<RegularStringView test />).props.test).toBe(true)
+  expect((<RegularStringView testID="hello" />).props.testID).toBe('hello')
 
   const AnimatedNestedView = Styled('Animated.View', {})
 
@@ -402,6 +415,7 @@ test('Styles from regular props are merged in.', () => {
   const RegularView = Styled('View', {
     color: 'red',
   })
+
   render(<RegularView accessibilityLabel="regular-view" style={{ backgroundColor: 'blue' }} />)
 
   let view = screen.getByLabelText('regular-view')
@@ -416,7 +430,7 @@ test('Styles from regular props are merged in.', () => {
   expect(view.props.style[0].backgroundColor).toBe('blue')
   expect(view.props.style[1].color).toBe('red')
 
-  const AnimatedView = Styled('Animated.View', {
+  const AnimatedView = Styled(Animated.View, {
     color: 'red',
   })
   render(<AnimatedView accessibilityLabel="animated-view" style={{ backgroundColor: 'blue' }} />)
@@ -447,4 +461,128 @@ test('OS specific conditional styles can be used.', () => {
   expect(view.props.style.margin).toBe(15)
 
   Platform.OS = 'ios'
+})
+
+test('Types for StyleSheets passed to Styled are properly inferred.', () => {
+  const TypedView = Styled(
+    'View',
+    {
+      width: { small: 40, medium: 80 },
+      height: {
+        ios: 20,
+        android: 40, // @ts-expect-error
+        missing: 60,
+      },
+      paddingLeft: [10, 40],
+      backgroundColor: 'green',
+      // @ts-expect-error
+      maxWidth: false,
+    },
+    {
+      small: {
+        backgroundColor: 'red',
+      },
+      large: {
+        backgroundColor: 'blue',
+      },
+      active: {
+        backgroundColor: 'lightblue',
+      },
+      spaced: {
+        paddingLeft: 40,
+      },
+      ios: {
+        margin: 5,
+      },
+      android: {
+        margin: 15,
+      },
+    }
+  )
+
+  expect(<TypedView active />).toBeDefined()
+  expect(<TypedView accessibilityRole="button" testID="text" />).toBeDefined()
+  // @ts-expect-error
+  expect(<TypedView small />).toBeDefined()
+  // @ts-expect-error
+  expect(<TypedView missingProp />).toBeDefined()
+  // @ts-expect-error
+  expect(<TypedView userSelect="text" />).toBeDefined()
+
+  const TypedText = Styled(Text, {
+    display: 'flex',
+  })
+
+  expect(<TypedText>Hello World</TypedText>).toBeDefined()
+  expect(
+    <TypedText accessibilityRole="button" textBreakStrategy="simple" selectable>
+      Hello World
+    </TypedText>
+  ).toBeDefined()
+
+  const TypedImage = Styled(
+    Image,
+    {
+      height: 20,
+      width: [20, 40],
+    },
+    {
+      small: {
+        // @ts-expect-error
+        backgroundColor: 4,
+      },
+      active: {
+        backgroundColor: 'lightblue',
+        // @ts-expect-error
+        paddingRight: true,
+      },
+      spaced: {
+        paddingLeft: 40,
+      },
+      ios: {
+        // @ts-expect-error
+        margin: 'red',
+      },
+    }
+  )
+
+  // TODO no error when source missing...
+  expect(<TypedImage style={{ backgroundColor: 'blue' }} />).toBeDefined()
+  expect(<Image source={{ uri: 'required' }} />).toBeDefined()
+})
+
+test('Style method also receives props.', () => {
+  type Props = { space: number; size?: number }
+  const ObservableWithPropsView = Styled(
+    'View',
+    (props: Props) => ({
+      paddingLeft: props.space,
+      marginLeft: props.space,
+      paddingTop: props.size,
+    }),
+    (props: Props) => ({
+      medium: {
+        paddingLeft: props.space * 2,
+      },
+    })
+  )
+
+  setWidth(420)
+  updateBreakpoint()
+
+  render(<ObservableWithPropsView space={20} accessibilityLabel="observable-view" />)
+
+  const view = screen.getByLabelText('observable-view')
+
+  expect(view.props.style.paddingLeft).toBe(40)
+  expect(view.props.style.marginLeft).toBe(20)
+
+  render(
+    <ObservableWithPropsView
+      space={20}
+      // @ts-expect-error
+      size="error"
+      accessibilityLabel="observable-view"
+    />
+  )
 })

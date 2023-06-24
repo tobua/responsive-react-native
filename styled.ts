@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, MutableRefObject, CSSProperties } from 'react'
+import React, { useRef, useEffect, MutableRefObject, ReactElement, FunctionComponent } from 'react'
 import * as ReactNative from 'react-native'
 import { registerListener, removeListener, responsiveProperty, getBreakpoint } from './index'
-import { StyledComponent } from './types'
+import { NativeStyle, StyledSheet, Conditionals, ComponentInput, ComponentProps } from './types'
 
 // @ts-ignore
 let autorun: Function
@@ -18,7 +18,7 @@ const importAutorunIfInstalled = async () => {
   } catch (_) {}
 }
 
-const assignStyles = (styles: CSSProperties, ref: MutableRefObject<any>) => {
+const assignStyles = (styles: NativeStyle | NativeStyle[], ref: MutableRefObject<any>) => {
   if (ref.current) {
     if (ref.current.setNativeProps) {
       ref.current.setNativeProps({
@@ -33,38 +33,36 @@ const assignStyles = (styles: CSSProperties, ref: MutableRefObject<any>) => {
 
 importAutorunIfInstalled()
 
-type BaseStyles = Record<string, any> | ((props: any) => Record<string, any>)
-type ConditionalStyles =
-  | Record<string, Record<string, any>>
-  | ((props: any) => Record<string, Record<string, any>>)
-
-const responsifyStyles = (styles: Record<string, any>) => {
-  Object.keys(styles).forEach((property) => {
+const responsifyStyles = (styles: NativeStyle) => {
+  const properties = Object.keys(styles) as (keyof NativeStyle)[]
+  properties.forEach((property) => {
     styles[property] = responsiveProperty(property, styles[property], responsifyStyles)
   })
-
   return styles
 }
 
-const generateStyles = (
-  baseStyles: BaseStyles,
-  conditionalStyles: ConditionalStyles,
+const generateStyles = <T extends NativeStyle, S extends string>(
+  baseStyles: StyledSheet<T> | ((props: any) => StyledSheet<T>),
+  conditionalStyles:
+    | { [U in S & Conditionals]?: StyledSheet<T> }
+    | ((props: any) => { [U in S & Conditionals]?: StyledSheet<T> }) = {},
   props: Record<string, any>,
   ref: MutableRefObject<any>,
   isUpdate = false
 ) => {
   if (typeof baseStyles === 'function' || typeof conditionalStyles === 'function') {
     return autoRunStyles(
-      baseStyles as () => Record<string, any>,
-      conditionalStyles as () => Record<string, Record<string, any>>,
+      baseStyles as (props: any) => StyledSheet<T>,
+      conditionalStyles as (props: any) => Record<string, StyledSheet<T>>,
       props,
       ref,
       isUpdate
-    )
+    ) as NativeStyle[]
   }
 
   const styles = {}
-  const breakpoint = getBreakpoint()
+  const breakpoint = getBreakpoint() as S & Conditionals
+  const platform = ReactNative.Platform.OS as S & Conditionals
 
   Object.assign(styles, baseStyles)
 
@@ -72,11 +70,13 @@ const generateStyles = (
     Object.assign(styles, conditionalStyles[breakpoint])
   }
 
-  if (typeof conditionalStyles[ReactNative.Platform.OS] === 'object') {
-    Object.assign(styles, conditionalStyles[ReactNative.Platform.OS])
+  if (typeof conditionalStyles[platform] === 'object') {
+    Object.assign(styles, conditionalStyles[platform])
   }
 
-  Object.keys(props).forEach((property) => {
+  const propsKeys = Object.keys(props) as (S & Conditionals)[]
+
+  propsKeys.forEach((property) => {
     if (typeof conditionalStyles[property] === 'object' && props[property] === true) {
       Object.assign(styles, conditionalStyles[property])
     }
@@ -84,17 +84,17 @@ const generateStyles = (
 
   if (!isUpdate && props.style) {
     if (Array.isArray(props.style)) {
-      return [...props.style, responsifyStyles(styles)]
+      return [...props.style, responsifyStyles(styles)] as NativeStyle[]
     }
-    return [props.style, responsifyStyles(styles)]
+    return [props.style, responsifyStyles(styles)] as NativeStyle[]
   }
 
   return responsifyStyles(styles)
 }
 
-const autoRunStyles = (
-  baseStyles: (props: any) => Record<string, any>,
-  conditionalStyles: (props: any) => Record<string, Record<string, any>>,
+const autoRunStyles = <T extends NativeStyle>(
+  baseStyles: (props: any) => StyledSheet<T>,
+  conditionalStyles: (props: any) => Record<string, StyledSheet<T>>,
   props: Record<string, any>,
   ref: MutableRefObject<any>,
   isUpdate: boolean
@@ -105,7 +105,7 @@ const autoRunStyles = (
     )
   }
 
-  let styles: Record<string, any> | null = null
+  let styles: NativeStyle | null = null
 
   autorun(() => {
     let currentStyles = baseStyles(props)
@@ -127,56 +127,91 @@ const autoRunStyles = (
       }
     })
 
-    currentStyles = responsifyStyles(currentStyles)
+    const currentStylesFlat = responsifyStyles(currentStyles as NativeStyle)
 
     if (!isUpdate && styles) {
-      assignStyles(currentStyles, ref)
+      assignStyles(currentStylesFlat, ref)
     } else {
-      styles = currentStyles
+      styles = currentStylesFlat
     }
   })
 
   if (props.style) {
     if (Array.isArray(props.style)) {
-      return [...props.style, styles as unknown as Record<string, any>]
+      return [...props.style, styles]
     }
-    return [props.style, styles as unknown as Record<string, any>]
+    return [props.style, styles]
   }
 
-  return styles as unknown as Record<string, any>
+  return styles
 }
 
-function resolveType(type: StyledComponent, Components: Record<string, any>) {
+function resolveType(
+  type: ComponentInput,
+  Components: Record<string, any>
+): FunctionComponent<ComponentProps<ComponentInput>> {
   if (typeof type !== 'string' && !Array.isArray(type)) {
-    return type
+    return type as unknown as FunctionComponent<ComponentProps<ComponentInput>>
   }
 
-  const properties = Array.isArray(type) ? type : type.split('.')
-  return properties.reduce((items, property) => items[property], Components) as any
+  if (typeof type === 'string' && type.includes('.')) {
+    return type
+      .split('.')
+      .reduce((items, property) => items[property], Components) as FunctionComponent<
+      ComponentProps<ComponentInput>
+    >
+  }
+
+  return Components[type as string]
 }
+
+// Overloads necessary, as case when conditionalStyles defaults to the initializer will not work.
+// Overload for when conditionalStyles is explicitly provided
+export function Styled<T extends NativeStyle, V extends Object, S extends string>(
+  type: ComponentInput,
+  baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>),
+  conditionalStyles:
+    | { [U in S | Conditionals]?: StyledSheet<T> }
+    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<T> })
+): (
+  props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V
+) => ReactElement<any>
+
+// Overload for when conditionalStyles uses the default value
+export function Styled<T extends NativeStyle, V extends Object, S extends string = ''>(
+  type: ComponentInput,
+  baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>)
+): (
+  props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V
+) => ReactElement<any>
 
 // TODO extend existing styled
-export function Styled<T extends Record<string, any>>(
-  type: StyledComponent,
-  baseStyles: BaseStyles,
-  conditionalStyles: ConditionalStyles = {}
+export function Styled<T extends NativeStyle, V extends Object, S extends string>(
+  type: ComponentInput,
+  baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>),
+  conditionalStyles:
+    | { [U in S | Conditionals]?: StyledSheet<T> }
+    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<T> }) = {} as {
+    [U in S | Conditionals]?: StyledSheet<T>
+  }
 ) {
-  const Component = resolveType(type, ReactNative)
+  const ComponentType = resolveType(type, ReactNative)
 
-  if (typeof Component !== 'object' && typeof Component !== 'function') {
+  if (typeof ComponentType !== 'object' && typeof ComponentType !== 'function') {
     console.warn(
       `responsive-react-native: component ${type} passed to Styled isn't a valid RN component.`
     )
   }
 
-  return ({ ...props }: T) => {
+  return ({
+    ...props
+  }: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const ref = useRef<any>()
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       const listener = () => {
-        // @ts-ignore TODO should be fixed... error only in build, not editor.
         assignStyles(generateStyles(baseStyles, conditionalStyles, props, ref, true), ref)
       }
       registerListener(listener)
@@ -184,7 +219,7 @@ export function Styled<T extends Record<string, any>>(
       return () => removeListener(listener)
     })
 
-    return React.createElement(Component, {
+    return React.createElement(ComponentType, {
       ...props,
       style: generateStyles(baseStyles, conditionalStyles, props, ref),
       ref,

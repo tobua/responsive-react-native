@@ -23,12 +23,11 @@ export default function Styled() {
           orientation changes. Additionally, styles for props can be added which also dynamically
           update the component's styles.
         </Text>
-        <Code
-          backgroundColor={theme.color.codeBackground}
-        >{`import { Styled } from 'responsive-react-native'
+        <Code backgroundColor={theme.color.codeBackground}>{`import { View } from 'react-native'
+import { Styled } from 'responsive-react-native'
 
 const CustomView = Styled(
-  'View',
+  View,
   {
     backgroundColor: 'gray',
     padding: 10,
@@ -78,7 +77,7 @@ import { Styled } from 'responsive-react-native'
 
 const Store = observable({ highlight: false })
 
-const ObservableView = Styled('View', () => ({
+const ObservableView = Styled(View, () => ({
   backgroundColor: Store.highlight ? 'red' : 'gray',
   width: 50,
   height: 50

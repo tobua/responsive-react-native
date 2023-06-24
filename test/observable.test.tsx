@@ -73,11 +73,11 @@ test('Prop values and changes are propaged to matching styles.', () => {
 test('Style method also receives props.', () => {
   const ObservableWithPropsView = Styled(
     'View',
-    (props) => ({
+    (props: { space: number }) => ({
       paddingLeft: props.space,
       marginLeft: props.space,
     }),
-    (props) => ({
+    (props: { space: number }) => ({
       medium: {
         paddingLeft: props.space * 2,
       },
