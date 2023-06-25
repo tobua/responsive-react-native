@@ -251,11 +251,11 @@ configure({
 
 The `scale.factor` describes the degree to which the values are scaled between the viewports defined. A factor of `1` means that `0.5` times the `value` will be added or subtracted when the minimum or maximum viewport is reached. While very extreme a factor of `2` would lead to zero values at the minimum viewport and double the value at the maximum. The default of `0.5` has proven useful for mobile applications and will scale the value by 25%. This still results in a 50% difference between the minimum and maximum values.
 
-When configuring breakpoints with TypeScript use the following to override `Breakpoint` types for proper type checking.
+When configuring breakpoints with TypeScript use the following to override `CustomBreakpoints` types for proper type checking.
 
 ```ts
 declare module 'responsive-react-native' {
-  interface Breakpoints {
+  interface CustomBreakpoints {
     tiny: number
     normal: number
     huge: number

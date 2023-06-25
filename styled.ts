@@ -36,6 +36,7 @@ importAutorunIfInstalled()
 const responsifyStyles = (styles: NativeStyle) => {
   const properties = Object.keys(styles) as (keyof NativeStyle)[]
   properties.forEach((property) => {
+    // @ts-ignore
     styles[property] = responsiveProperty(property, styles[property], responsifyStyles)
   })
   return styles

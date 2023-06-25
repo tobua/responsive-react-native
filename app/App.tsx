@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, Dimensions, Platform, Image } from 'react-native'
+import { observable, runInAction } from 'mobx'
+import { View, Text, Dimensions, Platform, Image, GestureResponderEvent } from 'react-native'
+import { Cols, Col } from 'react-native-cols'
 import {
   createStyles,
   Rerender,
@@ -10,8 +12,6 @@ import {
   Styled,
   useResponsive,
 } from 'responsive-react-native'
-import { Cols, Col } from 'react-native-cols'
-import { observable, runInAction } from 'mobx'
 import logo from './logo.png'
 import { Expandable } from './Expandable'
 
@@ -155,7 +155,13 @@ const ButtonText = Styled('Text', {
   color: Platform.OS === 'ios' ? '#007AFF' : 'white',
 })
 
-function Button({ onPress, title }: { onPress: Function; title: string }) {
+function Button({
+  onPress,
+  title,
+}: {
+  onPress: (event: GestureResponderEvent) => void
+  title: string
+}) {
   return (
     <ButtonWrapper onPress={onPress}>
       <ButtonText>{title}</ButtonText>

@@ -11,15 +11,16 @@ import type {
   OrientationStyleProp,
   StyleSheetFlat,
   StyleProps,
-  Breakpoints,
   CurrentBreakpoints,
+  CustomBreakpoints,
+  StyleValue,
 } from './types'
 import { avoidZero } from './helper'
 
 export { Styled } from './styled'
 export { SelectBreakpoint } from './SelectBreakpoint'
 
-export { Breakpoints }
+export { CurrentBreakpoints as Breakpoints, CustomBreakpoints }
 
 export const linearScale = (
   value: number,
@@ -56,7 +57,7 @@ const app = {
   get width() {
     return Dimensions.get('window').width
   },
-  _breakpoints: { small: 360, medium: 420, large: 999 } as CurrentBreakpoints,
+  _breakpoints: { small: 360, medium: 420, large: 999 } as unknown as CurrentBreakpoints,
   _breakpoint: 'small',
   _breakpointAdapted: false,
   get breakpoints() {
@@ -240,7 +241,7 @@ const hasPlatformKey = <T extends keyof NativeStyle>(value: PlatformStyleProp<T>
 }
 
 const closestBreakpointValue = <T extends keyof NativeStyle>(
-  value: OrientationStyleProp<T>,
+  value: MediaStyleProp<T>,
   property: T
 ) => {
   const breakpoints = Object.keys(app.breakpoints) as BreakpointKeys
@@ -264,50 +265,70 @@ const closestBreakpointValue = <T extends keyof NativeStyle>(
 
 export const responsiveProperty = (
   property: keyof NativeStyle,
-  value: any,
-  nestingFunction: (value: any) => any
-): any => {
+  value: StyleValue<keyof NativeStyle>,
+  nestingFunction: (value: StyleProps<keyof NativeStyle>) => any
+): NativeStyle[keyof NativeStyle] => {
   const valueType = typeof value
 
   if (valueType === 'string') {
-    return value
+    return value as NativeStyle[keyof NativeStyle]
   }
 
   if (valueType === 'number') {
     // @ts-ignore
     if (sizeProperties[property]) {
-      return app.value(value, app.breakpoint, app.orientation)
+      return app.value(value as number, app.breakpoint, app.orientation)
     } else {
-      return value
+      return value as NativeStyle[keyof NativeStyle]
     }
   }
 
   const isArray = Array.isArray(value)
 
   if (isArray && value.length === 2 && property !== 'transform') {
-    let orientationValue = app.orientation === 'portrait' ? value[0] : value[1]
+    let orientationValue = (app.orientation === 'portrait' ? value[0] : value[1]) as StyleValue<
+      keyof NativeStyle
+    >
 
     if (typeof orientationValue === 'object') {
-      orientationValue = closestBreakpointValue(orientationValue, property)
+      orientationValue = closestBreakpointValue(
+        orientationValue as MediaStyleProp<keyof NativeStyle>,
+        property
+      ) as StyleValue<keyof NativeStyle>
     }
 
-    return responsiveProperty(property, orientationValue, nestingFunction)
+    return responsiveProperty(
+      property,
+      orientationValue as OrientationStyleProp<keyof NativeStyle>,
+      nestingFunction
+    )
   }
 
-  if (!isArray && valueType === 'object' && hasBreakpointKey(value)) {
-    return closestBreakpointValue(value, property)
+  if (
+    !isArray &&
+    valueType === 'object' &&
+    hasBreakpointKey(value as MediaStyleProp<keyof NativeStyle>)
+  ) {
+    return closestBreakpointValue(
+      value as MediaStyleProp<keyof NativeStyle>,
+      property
+    ) as NativeStyle[keyof NativeStyle]
   }
 
-  if (!isArray && valueType === 'object' && hasPlatformKey(value)) {
+  if (
+    !isArray &&
+    valueType === 'object' &&
+    hasPlatformKey(value as PlatformStyleProp<keyof NativeStyle>)
+  ) {
     return app.value(value[Platform.OS], app.breakpoint, app.orientation)
   }
 
   // Recursively scale nested values like shadowOffset.
   if (typeof value === 'object' && property !== 'transform') {
-    return nestingFunction(value)
+    return nestingFunction(value as StyleProps<keyof NativeStyle>)
   }
 
-  return value
+  return value as NativeStyle[keyof NativeStyle]
 }
 
 const createProxy = <T extends keyof NativeStyle>(target: StyleProps<T>) => {

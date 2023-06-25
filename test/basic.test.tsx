@@ -12,6 +12,8 @@ import {
   reset,
   useResponsive,
   configure,
+  SelectBreakpoint,
+  Breakpoints,
 } from 'responsive-react-native'
 import { setWidth } from './helper/general'
 
@@ -577,4 +579,19 @@ test('Proper types for createStyle stylesheet.', () => {
   expect(sheet.view.margin.landscape).not.toBe(10)
 
   expect(sheet.view.shadowColor).toBe('blue')
+})
+
+test('SelectBreakpoint is properly typed.', () => {
+  render(<SelectBreakpoint style={{ display: 'flex' }} />)
+  // @ts-expect-error Web styles not applicable
+  render(<SelectBreakpoint style={{ display: 'block' }} />)
+  // @ts-expect-error Only View styles applicable
+  render(<SelectBreakpoint style={{ textShadow: 'none' }} />)
+
+  const typedOnChange = (value: keyof Breakpoints) => console.log(value)
+  const invalidOnChange = (value: number) => console.log(value)
+
+  render(<SelectBreakpoint onChange={typedOnChange} />)
+  // @ts-expect-error Breakpoints not assignable to number.
+  render(<SelectBreakpoint onChange={invalidOnChange} />)
 })

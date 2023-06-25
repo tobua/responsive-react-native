@@ -13,7 +13,7 @@ beforeEach(reset)
 
 // Declaring Breakpoints will leak to all TS files shared with the current tsconfig context.
 declare module 'responsive-react-native' {
-  interface Breakpoints {
+  export interface CustomBreakpoints {
     tiny: number
     huge: number
   }

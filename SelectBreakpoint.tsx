@@ -1,6 +1,6 @@
-import React, { CSSProperties, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, TouchableOpacity, Text, Animated, Easing, ViewProps } from 'react-native'
-import { useResponsive, getBreakpoints, Styled, getValue } from './index'
+import { useResponsive, getBreakpoints, Styled, getValue, Breakpoints } from './index'
 
 const Wrapper = Styled(View, {
   flexDirection: 'row',
@@ -40,13 +40,12 @@ const animate = (handle: Animated.Value, toValue: number) =>
   }).start()
 
 type Props = {
-  onChange?: (value: string) => void
+  onChange?: (value: keyof Breakpoints) => void
   waitForAnimation?: boolean
   color?: string
-  style?: CSSProperties
   fontSize?: number
   labels?: { [key: string]: string }
-} & ViewProps
+}
 
 export const SelectBreakpoint = ({
   onChange,
@@ -55,8 +54,9 @@ export const SelectBreakpoint = ({
   fontSize = 12,
   labels = {},
   ...props
-}: Props) => {
+}: Props & ViewProps) => {
   const breakpoints = getBreakpoints()
+  const breakpointKeys = Object.keys(breakpoints) as (keyof Breakpoints)[]
   const { breakpoint, setBreakpoint } = useResponsive()
   const currentIndex = Object.keys(breakpoints).findIndex(
     (current) => current === String(breakpoint)
@@ -85,7 +85,7 @@ export const SelectBreakpoint = ({
           { left: animatedPosition },
         ]}
       />
-      {Object.keys(breakpoints).map((key, index) => (
+      {breakpointKeys.map((key, index) => (
         <Button
           key={key}
           onPress={() => {
