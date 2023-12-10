@@ -59,7 +59,7 @@ export const SelectBreakpoint = ({
   const breakpointKeys = Object.keys(breakpoints) as (keyof Breakpoints)[]
   const { breakpoint, setBreakpoint } = useResponsive()
   const currentIndex = Object.keys(breakpoints).findIndex(
-    (current) => current === String(breakpoint)
+    (current) => current === String(breakpoint),
   )
   const breakpointCount = Object.keys(breakpoints).length
   const currentPosition = getPosition(currentIndex, breakpointCount)
@@ -99,7 +99,7 @@ export const SelectBreakpoint = ({
                   onChange(key)
                 }
               },
-              waitForAnimation ? 300 : 0
+              waitForAnimation ? 300 : 0,
             )
           }}
         >

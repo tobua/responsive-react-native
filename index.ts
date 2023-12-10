@@ -27,7 +27,7 @@ export const linearScale = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   breakpoint: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  orientation: 'portrait' | 'landscape'
+  orientation: 'portrait' | 'landscape',
 ) => {
   if (value === 0) {
     return 0
@@ -45,7 +45,7 @@ export const linearScale = (
 
   return avoidZero(
     Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value),
-    value
+    value,
   )
 }
 
@@ -232,7 +232,7 @@ export const Rerender = ({
 // Does the object contain a breakpoint key?
 const hasBreakpointKey = <T extends keyof NativeStyle>(value: MediaStyleProp<T>) => {
   return (Object.keys(app.breakpoints) as BreakpointKeys).some(
-    (key) => typeof value[key] !== 'undefined'
+    (key) => typeof value[key] !== 'undefined',
   )
 }
 
@@ -242,11 +242,11 @@ const hasPlatformKey = <T extends keyof NativeStyle>(value: PlatformStyleProp<T>
 
 const closestBreakpointValue = <T extends keyof NativeStyle>(
   value: MediaStyleProp<T>,
-  property: T
+  property: T,
 ) => {
   const breakpoints = Object.keys(app.breakpoints) as BreakpointKeys
   const currentBreakpointIndex = breakpoints.findIndex(
-    (current: string) => current === app.breakpoint
+    (current: string) => current === app.breakpoint,
   )
 
   const applicableBreakpoints = breakpoints.splice(0, currentBreakpointIndex + 1).reverse()
@@ -266,7 +266,7 @@ const closestBreakpointValue = <T extends keyof NativeStyle>(
 export const responsiveProperty = (
   property: keyof NativeStyle,
   value: StyleValue<keyof NativeStyle>,
-  nestingFunction: (value: StyleProps<keyof NativeStyle>) => any
+  nestingFunction: (value: StyleProps<keyof NativeStyle>) => any,
 ): NativeStyle[keyof NativeStyle] => {
   const valueType = typeof value
 
@@ -293,14 +293,14 @@ export const responsiveProperty = (
     if (typeof orientationValue === 'object') {
       orientationValue = closestBreakpointValue(
         orientationValue as MediaStyleProp<keyof NativeStyle>,
-        property
+        property,
       ) as StyleValue<keyof NativeStyle>
     }
 
     return responsiveProperty(
       property,
       orientationValue as OrientationStyleProp<keyof NativeStyle>,
-      nestingFunction
+      nestingFunction,
     )
   }
 
@@ -311,7 +311,7 @@ export const responsiveProperty = (
   ) {
     return closestBreakpointValue(
       value as MediaStyleProp<keyof NativeStyle>,
-      property
+      property,
     ) as NativeStyle[keyof NativeStyle]
   }
 
@@ -320,7 +320,7 @@ export const responsiveProperty = (
     valueType === 'object' &&
     hasPlatformKey(value as PlatformStyleProp<keyof NativeStyle>)
   ) {
-    return app.value(value[Platform.OS], app.breakpoint, app.orientation)
+    return app.value((value as any)[Platform.OS], app.breakpoint, app.orientation)
   }
 
   // Recursively scale nested values like shadowOffset.
@@ -343,7 +343,7 @@ const createProxy = <T extends keyof NativeStyle>(target: StyleProps<T>) => {
 }
 
 export const createStyles = <K extends string, T extends Record<K, NativeStyle>>(
-  sheet: StyleSheet<K, T>
+  sheet: StyleSheet<K, T>,
 ) => {
   if (process.env.NODE_ENV !== 'production' && typeof sheet !== 'object') {
     console.warn('Invalid input provided to createStyles() needs to be an object.')
@@ -354,7 +354,7 @@ export const createStyles = <K extends string, T extends Record<K, NativeStyle>>
 
     if (process.env.NODE_ENV !== 'production' && typeof styles !== 'object') {
       console.warn(
-        `Invalid input provided to createStyles() property ${String(key)} to be an object.`
+        `Invalid input provided to createStyles() property ${String(key)} to be an object.`,
       )
     }
 

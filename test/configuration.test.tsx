@@ -52,7 +52,7 @@ test('Custom value method receives all parameters.', () => {
 
   const valueMock = jest.fn(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (value: number, breakpoint: string, orientation: 'portrait' | 'landscape') => value * 2
+    (value: number, breakpoint: string, orientation: 'portrait' | 'landscape') => value * 2,
   )
 
   configure({

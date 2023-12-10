@@ -5,7 +5,7 @@ const expectValuesForSeveralScales = (
   value: number,
   fullResult: number,
   halfResult: number,
-  noneResult: number
+  noneResult: number,
 ) => {
   configure({
     scale: {

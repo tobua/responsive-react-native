@@ -42,7 +42,7 @@ const CustomView = Styled(
     android: {
       margin: 15,
     },
-  }
+  },
 )
 
 test('Styled component initially renders correct styles.', () => {
@@ -214,7 +214,7 @@ test('Also supports breakpoint and orientation values.', () => {
       large: {
         backgroundColor: ['pink', 'purple'],
       },
-    }
+    },
   )
 
   setWidth(420)
@@ -326,7 +326,7 @@ test('Nested values also work with props and after rerender.', () => {
       spaced: {
         paddingLeft: 40,
       },
-    })
+    }),
   )
 
   setNativePropsMock.mockReset()
@@ -497,7 +497,7 @@ test('Types for StyleSheets passed to Styled are properly inferred.', () => {
       android: {
         margin: 15,
       },
-    }
+    },
   )
 
   expect(<TypedView active />).toBeDefined()
@@ -517,7 +517,7 @@ test('Types for StyleSheets passed to Styled are properly inferred.', () => {
   expect(
     <TypedText accessibilityRole="button" textBreakStrategy="simple" selectable>
       Hello World
-    </TypedText>
+    </TypedText>,
   ).toBeDefined()
 
   const TypedImage = Styled(
@@ -543,7 +543,7 @@ test('Types for StyleSheets passed to Styled are properly inferred.', () => {
         // @ts-expect-error
         margin: 'red',
       },
-    }
+    },
   )
 
   // TODO no error when source missing...
@@ -564,7 +564,7 @@ test('Style method also receives props.', () => {
       medium: {
         paddingLeft: props.space * 2,
       },
-    })
+    }),
   )
 
   setWidth(420)
@@ -583,6 +583,6 @@ test('Style method also receives props.', () => {
       // @ts-expect-error
       size="error"
       accessibilityLabel="observable-view"
-    />
+    />,
   )
 })

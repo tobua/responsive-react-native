@@ -38,7 +38,7 @@ test('Dynamic values are scaled depending on viewport size.', () => {
           <Text accessibilityLabel="text" style={styles.text} />
         </>
       )}
-    </Rerender>
+    </Rerender>,
   )
 
   let view = screen.getByLabelText('view')
@@ -437,7 +437,7 @@ test('Any type of component inside Rerender will rerender.', () => {
   const arePropsEqual = () => true
   const MemoizedComponent = memo(
     () => <View accessibilityLabel="view" style={styles.wrapper} />,
-    arePropsEqual
+    arePropsEqual,
   )
 
   render(
@@ -448,7 +448,7 @@ test('Any type of component inside Rerender will rerender.', () => {
           <Text accessibilityLabel="text" style={styles.text} />
         </>
       )}
-    </Rerender>
+    </Rerender>,
   )
 
   let view = screen.getByLabelText('view')
@@ -566,7 +566,10 @@ test('Proper types for createStyle stylesheet.', () => {
       rotation: 45,
     },
     viewAnother: {
+      // @ts-expect-error Bugfix, I've contributed ;)
       testID: 'hello',
+    },
+    viewYetAnother: {
       // @ts-expect-error
       accessibilityHint: 'hey',
     },

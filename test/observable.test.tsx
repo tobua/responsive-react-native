@@ -27,7 +27,7 @@ const ObservableView = Styled(
     large: {
       backgroundColor: 'blue',
     },
-  })
+  }),
 )
 
 test('Prop values and changes are propaged to matching styles.', () => {
@@ -81,7 +81,7 @@ test('Style method also receives props.', () => {
       medium: {
         paddingLeft: props.space * 2,
       },
-    })
+    }),
   )
 
   setWidth(420)

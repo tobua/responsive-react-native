@@ -1,25 +1,22 @@
 #!/usr/bin/env node
-import { copyFileSync, renameSync, rmSync } from 'fs'
+import { cpSync, renameSync, rmSync } from 'fs'
 import { join } from 'path'
 import { execSync } from 'child_process'
 
-// This script enhances source files inside /app with a fresh React Native template.
+// Enhances source files inside /app with a fresh RN project template.
 const appName = 'ResponsiveApp'
 
 console.log('⌛ Initializing a fresh RN project...')
 
-try {
-  execSync(`npx react-native init ${appName}`, {
-    stdio: 'inherit',
-  })
-} catch (error) {
-  // Ignore errors (ruby version check).
-}
+execSync(`npx react-native init ${appName} --skip-git-init true --install-pods true`, {
+  // Write output to cnosole.
+  stdio: 'inherit',
+})
 
-copyFileSync('app/App.tsx', `${appName}/App.tsx`)
-copyFileSync('app/Expandable.tsx', `${appName}/Expandable.tsx`)
-copyFileSync('app/global.d.ts', `${appName}/global.d.ts`)
-copyFileSync('logo.png', `${appName}/logo.png`)
+cpSync('app/App.tsx', `${appName}/App.tsx`)
+cpSync('app/Expandable.tsx', `${appName}/Expandable.tsx`)
+cpSync('app/global.d.ts', `${appName}/global.d.ts`)
+cpSync('logo.png', `${appName}/logo.png`)
 
 rmSync('app', { recursive: true })
 

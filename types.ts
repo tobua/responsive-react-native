@@ -51,14 +51,14 @@ export type PlatformStyleProp<T extends keyof NativeStyle, K extends Platform = 
 
 export type MediaStyleProp<
   T extends keyof NativeStyle,
-  U extends keyof CurrentBreakpoints = keyof CurrentBreakpoints
+  U extends keyof CurrentBreakpoints = keyof CurrentBreakpoints,
 > = {
   [K in U]?: NativeStyle[T] | PlatformStyleProp<T> | OrientationStyleProp<T>
 }
 
 export type OrientationStyleProp<T extends keyof NativeStyle> = [
   NativeStyle[T] | PlatformStyleProp<T> | MediaStyleProp<T>,
-  NativeStyle[T] | PlatformStyleProp<T> | MediaStyleProp<T>
+  NativeStyle[T] | PlatformStyleProp<T> | MediaStyleProp<T>,
 ]
 
 export type StyleValue<L extends keyof NativeStyle> =
@@ -112,5 +112,5 @@ export type StringComponentProps = {
 export type ComponentProps<T extends ComponentInput> = T extends keyof StringComponentProps
   ? StringComponentProps[T]
   : T extends Component
-  ? T['props']
-  : never
+    ? T['props']
+    : never
