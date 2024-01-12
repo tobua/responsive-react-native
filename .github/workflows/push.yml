@@ -11,8 +11,8 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v3
-      - run: npm install --legacy-peer-deps
+      - uses: actions/checkout@v4
+      - run: npm install
       - run: npm run build
       - name: Test 📱
         run: npm test

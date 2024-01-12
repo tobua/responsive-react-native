@@ -7,10 +7,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.10.0",
+    "@codesandbox/sandpack-react": "^2.11.2",
     "@stitches/react": "^1.2.8",
     "device-sizes": "^1.2.3",
-    "indicate": "^6.1.0",
+    "indicate": "^6.2.0",
     "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -18,7 +18,7 @@
     "wasser": "^2.4.0"
   },
   "devDependencies": {
-    "eslint": "8.55.0",
+    "eslint": "8.56.0",
     "eslint-config-next": "14.0.4"
   },
   "eslintConfig": {

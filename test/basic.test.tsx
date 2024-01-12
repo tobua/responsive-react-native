@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
 import { View, Text, Platform, Image } from 'react-native'
+import { observer } from 'mobx-react-lite'
 import { render, screen, act } from '@testing-library/react-native'
 import {
   createStyles,
@@ -597,4 +598,37 @@ test('SelectBreakpoint is properly typed.', () => {
   render(<SelectBreakpoint onChange={typedOnChange} />)
   // @ts-expect-error Breakpoints not assignable to number.
   render(<SelectBreakpoint onChange={invalidOnChange} />)
+})
+
+test('MobX observer components will also be rerendered.', () => {
+  let regularRenders = 0
+  let observedRenders = 0
+  const RegularComponent = () => {
+    regularRenders += 1
+    return <View accessibilityLabel="regular" style={styles.wrapper} />
+  }
+  const ObservedComponent = observer(() => {
+    observedRenders += 1
+    return <View accessibilityLabel="observer" style={styles.wrapper} />
+  })
+  render(
+    <Rerender>
+      {() => (
+        <>
+          <RegularComponent />
+          <ObservedComponent />
+        </>
+      )}
+    </Rerender>,
+  )
+
+  expect(regularRenders).toBe(1)
+  expect(observedRenders).toBe(1)
+
+  act(() => {
+    rerender()
+  })
+
+  expect(regularRenders).toBe(2)
+  expect(observedRenders).toBe(2)
 })
