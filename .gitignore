@@ -1,7 +1,7 @@
 node_modules
 package-lock.json
 dist
-ResponsiveApp
+app-temp
 app/**/*
 !app/App.tsx
 !app/Expandable.tsx
