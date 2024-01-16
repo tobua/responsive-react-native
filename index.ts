@@ -80,7 +80,9 @@ const app = {
   rerender: () => {
     updateBreakpoint()
     app.listener.forEach((listener) => listener())
+    app.rerenderComponents.forEach((update) => update())
   },
+  rerenderComponents: [] as Function[],
   // Calculates a scaled value.
   value: linearScale,
   // Updates the current breakpoint depending on window width.
@@ -219,13 +221,7 @@ export const Rerender = ({
   style?: StyleProp<ViewStyle> | StyleProp<ViewStyle>[]
 }) => {
   const [count, setCount] = useState(0)
-
-  app.rerender = () => {
-    updateBreakpoint()
-    app.listener.forEach((listener) => listener())
-    setCount(count + 1)
-  }
-
+  app.rerenderComponents.push(() => setCount(count + 1))
   return createElement(View, { style, key: count, children: children() })
 }
 

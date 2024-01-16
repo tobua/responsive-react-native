@@ -632,3 +632,26 @@ test('MobX observer components will also be rerendered.', () => {
   expect(regularRenders).toBe(2)
   expect(observedRenders).toBe(2)
 })
+
+test('Multiple Rerender components can be placed in the React tree.', () => {
+  let renders = 0
+  const RegularComponent = () => {
+    renders += 1
+    return <View accessibilityLabel="regular" style={styles.wrapper} />
+  }
+  render(
+    <>
+      <Rerender>{() => <RegularComponent />}</Rerender>
+      <Rerender>{() => <RegularComponent />}</Rerender>
+      <Rerender>{() => <RegularComponent />}</Rerender>
+    </>,
+  )
+
+  expect(renders).toBe(3)
+
+  act(() => {
+    rerender()
+  })
+
+  expect(renders).toBe(6)
+})
