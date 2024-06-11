@@ -1,12 +1,7 @@
 import { configure, getValue } from 'responsive-react-native'
 import { setWidth } from './helper/general'
 
-const expectValuesForSeveralScales = (
-  value: number,
-  fullResult: number,
-  halfResult: number,
-  noneResult: number,
-) => {
+const expectValuesForSeveralScales = (value: number, fullResult: number, halfResult: number, noneResult: number) => {
   configure({
     scale: {
       minimum: 320,

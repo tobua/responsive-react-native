@@ -58,9 +58,7 @@ export const SelectBreakpoint = ({
   const breakpoints = getBreakpoints()
   const breakpointKeys = Object.keys(breakpoints) as (keyof Breakpoints)[]
   const { breakpoint, setBreakpoint } = useResponsive()
-  const currentIndex = Object.keys(breakpoints).findIndex(
-    (current) => current === String(breakpoint),
-  )
+  const currentIndex = Object.keys(breakpoints).findIndex((current) => current === String(breakpoint))
   const breakpointCount = Object.keys(breakpoints).length
   const currentPosition = getPosition(currentIndex, breakpointCount)
   const position = useRef(new Animated.Value(currentPosition)).current
@@ -79,12 +77,7 @@ export const SelectBreakpoint = ({
 
   return (
     <Wrapper {...props}>
-      <Cursor
-        style={[
-          { backgroundColor: color, width: `${100 / breakpointCount}%` },
-          { left: animatedPosition },
-        ]}
-      />
+      <Cursor style={[{ backgroundColor: color, width: `${100 / breakpointCount}%` }, { left: animatedPosition }]} />
       {breakpointKeys.map((key, index) => (
         <Button
           key={key}

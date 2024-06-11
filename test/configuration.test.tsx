@@ -1,10 +1,4 @@
-import {
-  setBreakpoint,
-  getBreakpoint,
-  getBreakpoints,
-  configure,
-  createStyles,
-} from 'responsive-react-native'
+import { setBreakpoint, getBreakpoint, getBreakpoints, configure, createStyles } from 'responsive-react-native'
 
 // For tests of type overrides, see ./types/configuration.test.tsx
 

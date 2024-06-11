@@ -1,14 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableHighlight, Platform, Text, Animated, Image } from 'react-native'
 import { act, render, screen } from '@testing-library/react-native'
-import {
-  updateBreakpoint,
-  Styled,
-  rerender,
-  getBreakpoint,
-  getOrientation,
-  reset,
-} from 'responsive-react-native'
+import { updateBreakpoint, Styled, rerender, getBreakpoint, getOrientation, reset } from 'responsive-react-native'
 import { setWidth, setWidthAndHeight } from './helper/general'
 
 beforeEach(reset)

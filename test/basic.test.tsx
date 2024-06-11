@@ -436,10 +436,7 @@ test('Selects different values based on current platform.', () => {
 
 test('Any type of component inside Rerender will rerender.', () => {
   const arePropsEqual = () => true
-  const MemoizedComponent = memo(
-    () => <View accessibilityLabel="view" style={styles.wrapper} />,
-    arePropsEqual,
-  )
+  const MemoizedComponent = memo(() => <View accessibilityLabel="view" style={styles.wrapper} />, arePropsEqual)
 
   render(
     <Rerender>

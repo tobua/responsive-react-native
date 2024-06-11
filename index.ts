@@ -43,10 +43,7 @@ export const linearScale = (
 
   const percentage = (app.width - app.scale.minimum) / (app.scale.maximum - app.scale.minimum)
 
-  return avoidZero(
-    Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value),
-    value,
-  )
+  return avoidZero(Math.round(value - (app.scale.factor / 2) * value + percentage * app.scale.factor * value), value)
 }
 
 const app = {
@@ -227,23 +224,16 @@ export const Rerender = ({
 
 // Does the object contain a breakpoint key?
 const hasBreakpointKey = <T extends keyof NativeStyle>(value: MediaStyleProp<T>) => {
-  return (Object.keys(app.breakpoints) as BreakpointKeys).some(
-    (key) => typeof value[key] !== 'undefined',
-  )
+  return (Object.keys(app.breakpoints) as BreakpointKeys).some((key) => typeof value[key] !== 'undefined')
 }
 
 const hasPlatformKey = <T extends keyof NativeStyle>(value: PlatformStyleProp<T>) => {
   return typeof value.ios !== 'undefined' || typeof value.android !== 'undefined'
 }
 
-const closestBreakpointValue = <T extends keyof NativeStyle>(
-  value: MediaStyleProp<T>,
-  property: T,
-) => {
+const closestBreakpointValue = <T extends keyof NativeStyle>(value: MediaStyleProp<T>, property: T) => {
   const breakpoints = Object.keys(app.breakpoints) as BreakpointKeys
-  const currentBreakpointIndex = breakpoints.findIndex(
-    (current: string) => current === app.breakpoint,
-  )
+  const currentBreakpointIndex = breakpoints.findIndex((current: string) => current === app.breakpoint)
 
   const applicableBreakpoints = breakpoints.splice(0, currentBreakpointIndex + 1).reverse()
 
@@ -282,9 +272,7 @@ export const responsiveProperty = (
   const isArray = Array.isArray(value)
 
   if (isArray && value.length === 2 && property !== 'transform') {
-    let orientationValue = (app.orientation === 'portrait' ? value[0] : value[1]) as StyleValue<
-      keyof NativeStyle
-    >
+    let orientationValue = (app.orientation === 'portrait' ? value[0] : value[1]) as StyleValue<keyof NativeStyle>
 
     if (typeof orientationValue === 'object') {
       orientationValue = closestBreakpointValue(
@@ -293,29 +281,17 @@ export const responsiveProperty = (
       ) as StyleValue<keyof NativeStyle>
     }
 
-    return responsiveProperty(
-      property,
-      orientationValue as OrientationStyleProp<keyof NativeStyle>,
-      nestingFunction,
-    )
+    return responsiveProperty(property, orientationValue as OrientationStyleProp<keyof NativeStyle>, nestingFunction)
   }
 
-  if (
-    !isArray &&
-    valueType === 'object' &&
-    hasBreakpointKey(value as MediaStyleProp<keyof NativeStyle>)
-  ) {
+  if (!isArray && valueType === 'object' && hasBreakpointKey(value as MediaStyleProp<keyof NativeStyle>)) {
     return closestBreakpointValue(
       value as MediaStyleProp<keyof NativeStyle>,
       property,
     ) as NativeStyle[keyof NativeStyle]
   }
 
-  if (
-    !isArray &&
-    valueType === 'object' &&
-    hasPlatformKey(value as PlatformStyleProp<keyof NativeStyle>)
-  ) {
+  if (!isArray && valueType === 'object' && hasPlatformKey(value as PlatformStyleProp<keyof NativeStyle>)) {
     return app.value((value as any)[Platform.OS], app.breakpoint, app.orientation)
   }
 
@@ -338,9 +314,7 @@ const createProxy = <T extends keyof NativeStyle>(target: StyleProps<T>) => {
   })
 }
 
-export const createStyles = <K extends string, T extends Record<K, NativeStyle>>(
-  sheet: StyleSheet<K, T>,
-) => {
+export const createStyles = <K extends string, T extends Record<K, NativeStyle>>(sheet: StyleSheet<K, T>) => {
   if (process.env.NODE_ENV !== 'production' && typeof sheet !== 'object') {
     console.warn('Invalid input provided to createStyles() needs to be an object.')
   }
@@ -349,9 +323,7 @@ export const createStyles = <K extends string, T extends Record<K, NativeStyle>>
     const styles = sheet[key as K]
 
     if (process.env.NODE_ENV !== 'production' && typeof styles !== 'object') {
-      console.warn(
-        `Invalid input provided to createStyles() property ${String(key)} to be an object.`,
-      )
+      console.warn(`Invalid input provided to createStyles() property ${String(key)} to be an object.`)
     }
 
     sheet[key as K] = createProxy(styles) as any

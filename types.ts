@@ -29,9 +29,7 @@ export interface DefaultBreakpoints {
   large: number
 }
 
-export type CurrentBreakpoints = keyof CustomBreakpoints extends never
-  ? DefaultBreakpoints
-  : CustomBreakpoints
+export type CurrentBreakpoints = keyof CustomBreakpoints extends never ? DefaultBreakpoints : CustomBreakpoints
 
 export type BreakpointKeys = (keyof CurrentBreakpoints)[]
 
@@ -73,22 +71,14 @@ export type StyleProps<T extends keyof NativeStyle> = {
 
 export type StyleSheet<K extends string, T extends Record<K, NativeStyle>> = {
   [P in K]: {
-    [L in keyof T[P] & keyof NativeStyle]?:
-      | T[P][L]
-      | PlatformStyleProp<L>
-      | MediaStyleProp<L>
-      | OrientationStyleProp<L>
+    [L in keyof T[P] & keyof NativeStyle]?: T[P][L] | PlatformStyleProp<L> | MediaStyleProp<L> | OrientationStyleProp<L>
   }
 }
 
 export type StyleSheetFlat<K extends string, T extends Record<K, NativeStyle>> = T
 
 export type StyledSheet<T extends NativeStyle> = {
-  [L in keyof T & keyof NativeStyle]?:
-    | T[L]
-    | PlatformStyleProp<L>
-    | MediaStyleProp<L>
-    | OrientationStyleProp<L>
+  [L in keyof T & keyof NativeStyle]?: T[L] | PlatformStyleProp<L> | MediaStyleProp<L> | OrientationStyleProp<L>
 }
 
 export type StyledSheetFlat<T extends NativeStyle> = T

@@ -3,7 +3,6 @@ import * as ReactNative from 'react-native'
 import { registerListener, removeListener, responsiveProperty, getBreakpoint } from './index'
 import { NativeStyle, StyledSheet, Conditionals, ComponentInput, ComponentProps } from './types'
 
-// @ts-ignore
 let autorun: Function
 
 const importAutorunIfInstalled = async () => {
@@ -42,11 +41,11 @@ const responsifyStyles = (styles: NativeStyle) => {
   return styles
 }
 
-const generateStyles = <T extends NativeStyle, S extends string>(
+const generateStyles = <T extends NativeStyle, R extends NativeStyle, S extends string>(
   baseStyles: StyledSheet<T> | ((props: any) => StyledSheet<T>),
   conditionalStyles:
-    | { [U in S & Conditionals]?: StyledSheet<T> }
-    | ((props: any) => { [U in S & Conditionals]?: StyledSheet<T> }) = {},
+    | { [U in S & Conditionals]?: StyledSheet<R> }
+    | ((props: any) => { [U in S & Conditionals]?: StyledSheet<R> }) = {},
   props: Record<string, any>,
   ref: MutableRefObject<any>,
   isUpdate = false,
@@ -54,7 +53,7 @@ const generateStyles = <T extends NativeStyle, S extends string>(
   if (typeof baseStyles === 'function' || typeof conditionalStyles === 'function') {
     return autoRunStyles(
       baseStyles as (props: any) => StyledSheet<T>,
-      conditionalStyles as (props: any) => Record<string, StyledSheet<T>>,
+      conditionalStyles as (props: any) => Record<string, StyledSheet<R>>,
       props,
       ref,
       isUpdate,
@@ -93,17 +92,15 @@ const generateStyles = <T extends NativeStyle, S extends string>(
   return responsifyStyles(styles)
 }
 
-const autoRunStyles = <T extends NativeStyle>(
+const autoRunStyles = <T extends NativeStyle, R extends NativeStyle>(
   baseStyles: (props: any) => StyledSheet<T>,
-  conditionalStyles: (props: any) => Record<string, StyledSheet<T>>,
+  conditionalStyles: (props: any) => Record<string, StyledSheet<R>>,
   props: Record<string, any>,
   ref: MutableRefObject<any>,
   isUpdate: boolean,
 ) => {
   if (typeof autorun !== 'function') {
-    console.warn(
-      'responsive-react-native: failed to import MobX make sure to install it with "npm i mobx".',
-    )
+    console.warn('responsive-react-native: failed to import MobX make sure to install it with "npm i mobx".')
   }
 
   let styles: NativeStyle | null = null
@@ -156,9 +153,7 @@ function resolveType(
   }
 
   if (typeof type === 'string' && type.includes('.')) {
-    return type
-      .split('.')
-      .reduce((items, property) => items[property], Components) as FunctionComponent<
+    return type.split('.').reduce((items, property) => items[property], Components) as FunctionComponent<
       ComponentProps<ComponentInput>
     >
   }
@@ -172,41 +167,33 @@ export function Styled<T extends NativeStyle, V extends Object, S extends string
   type: ComponentInput,
   baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>),
   conditionalStyles:
-    | { [U in S | Conditionals]?: StyledSheet<T> }
-    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<T> }),
-): (
-  props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V,
-) => ReactElement<any>
+    | { [U in S | Conditionals]?: StyledSheet<NativeStyle> }
+    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<NativeStyle> }),
+): (props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => ReactElement<any>
 
 // Overload for when conditionalStyles uses the default value
 export function Styled<T extends NativeStyle, V extends Object, S extends string = ''>(
   type: ComponentInput,
   baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>),
-): (
-  props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V,
-) => ReactElement<any>
+): (props: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => ReactElement<any>
 
 // TODO extend existing styled
 export function Styled<T extends NativeStyle, V extends Object, S extends string>(
   type: ComponentInput,
   baseStyles: StyledSheet<T> | ((props: V) => StyledSheet<T>),
   conditionalStyles:
-    | { [U in S | Conditionals]?: StyledSheet<T> }
-    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<T> }) = {} as {
-    [U in S | Conditionals]?: StyledSheet<T>
+    | { [U in S | Conditionals]?: StyledSheet<NativeStyle> }
+    | ((props: V) => { [U in S | Conditionals]?: StyledSheet<NativeStyle> }) = {} as {
+    [U in S | Conditionals]?: StyledSheet<NativeStyle>
   },
 ) {
   const ComponentType = resolveType(type, ReactNative)
 
   if (typeof ComponentType !== 'object' && typeof ComponentType !== 'function') {
-    console.warn(
-      `responsive-react-native: component ${type} passed to Styled isn't a valid RN component.`,
-    )
+    console.warn(`responsive-react-native: component ${type} passed to Styled isn't a valid RN component.`)
   }
 
-  return ({
-    ...props
-  }: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => {
+  return ({ ...props }: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const ref = useRef<any>()
 
