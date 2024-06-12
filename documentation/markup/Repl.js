@@ -87,10 +87,7 @@ const SandpackInner = ({ phone, setPhone }) => {
     const phone = deviceSizes[selected.value]
 
     Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage(
-        { type: 'width', width: phone.width / phone.scale },
-        '*'
-      )
+      client.iframe.contentWindow.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
     })
 
     setPhone(phone)
@@ -98,10 +95,7 @@ const SandpackInner = ({ phone, setPhone }) => {
 
   useEffect(() => {
     Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage(
-        { type: 'width', width: phone.width / phone.scale },
-        '*'
-      )
+      client.iframe.contentWindow.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
     })
   }, [sandpack])
 
@@ -141,11 +135,7 @@ const SandpackInner = ({ phone, setPhone }) => {
             }),
             option: (provided, state) => ({
               ...provided,
-              backgroundColor: state.isSelected
-                ? '#82D9FF'
-                : state.isFocused
-                ? '#FF85FA'
-                : 'transparent',
+              backgroundColor: state.isSelected ? '#82D9FF' : state.isFocused ? '#FF85FA' : 'transparent',
               cursor: 'pointer',
               ':active': {
                 backgroundColor: '#FF85FA',
@@ -176,7 +166,7 @@ const SandpackInner = ({ phone, setPhone }) => {
 }
 
 export const Repl = () => {
-  const [phone, setPhone] = useState(deviceSizes['iphone14'])
+  const [phone, setPhone] = useState(deviceSizes['iphone15'])
 
   return (
     <ContentGrid size={phone.type === Type.Tablet ? 'ultrawide' : 'wide'}>

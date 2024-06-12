@@ -24,7 +24,7 @@ cpSync('logo.png', 'app/logo.png')
 rmSync(appTemp, { recursive: true })
 
 // Run build to ensure distributed files for plugin exist.
-execSync('npm run build', {
+execSync('bun run build', {
   stdio: 'inherit',
 })
 
@@ -35,7 +35,7 @@ execSync('npm install $(npm pack .. | tail -1)', {
 })
 
 // Additional dependency.
-execSync('npm install react-native-cols mobx', {
+execSync('bun install react-native-cols mobx', {
   cwd: join(process.cwd(), 'app'),
   stdio: 'inherit',
 })
