@@ -416,22 +416,40 @@ test('Selects different values based on current platform.', () => {
     breakpoint: {
       width: { android: 10, ios: 20 },
     },
+    monospaceText: {
+      fontFamily: { ios: 'Courier', android: 'monospace' },
+    },
+    textNested: {
+      fontFamily: { ios: ['Courier', 'Consolas'], android: { small: 'monospace' } },
+    },
   })
 
   expect(breakpointStyles.breakpoint.width).toBe(15)
+  expect(breakpointStyles.monospaceText.fontFamily).toBe('Courier')
+  expect(breakpointStyles.textNested.fontFamily).toBe('Courier')
 
   setWidth(420)
   updateBreakpoint()
 
   expect(getBreakpoint()).toBe('medium')
+  expect(getOrientation()).toBe('portrait')
 
   expect(breakpointStyles.breakpoint.width).toBe(20)
 
   Platform.OS = 'android'
 
   expect(breakpointStyles.breakpoint.width).toBe(10)
+  expect(breakpointStyles.monospaceText.fontFamily).toBe('monospace')
+  expect(breakpointStyles.textNested.fontFamily).toBe('monospace')
 
   Platform.OS = 'ios'
+  setWidth(900)
+
+  expect(getOrientation()).toBe('landscape')
+  expect(breakpointStyles.monospaceText.fontFamily).toBe('Courier')
+  expect(breakpointStyles.textNested.fontFamily).toBe('Consolas')
+
+  setWidth(420)
 })
 
 test('Any type of component inside Rerender will rerender.', () => {

@@ -292,7 +292,11 @@ export const responsiveProperty = (
   }
 
   if (!isArray && valueType === 'object' && hasPlatformKey(value as PlatformStyleProp<keyof NativeStyle>)) {
-    return app.value((value as any)[Platform.OS], app.breakpoint, app.orientation)
+    const valueByPlatform = (value as any)[Platform.OS]
+    if (typeof valueByPlatform !== 'number') {
+      return responsiveProperty(property, valueByPlatform as OrientationStyleProp<keyof NativeStyle>, nestingFunction)
+    }
+    return app.value(valueByPlatform, app.breakpoint, app.orientation)
   }
 
   // Recursively scale nested values like shadowOffset.
