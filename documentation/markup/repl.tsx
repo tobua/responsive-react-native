@@ -1,16 +1,10 @@
+import { SandpackCodeEditor, SandpackLayout, SandpackPreview, SandpackProvider, useSandpack } from '@codesandbox/sandpack-react'
+import { Type, deviceSizes } from 'device-sizes'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackPreview,
-  useSandpack,
-} from '@codesandbox/sandpack-react'
 import Select from 'react-select'
-import { deviceSizes, Type } from 'device-sizes'
 import { styled, theme } from '../stitches.config'
-import { PhoneCutout } from './phone-cutout'
 import { ContentGrid } from './general'
+import { PhoneCutout } from './phone-cutout'
 
 const Wrapper = styled('section', {
   display: 'flex',

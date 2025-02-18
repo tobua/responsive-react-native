@@ -10,6 +10,9 @@ export const rsbuild = defineConfig({
       index: './index.tsx',
     },
   },
+  output: {
+    assetPrefix: '/responsive-react-native/',
+  },
   html: {
     title: 'Responsive React Native',
     template: './index.html',

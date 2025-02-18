@@ -1,10 +1,4 @@
-import {
-  SandpackProvider,
-  SandpackCodeViewer,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackPreview,
-} from '@codesandbox/sandpack-react'
+import { SandpackCodeEditor, SandpackCodeViewer, SandpackLayout, SandpackPreview, SandpackProvider } from '@codesandbox/sandpack-react'
 import { Scroll } from 'overflow-scroll-fade'
 
 export const Code = ({ children, backgroundColor = 'white', theme = 'light' }) => (

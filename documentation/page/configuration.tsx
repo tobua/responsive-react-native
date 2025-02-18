@@ -1,25 +1,23 @@
-import { theme } from '../stitches.config'
-import { Footer } from '../markup/footer'
 import { Code } from '../markup/code'
+import { Footer } from '../markup/footer'
+import { ContentGrid, InlineCode, Text, Title } from '../markup/general'
 import { Layout } from '../markup/layout'
 import { Anchor } from '../markup/link'
-import { ContentGrid, InlineCode, Text, Title } from '../markup/general'
+import { theme } from '../stitches.config'
 
 export function Configuration() {
   return (
     <>
       <Layout>Configuration</Layout>
       <ContentGrid>
-        <Text>
-          While the defaults should work fine to get started it's also possible to configure almost any behaviour.
-        </Text>
+        <Text>While the defaults should work fine to get started it's also possible to configure almost any behaviour.</Text>
         <Anchor id="breakpoint">
           <Title>Breakpoints</Title>
         </Anchor>
         <Text>
-          By default small, medium and large breakpoints are available. The number of breakpoints, their names as well
-          as the starting point can all be changed. The number defines the minimal viewport width where this breakpoint
-          will apply. By default the initial breakpoint is inferred from the viewport size, but can also be configured.
+          By default small, medium and large breakpoints are available. The number of breakpoints, their names as well as the starting point
+          can all be changed. The number defines the minimal viewport width where this breakpoint will apply. By default the initial
+          breakpoint is inferred from the viewport size, but can also be configured.
         </Text>
         <Code backgroundColor={theme.color.codeBackground}>{`import { configure } from 'responsive-react-native'
 
@@ -34,8 +32,8 @@ configure({
   breakpoint: 'small'
 })`}</Code>
         <Text>
-          When configuring breakpoints with TypeScript use the following to override{' '}
-          <InlineCode>CustomBreakpoints</InlineCode> types for proper type checking.
+          When configuring breakpoints with TypeScript use the following to override <InlineCode>CustomBreakpoints</InlineCode> types for
+          proper type checking.
         </Text>
         <Code backgroundColor={theme.color.codeBackground}>{`declare module 'responsive-react-native' {
   interface CustomBreakpoints {
@@ -48,9 +46,9 @@ configure({
           <Title>Scaled Values</Title>
         </Anchor>
         <Text>
-          Regular pixel based values will not be adapted based on breakpoints, but linearly scaled between a minimum and
-          a maximum breakpoint. In the middle between these two points the value will not scale at all. By specifying
-          the <InlineCode>factor</InlineCode> the strength of the scaling can be defined.
+          Regular pixel based values will not be adapted based on breakpoints, but linearly scaled between a minimum and a maximum
+          breakpoint. In the middle between these two points the value will not scale at all. By specifying the{' '}
+          <InlineCode>factor</InlineCode> the strength of the scaling can be defined.
         </Text>
         <div style={{ display: 'flex', justifyContent: 'center', height: 300, position: 'relative' }}>
           <img style={{ maxHeight: '100%' }} src="/scale.svg" alt="Illustration of responsive scaling." />
@@ -68,9 +66,8 @@ configure({
         <Text>
           For even more fine grained control it's possible to override the default scaling function. This method called{' '}
           <InlineCode>value</InlineCode> will receive the number of the property. This would be 10 in the case of{' '}
-          <InlineCode>{'{ padding: 10 }'}</InlineCode>. Additionally, the method will receive the current breakpoint. As
-          shown below with this it's easily possible to calculate the value based on the breakpoint instead of scaling
-          linearly.
+          <InlineCode>{'{ padding: 10 }'}</InlineCode>. Additionally, the method will receive the current breakpoint. As shown below with
+          this it's easily possible to calculate the value based on the breakpoint instead of scaling linearly.
         </Text>
         <Code backgroundColor={theme.color.codeBackground}>{`import { configure } from 'responsive-react-native'
 

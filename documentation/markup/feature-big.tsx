@@ -1,7 +1,7 @@
 import { styled, theme } from '../stitches.config'
+import { Code } from './code'
 import { ContentGrid } from './general'
 import * as Icon from './icon'
-import { Code } from './code'
 
 const Grid = styled('div', {
   display: 'grid',
@@ -153,8 +153,8 @@ export const AdaptiveValues = () => {
             <Title>Adaptive Values</Title>
           </Heading>
           <Description>
-            Using a special syntax different values can be used depending on breakpoint, orientation or platform. All
-            (??) values will still be scaled to match the current viewport size.
+            Using a special syntax different values can be used depending on breakpoint, orientation or platform. All (??) values will still
+            be scaled to match the current viewport size.
           </Description>
           <ul>
             <li>
@@ -220,10 +220,9 @@ export default () => {
             <Title>Breakpoints</Title>
           </Heading>
           <Description>
-            In addition to picking values based on breakpoint the current breakpoint can also be accessed to dynamically
-            render specific content. In addition to the default <InlineCode>small</InlineCode>,{' '}
-            <InlineCode>medium</InlineCode> and <InlineCode>large</InlineCode> breakpoint other breakpoints can be
-            configured.
+            In addition to picking values based on breakpoint the current breakpoint can also be accessed to dynamically render specific
+            content. In addition to the default <InlineCode>small</InlineCode>, <InlineCode>medium</InlineCode> and{' '}
+            <InlineCode>large</InlineCode> breakpoint other breakpoints can be configured.
           </Description>
         </Right>
       </Grid>

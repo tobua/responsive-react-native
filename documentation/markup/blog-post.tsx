@@ -1,5 +1,5 @@
-import { ContentGrid } from './general'
 import { styled, theme } from '../stitches.config'
+import { ContentGrid } from './general'
 
 const Wrapper = styled('a', {
   display: 'flex',

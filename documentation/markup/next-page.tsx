@@ -1,6 +1,6 @@
+import { go } from '../router'
 import { styled, theme } from '../stitches.config'
 import { Link } from './link'
-import { go } from '../router'
 
 const PositionRight = styled('div', {
   display: 'flex',
@@ -32,7 +32,7 @@ export const NextPage = ({ name, href }) => {
     <PositionRight>
       <Wrapper>
         <Description>Continue Reading</Description>
-        <Link onClick={(event) => go(event, href)} href={href}>
+        <Link onClick={(event) => go(event, href.replace('/', ''))} href={href}>
           <PageTitle>{name}</PageTitle>
         </Link>
       </Wrapper>

@@ -1,6 +1,6 @@
 import { styled, theme } from '../stitches.config'
-import { ContentGrid } from './general'
 import { Code } from './code'
+import { ContentGrid } from './general'
 
 const Title = styled('h1', {
   fontSize: 50,
@@ -63,8 +63,7 @@ const CustomView = Styled(
 export default () => <CustomView highlight />`}</Code>
     <SubTitle>Observable Styles with MobX</SubTitle>
     <DescriptionSmall>
-      When a function is passed and MobX is installed the styles will automatically adapt whenever any of the state
-      accessed inside changes.
+      When a function is passed and MobX is installed the styles will automatically adapt whenever any of the state accessed inside changes.
     </DescriptionSmall>
     <Code backgroundColor="black" theme="dark">{`import { observable } from 'mobx'
 import { Styled } from 'responsive-react-native'

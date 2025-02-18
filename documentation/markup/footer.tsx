@@ -1,7 +1,7 @@
-import { styled, theme } from '../stitches.config'
-import { Link } from './link'
-import { ContentGrid } from './general'
 import { go } from 'router'
+import { styled, theme } from '../stitches.config'
+import { ContentGrid } from './general'
+import { Link } from './link'
 
 const Text = styled('p', {
   fontFamily: 'sans-serif',

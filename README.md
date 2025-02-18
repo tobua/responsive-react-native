@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://responsive-react-native.vercel.app/">
+  <a href="https://tobua.github.io/responsive-react-native/">
     <img src="https://github.com/tobua/responsive-react-native/raw/main/video.gif" alt="Responsive Video" width="250">
     <!--- Recorded in iOS Simulator and converted with Gifsky from Mac App Store. -->
   </a>
@@ -16,7 +16,7 @@ Unlike web browsers React Native doesn't support media queries to create respons
 - Size calculated based on viewport size or user preference
 - Styled-components like component interface to avoid rerender
 - Type checking with TypeScript
-- Check out the web based [documentation](https://responsive-react-native.vercel.app/) with examples
+- Check out the web based [documentation](https://tobua.github.io/responsive-react-native/) with examples
 - Here is a [blog post](https://onwebfocus.com/styled) discussing this plugin
 
 ## Installation and Usage
@@ -157,7 +157,7 @@ const CustomView = Styled(
     ios: {
       padding: 5,
     },
-  }
+  },
 )
 
 export default () => <CustomView highlight />

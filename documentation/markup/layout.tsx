@@ -1,5 +1,6 @@
+import { go } from 'router'
 import { styled, theme } from '../stitches.config'
-import { TextLink } from './Link'
+import { TextLink } from './link'
 
 const Intro = styled('div', {
   position: 'relative',
@@ -88,13 +89,18 @@ export const Layout = ({ type = 'code', children }) => {
 
   return (
     <Intro>
-      <IntroBackground type={type}>
-        <TextLink color="black" css={{ fontFamily: 'sans-serif' }} href="/">
+      <IntroBackground type={type as 'code'}>
+        <TextLink
+          onClick={(event) => go(event, '')}
+          color="black"
+          css={{ fontFamily: 'sans-serif' }}
+          href="/responsive-react-native"
+        >
           Home
         </TextLink>
         <TitleCode>{children}</TitleCode>
       </IntroBackground>
-      <SkewedSeparator type={type} />
+      <SkewedSeparator type={type as 'code'} />
     </Intro>
   )
 }

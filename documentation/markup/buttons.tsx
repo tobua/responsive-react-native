@@ -1,3 +1,4 @@
+import { go } from 'router'
 import { styled, theme } from '../stitches.config'
 
 const Wrapper = styled('div', {
@@ -43,7 +44,11 @@ const Button = styled('a', {
 export const Buttons = () => {
   return (
     <Wrapper>
-      <Button style="full" href="/getting-started">
+      <Button
+        onClick={(event) => go(event, 'getting-started')}
+        style="full"
+        href="/responsive-react-native/getting-started"
+      >
         Getting Started
       </Button>
       <Button href="https://github.com/tobua/responsive-react-native">GitHub</Button>
