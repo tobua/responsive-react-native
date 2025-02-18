@@ -1,5 +1,5 @@
-import { Feature } from './Feature'
-import { Stylesheet, ScaledValues, AdaptiveValues, Breakpoints } from './Icon'
+import { Feature } from './feature'
+import { Stylesheet, ScaledValues, AdaptiveValues, Breakpoints } from './icon'
 import { styled, theme } from '../stitches.config'
 
 const Wrapper = styled('div', {

@@ -1,4 +1,4 @@
-import { createElement, useEffect, useState } from 'react'
+import React, { createElement, useEffect, useState } from 'react'
 import { Dimensions, ViewStyle, TextStyle, View, StyleProp, Platform } from 'react-native'
 import type {
   Scale,
@@ -162,7 +162,6 @@ const sizeProperties: Partial<Record<keyof ViewStyle | keyof TextStyle, true>> =
   borderTopLeftRadius: true,
   borderTopRightRadius: true,
   borderTopStartRadius: true,
-  // @ts-ignore Will be released with React Native 0.71 (already works in web).
   gap: true,
   rowGap: true,
   columnGap: true,
@@ -214,7 +213,7 @@ export const Rerender = ({
   children,
   style = { flex: 1, width: '100%' },
 }: {
-  children: () => JSX.Element | JSX.Element[]
+  children: () => React.ReactNode
   style?: StyleProp<ViewStyle> | StyleProp<ViewStyle>[]
 }) => {
   const [count, setCount] = useState(0)

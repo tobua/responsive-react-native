@@ -73,3 +73,37 @@ test('Custom value method receives all parameters.', () => {
   expect(valueMock.mock.calls[1][1]).toBe('custom')
   expect(valueMock.mock.calls[1][2]).toBe('portrait')
 })
+
+test('Special syntax is kept intact.', () => {
+  setBreakpoint('huge')
+
+  const styles = createStyles({
+    wrapper: {
+      marginTop: { ios: -3, android: -5 },
+      marginLeft: { ios: 11, android: 12 },
+      fontSize: 40,
+      color: 'white',
+      transform: [
+        {
+          rotate: '45deg',
+        },
+      ],
+    },
+    icon: {
+      marginTop: { ios: -3, android: -5 },
+      marginLeft: { ios: 11, android: 12 },
+      fontSize: 40,
+      color: 'white',
+      transform: [
+        {
+          rotate: '45deg',
+        },
+      ],
+    },
+  })
+
+  // @ts-ignore
+  expect(styles.wrapper.transform[0].rotate).toBe('45deg')
+  // @ts-ignore
+  expect(styles.icon.transform[0].rotate).toBe('45deg')
+})

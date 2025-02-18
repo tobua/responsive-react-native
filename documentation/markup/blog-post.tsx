@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import { ContentGrid } from './General'
+import { ContentGrid } from './general'
 import { styled, theme } from '../stitches.config'
 
 const Wrapper = styled('a', {
@@ -34,7 +33,7 @@ export const BlogPost = () => {
   return (
     <ContentGrid css={{ justifyContent: 'center' }}>
       <Wrapper href="https://onwebfocus.com/styled">
-        <Image width={80} height={80} src="/onwebfocus.png" alt="Article in onbwefocus.com blog." />
+        <img width={80} height={80} src="/onwebfocus.png" alt="Article in onbwefocus.com blog." />
         <div>
           <Blockquote cite="https://onwebfocus.com/styled">
             <Quote>"</Quote>This plugin however goes much further while still being simpler.

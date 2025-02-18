@@ -1,21 +1,15 @@
-import Head from 'next/head'
 import { styled, theme } from '../stitches.config'
-import { Footer } from '../markup/Footer'
-import { Repl } from '../markup/Repl'
-import { Features } from '../markup/Features'
-import { Buttons } from '../markup/Buttons'
-import {
-  ResponsiveStyleSheet,
-  ScaledValues,
-  AdaptiveValues,
-  Breakpoints,
-} from '../markup/FeatureBig'
-import { ContentGrid } from '../markup/General'
-import { Code } from '../markup/Code'
-import { StyledIntro } from '../markup/StyledIntro'
-import { Layout } from '../markup/Layout'
-import { NextPage } from '../markup/NextPage'
-import { BlogPost } from '../markup/BlogPost'
+import { Footer } from '../markup/footer'
+import { Repl } from '../markup/repl'
+import { Features } from '../markup/features'
+import { Buttons } from '../markup/buttons'
+import { ResponsiveStyleSheet, ScaledValues, AdaptiveValues, Breakpoints } from '../markup/feature-big'
+import { ContentGrid } from '../markup/general'
+import { Code } from '../markup/code'
+import { StyledIntro } from '../markup/styled-intro'
+import { NextPage } from '../markup/next-page'
+import { BlogPost } from '../markup/blog-post'
+import { Layout } from '../markup/layout'
 
 const Title = styled('h1', {
   color: 'white',
@@ -43,12 +37,9 @@ const IntroGrid = styled('div', {
   },
 })
 
-export default function Home() {
+export function Overview() {
   return (
     <>
-      <Head>
-        <title>Responsive React Native</title>
-      </Head>
       <Layout type="intro">
         <IntroGrid>
           <Title>Out-of-the-box Responsive StyleSheets for React Native.</Title>

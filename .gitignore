@@ -1,7 +1,8 @@
 node_modules
-bun.lockb
+bun.lock
 dist
-app-temp
+ResponsiveApp
+*.tgz
 app/**/*
 !app/App.tsx
 !app/Expandable.tsx

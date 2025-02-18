@@ -195,7 +195,7 @@ export function Styled<T extends NativeStyle, V extends Object, S extends string
 
   return ({ ...props }: ComponentProps<ComponentInput> & { [K in Exclude<S, Conditionals>]?: boolean } & V) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const ref = useRef<any>()
+    const ref = useRef<any>(null)
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {

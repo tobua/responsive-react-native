@@ -1,8 +1,7 @@
 import { styled, theme } from '../stitches.config'
-import { ContentGrid } from './General'
-import * as Icon from './Icon'
-import { Code } from './Code'
-import Image from 'next/image'
+import { ContentGrid } from './general'
+import * as Icon from './icon'
+import { Code } from './code'
 
 const Grid = styled('div', {
   display: 'grid',
@@ -87,8 +86,8 @@ export const ResponsiveStyleSheet = () => {
             <Title>Responsive StyleSheet</Title>
           </Heading>
           <Description>
-            By default the <InlineCode>createStyles</InlineCode> method can replace any call to the
-            default React Native <InlineCode>StyleSheet.create</InlineCode>.
+            By default the <InlineCode>createStyles</InlineCode> method can replace any call to the default React Native{' '}
+            <InlineCode>StyleSheet.create</InlineCode>.
           </Description>
         </Left>
         <Right>
@@ -134,16 +133,9 @@ export default () => <View style={styles.view} />`}</Code>
             <Icon.ScaledValues size={40} color="black" />
             <Title>Scaled Values</Title>
           </Heading>
-          <Description>
-            Any size property will be linearly scaled depending on the current viewport size.
-          </Description>
-          <div style={{ height: 300, position: 'relative' }}>
-            <Image
-              fill
-              src="/scale.svg"
-              sizes="(max-width: 500px) 100vw, 50vw"
-              alt="Illustration of responsive scaling."
-            />
+          <Description>Any size property will be linearly scaled depending on the current viewport size.</Description>
+          <div style={{ display: 'flex', justifyContent: 'center', height: 300, position: 'relative' }}>
+            <img style={{ maxHeight: '100%' }} src="scale.svg" alt="Illustration of responsive scaling." />
           </div>
         </Right>
       </Grid>
@@ -161,13 +153,13 @@ export const AdaptiveValues = () => {
             <Title>Adaptive Values</Title>
           </Heading>
           <Description>
-            Using a special syntax different values can be used depending on breakpoint, orientation
-            or platform. All (??) values will still be scaled to match the current viewport size.
+            Using a special syntax different values can be used depending on breakpoint, orientation or platform. All
+            (??) values will still be scaled to match the current viewport size.
           </Description>
           <ul>
             <li>
               <Description>
-                Breakpoint: <InlineCode>{`{ [breakpoint]: value }`}</InlineCode>
+                Breakpoint: <InlineCode>{'{ [breakpoint]: value }'}</InlineCode>
               </Description>
             </li>
             <li>
@@ -177,7 +169,7 @@ export const AdaptiveValues = () => {
             </li>
             <li>
               <Description>
-                Platform: <InlineCode>{`{ ios: value, android: value }`}</InlineCode>
+                Platform: <InlineCode>{'{ ios: value, android: value }'}</InlineCode>
               </Description>
             </li>
           </ul>
@@ -228,10 +220,10 @@ export default () => {
             <Title>Breakpoints</Title>
           </Heading>
           <Description>
-            In addition to picking values based on breakpoint the current breakpoint can also be
-            accessed to dynamically render specific content. In addition to the default{' '}
-            <InlineCode>small</InlineCode>, <InlineCode>medium</InlineCode> and{' '}
-            <InlineCode>large</InlineCode> breakpoint other breakpoints can be configured.
+            In addition to picking values based on breakpoint the current breakpoint can also be accessed to dynamically
+            render specific content. In addition to the default <InlineCode>small</InlineCode>,{' '}
+            <InlineCode>medium</InlineCode> and <InlineCode>large</InlineCode> breakpoint other breakpoints can be
+            configured.
           </Description>
         </Right>
       </Grid>

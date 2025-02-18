@@ -419,7 +419,6 @@ test('Styles from regular props are merged in.', () => {
   render(<RegularView accessibilityLabel="regular-view" style={[{ backgroundColor: 'blue' }]} />)
 
   view = screen.getByLabelText('regular-view')
-
   expect(view.props.style[0].backgroundColor).toBe('blue')
   expect(view.props.style[1].color).toBe('red')
 
@@ -430,9 +429,9 @@ test('Styles from regular props are merged in.', () => {
 
   view = screen.getByLabelText('animated-view')
 
-  // Styles properties for animated views are automatically merged.
-  expect(view.props.style.backgroundColor).toBe('blue')
-  expect(view.props.style.color).toBe('red')
+  // Styles properties for animated views are (no longer) automatically merged.
+  expect(view.props.style[0].backgroundColor).toBe('blue')
+  expect(view.props.style[1].color).toBe('red')
 })
 
 test('OS specific conditional styles can be used.', () => {

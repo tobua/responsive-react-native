@@ -5,11 +5,12 @@ import {
   SandpackCodeEditor,
   SandpackPreview,
 } from '@codesandbox/sandpack-react'
-import { Indicate } from 'indicate'
+import { Scroll } from 'overflow-scroll-fade'
 
 export const Code = ({ children, backgroundColor = 'white', theme = 'light' }) => (
   <div style={{ overflow: 'hidden' }}>
-    <Indicate horizontal theme={{ element: { backgroundColor } }}>
+    <style>{'.sp-wrapper { flex: 1 }'}</style>
+    <Scroll direction="horizontal">
       <SandpackProvider
         template="react"
         files={{
@@ -21,7 +22,7 @@ export const Code = ({ children, backgroundColor = 'white', theme = 'light' }) =
           <SandpackCodeViewer />
         </span>
       </SandpackProvider>
-    </Indicate>
+    </Scroll>
   </div>
 )
 
@@ -47,9 +48,9 @@ export const CodeRepl = ({ children, backgroundColor = 'white', theme = 'light' 
     >
       <SandpackLayout>
         <div style={{ overflow: 'hidden', '--sp-colors-surface1': backgroundColor }}>
-          <Indicate horizontal theme={{ element: { backgroundColor } }}>
+          <Scroll direction="horizontal">
             <SandpackCodeEditor />
-          </Indicate>
+          </Scroll>
         </div>
         <SandpackPreview />
       </SandpackLayout>

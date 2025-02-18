@@ -1,6 +1,7 @@
 import { styled, theme } from '../stitches.config'
-import { Link } from './Link'
-import { ContentGrid } from '../markup/General'
+import { Link } from './link'
+import { ContentGrid } from './general'
+import { go } from 'router'
 
 const Text = styled('p', {
   fontFamily: 'sans-serif',
@@ -32,10 +33,18 @@ export const Footer = () => {
       <Wrapper>
         <Column>
           <Text>Documentation</Text>
-          <Link href="/getting-started">Getting Started</Link>
-          <Link href="/features">Features</Link>
-          <Link href="/styled">Styled API</Link>
-          <Link href="/configuration">Configuration</Link>
+          <Link onClick={(event) => go(event, 'getting-started')} href="/getting-started">
+            Getting Started
+          </Link>
+          <Link onClick={(event) => go(event, 'features')} href="/features">
+            Features
+          </Link>
+          <Link onClick={(event) => go(event, 'styled')} href="/styled">
+            Styled API
+          </Link>
+          <Link onClick={(event) => go(event, 'configuration')} href="/configuration">
+            Configuration
+          </Link>
         </Column>
         <Column>
           <Text>Links</Text>

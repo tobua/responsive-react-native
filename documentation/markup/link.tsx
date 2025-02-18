@@ -1,7 +1,6 @@
-import NextLink from 'next/link'
 import { styled, theme } from '../stitches.config'
 
-export const TextLink = styled(NextLink, {
+export const TextLink = styled('a', {
   outline: 'none',
   textDecoration: 'none',
   background: '-webkit-linear-gradient(0deg, #FF85FA, #82D9FF)',
@@ -31,7 +30,7 @@ export const TextLink = styled(NextLink, {
   },
 })
 
-export const Link = styled(NextLink, {
+export const Link = styled('a', {
   fontFamily: 'sans-serif',
   color: 'black',
   textDecoration: 'none',

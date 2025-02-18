@@ -1,11 +1,5 @@
 export const Stylesheet = ({ size = 100, color = 'white' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M3.5 20V90C3.5 94.1421 6.85786 97.5 11 97.5H72C76.1421 97.5 79.5 94.1421 79.5 90V20C79.5 15.8579 76.1421 12.5 72 12.5H11C6.85786 12.5 3.5 15.8579 3.5 20Z"
       stroke={color}
@@ -21,13 +15,7 @@ export const Stylesheet = ({ size = 100, color = 'white' }) => (
 )
 
 export const ScaledValues = ({ size = 100, color = 'white' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M3.5 10V90C3.5 94.1421 6.85786 97.5 11 97.5H90C94.1421 97.5 97.5 94.1421 97.5 90V10C97.5 5.85786 94.1421 2.5 90 2.5H11C6.85786 2.5 3.5 5.85787 3.5 10Z"
       stroke={color}
@@ -41,48 +29,20 @@ export const ScaledValues = ({ size = 100, color = 'white' }) => (
 )
 
 export const AdaptiveValues = ({ size = 100, color = 'white' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M3.5 10V90C3.5 94.1421 6.85786 97.5 11 97.5H90C94.1421 97.5 97.5 94.1421 97.5 90V10C97.5 5.85786 94.1421 2.5 90 2.5H11C6.85786 2.5 3.5 5.85787 3.5 10Z"
       stroke={color}
       strokeWidth="5"
     />
-    <line
-      x1="21.2695"
-      y1="40.2604"
-      x2="42.4827"
-      y2="61.4736"
-      stroke={color}
-      strokeWidth="5"
-      strokeLinecap="round"
-    />
-    <line
-      x1="20.734"
-      y1="61.4736"
-      x2="41.9472"
-      y2="40.2604"
-      stroke={color}
-      strokeWidth="5"
-      strokeLinecap="round"
-    />
+    <line x1="21.2695" y1="40.2604" x2="42.4827" y2="61.4736" stroke={color} strokeWidth="5" strokeLinecap="round" />
+    <line x1="20.734" y1="61.4736" x2="41.9472" y2="40.2604" stroke={color} strokeWidth="5" strokeLinecap="round" />
     <circle cx="70" cy="50" r="12.5" stroke={color} strokeWidth="5" />
   </svg>
 )
 
 export const Breakpoints = ({ size = 100, color = 'white' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M3.5 10V90C3.5 94.1421 6.85786 97.5 11 97.5H52C56.1421 97.5 59.5 94.1421 59.5 90V10C59.5 5.85786 56.1421 2.5 52 2.5H11C6.85786 2.5 3.5 5.85787 3.5 10Z"
       stroke={color}

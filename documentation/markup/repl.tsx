@@ -9,8 +9,8 @@ import {
 import Select from 'react-select'
 import { deviceSizes, Type } from 'device-sizes'
 import { styled, theme } from '../stitches.config'
-import { PhoneCutout } from './PhoneCutout'
-import { ContentGrid } from '../markup/General'
+import { PhoneCutout } from './phone-cutout'
+import { ContentGrid } from './general'
 
 const Wrapper = styled('section', {
   display: 'flex',
@@ -83,21 +83,24 @@ const SandpackInner = ({ phone, setPhone }) => {
   const sizeWidth = phone.size * aspectRatioWidth
   const { sandpack } = useSandpack()
 
-  const handlePhoneChange = useCallback((selected) => {
-    const phone = deviceSizes[selected.value]
+  const handlePhoneChange = useCallback(
+    (selected) => {
+      const phone = deviceSizes[selected.value]
 
-    Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
-    })
+      Object.values(sandpack.clients).forEach((client) => {
+        client.iframe.contentWindow?.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
+      })
 
-    setPhone(phone)
-  })
+      setPhone(phone)
+    },
+    [sandpack.clients, setPhone],
+  )
 
   useEffect(() => {
     Object.values(sandpack.clients).forEach((client) => {
-      client.iframe.contentWindow.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
+      client.iframe.contentWindow?.postMessage({ type: 'width', width: phone.width / phone.scale }, '*')
     })
-  }, [sandpack])
+  }, [sandpack, phone])
 
   return (
     <SandpackLayout>
@@ -166,7 +169,7 @@ const SandpackInner = ({ phone, setPhone }) => {
 }
 
 export const Repl = () => {
-  const [phone, setPhone] = useState(deviceSizes['iphone15'])
+  const [phone, setPhone] = useState(deviceSizes.iphone15)
 
   return (
     <ContentGrid size={phone.type === Type.Tablet ? 'ultrawide' : 'wide'}>
